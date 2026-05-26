@@ -1,7850 +1,2662 @@
--- DOLLARWARE UI LIBRARY
--- MADE BY TOPIT
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+local CoreGui = game:GetService("CoreGui")
 
--- warning: comments are mostly retarded / useless
--- some shit makes no sense but idc enough to fix it
+local ConfigFolder = "Eternal_Configs"
+if not isfolder(ConfigFolder) then makefolder(ConfigFolder) end
 
--- started on 5/18/22
+local Theme = {
+    Background = Color3.fromRGB(20, 20, 28),
+    Sidebar    = Color3.fromRGB(25, 25, 35),
+    Element    = Color3.fromRGB(32, 32, 42),
+    Text       = Color3.fromRGB(245, 245, 255),
+    TextDim    = Color3.fromRGB(160, 160, 180),
+    Accent1    = Color3.fromRGB(140, 20, 255), 
+    Accent2    = Color3.fromRGB(255, 50, 180)
+}
 
-local inputService = game:GetService('UserInputService')
-local renderService = game:GetService('RunService')
-local tweenService = game:GetService('TweenService')
-local guiService = game:GetService('GuiService')
+local ThemePresets = {
+    ["Eternal (Default)"] = {
+        Background = Color3.fromRGB(20, 20, 28), 
+        Sidebar = Color3.fromRGB(25, 25, 35), 
+        Element = Color3.fromRGB(32, 32, 42),
+        Text = Color3.fromRGB(245, 245, 255), 
+        TextDim = Color3.fromRGB(160, 160, 180),
+        Accent1 = Color3.fromRGB(140, 20, 255), 
+        Accent2 = Color3.fromRGB(255, 50, 180)
+    },
+    ["Ocean Breeze"] = {
+        Background = Color3.fromRGB(10, 20, 30), 
+        Sidebar = Color3.fromRGB(15, 25, 40), 
+        Element = Color3.fromRGB(20, 35, 55),
+        Text = Color3.fromRGB(240, 250, 255), 
+        TextDim = Color3.fromRGB(140, 160, 180),
+        Accent1 = Color3.fromRGB(0, 190, 255), 
+        Accent2 = Color3.fromRGB(0, 100, 255)
+    },
+    ["Toxic Nature"] = {
+        Background = Color3.fromRGB(20, 25, 20), 
+        Sidebar = Color3.fromRGB(25, 35, 25), 
+        Element = Color3.fromRGB(35, 45, 35),
+        Text = Color3.fromRGB(240, 255, 240), 
+        TextDim = Color3.fromRGB(150, 180, 150),
+        Accent1 = Color3.fromRGB(100, 255, 50), 
+        Accent2 = Color3.fromRGB(50, 180, 0)
+    },
+    ["Blood Moon"] = {
+        Background = Color3.fromRGB(25, 10, 10), 
+        Sidebar = Color3.fromRGB(35, 15, 15), 
+        Element = Color3.fromRGB(45, 20, 20),
+        Text = Color3.fromRGB(255, 240, 240), 
+        TextDim = Color3.fromRGB(180, 140, 140),
+        Accent1 = Color3.fromRGB(255, 50, 50), 
+        Accent2 = Color3.fromRGB(180, 0, 0)
+    },
+    ["Midnight Sky"] = {
+        Background = Color3.fromRGB(15, 15, 20), 
+        Sidebar = Color3.fromRGB(25, 25, 30), 
+        Element = Color3.fromRGB(35, 35, 45),
+        Text = Color3.fromRGB(255, 255, 255), 
+        TextDim = Color3.fromRGB(160, 160, 170),
+        Accent1 = Color3.fromRGB(100, 100, 255), 
+        Accent2 = Color3.fromRGB(180, 180, 255)
+    },
+    ["Cotton Candy"] = {
+        Background = Color3.fromRGB(30, 20, 30), 
+        Sidebar = Color3.fromRGB(40, 25, 40), 
+        Element = Color3.fromRGB(50, 35, 50),
+        Text = Color3.fromRGB(255, 245, 255), 
+        TextDim = Color3.fromRGB(200, 160, 200),
+        Accent1 = Color3.fromRGB(255, 100, 200), 
+        Accent2 = Color3.fromRGB(100, 200, 255)
+    },
+    ["Sunset Dunes"] = {
+        Background = Color3.fromRGB(30, 20, 15), 
+        Sidebar = Color3.fromRGB(40, 25, 20), 
+        Element = Color3.fromRGB(55, 35, 25),
+        Text = Color3.fromRGB(255, 245, 235), 
+        TextDim = Color3.fromRGB(200, 170, 150),
+        Accent1 = Color3.fromRGB(255, 150, 50), 
+        Accent2 = Color3.fromRGB(255, 100, 0)
+    },
+    ["Arctic Frost"] = {
+        Background = Color3.fromRGB(20, 25, 30), 
+        Sidebar = Color3.fromRGB(25, 35, 40), 
+        Element = Color3.fromRGB(35, 45, 55),
+        Text = Color3.fromRGB(240, 250, 255), 
+        TextDim = Color3.fromRGB(180, 200, 220),
+        Accent1 = Color3.fromRGB(100, 220, 255), 
+        Accent2 = Color3.fromRGB(50, 150, 255)
+    },
+    ["Cyberpunk Neon"] = {
+        Background = Color3.fromRGB(10, 5, 20), 
+        Sidebar = Color3.fromRGB(15, 10, 30), 
+        Element = Color3.fromRGB(25, 15, 40),
+        Text = Color3.fromRGB(255, 255, 255), 
+        TextDim = Color3.fromRGB(180, 180, 220),
+        Accent1 = Color3.fromRGB(255, 0, 255), 
+        Accent2 = Color3.fromRGB(0, 255, 255)
+    },
+    ["Forest Guardian"] = {
+        Background = Color3.fromRGB(15, 25, 20), 
+        Sidebar = Color3.fromRGB(20, 35, 25), 
+        Element = Color3.fromRGB(30, 45, 35),
+        Text = Color3.fromRGB(230, 255, 240), 
+        TextDim = Color3.fromRGB(160, 200, 170),
+        Accent1 = Color3.fromRGB(80, 220, 120), 
+        Accent2 = Color3.fromRGB(40, 180, 100)
+    },
+    ["Royal Purple"] = {
+        Background = Color3.fromRGB(25, 15, 35), 
+        Sidebar = Color3.fromRGB(35, 20, 50), 
+        Element = Color3.fromRGB(45, 30, 65),
+        Text = Color3.fromRGB(255, 245, 255), 
+        TextDim = Color3.fromRGB(200, 180, 220),
+        Accent1 = Color3.fromRGB(180, 80, 255), 
+        Accent2 = Color3.fromRGB(140, 40, 220)
+    },
+    ["Golden Hour"] = {
+        Background = Color3.fromRGB(30, 25, 15), 
+        Sidebar = Color3.fromRGB(40, 30, 20), 
+        Element = Color3.fromRGB(55, 40, 25),
+        Text = Color3.fromRGB(255, 250, 235), 
+        TextDim = Color3.fromRGB(220, 200, 160),
+        Accent1 = Color3.fromRGB(255, 200, 50), 
+        Accent2 = Color3.fromRGB(220, 160, 30)
+    },
+    ["Abyssal Deep"] = {
+        Background = Color3.fromRGB(5, 10, 20), 
+        Sidebar = Color3.fromRGB(10, 15, 30), 
+        Element = Color3.fromRGB(15, 25, 45),
+        Text = Color3.fromRGB(230, 240, 255), 
+        TextDim = Color3.fromRGB(150, 170, 200),
+        Accent1 = Color3.fromRGB(0, 150, 200), 
+        Accent2 = Color3.fromRGB(0, 100, 150)
+    },
+    ["Crimson Dawn"] = {
+        Background = Color3.fromRGB(30, 10, 15), 
+        Sidebar = Color3.fromRGB(40, 15, 20), 
+        Element = Color3.fromRGB(55, 20, 25),
+        Text = Color3.fromRGB(255, 235, 240), 
+        TextDim = Color3.fromRGB(220, 160, 170),
+        Accent1 = Color3.fromRGB(255, 60, 80), 
+        Accent2 = Color3.fromRGB(200, 30, 50)
+    },
+    ["Matrix Green"] = {
+        Background = Color3.fromRGB(5, 15, 10), 
+        Sidebar = Color3.fromRGB(10, 25, 15), 
+        Element = Color3.fromRGB(15, 35, 20),
+        Text = Color3.fromRGB(220, 255, 220), 
+        TextDim = Color3.fromRGB(150, 220, 150),
+        Accent1 = Color3.fromRGB(0, 255, 100), 
+        Accent2 = Color3.fromRGB(0, 180, 70)
+    },
+    ["Pastel Dream"] = {
+        Background = Color3.fromRGB(240, 235, 245), 
+        Sidebar = Color3.fromRGB(245, 240, 250), 
+        Element = Color3.fromRGB(250, 245, 255),
+        Text = Color3.fromRGB(40, 35, 50), 
+        TextDim = Color3.fromRGB(120, 110, 140),
+        Accent1 = Color3.fromRGB(255, 150, 200), 
+        Accent2 = Color3.fromRGB(150, 200, 255)
+    },
+    ["Industrial Gray"] = {
+        Background = Color3.fromRGB(35, 35, 40), 
+        Sidebar = Color3.fromRGB(45, 45, 50), 
+        Element = Color3.fromRGB(55, 55, 60),
+        Text = Color3.fromRGB(240, 240, 245), 
+        TextDim = Color3.fromRGB(180, 180, 190),
+        Accent1 = Color3.fromRGB(255, 100, 50), 
+        Accent2 = Color3.fromRGB(200, 150, 50)
+    },
+    ["Solar Flare"] = {
+        Background = Color3.fromRGB(40, 25, 10), 
+        Sidebar = Color3.fromRGB(50, 30, 15), 
+        Element = Color3.fromRGB(65, 40, 20),
+        Text = Color3.fromRGB(255, 250, 240), 
+        TextDim = Color3.fromRGB(220, 200, 170),
+        Accent1 = Color3.fromRGB(255, 180, 50), 
+        Accent2 = Color3.fromRGB(255, 120, 30)
+    },
+    ["Twilight Zone"] = {
+        Background = Color3.fromRGB(20, 15, 30), 
+        Sidebar = Color3.fromRGB(30, 20, 40), 
+        Element = Color3.fromRGB(40, 30, 55),
+        Text = Color3.fromRGB(245, 240, 255), 
+        TextDim = Color3.fromRGB(180, 170, 200),
+        Accent1 = Color3.fromRGB(180, 100, 255), 
+        Accent2 = Color3.fromRGB(100, 200, 255)
+    },
+    ["Mono Chrome"] = {
+        Background = Color3.fromRGB(20, 20, 20), 
+        Sidebar = Color3.fromRGB(30, 30, 30), 
+        Element = Color3.fromRGB(40, 40, 40),
+        Text = Color3.fromRGB(255, 255, 255), 
+        TextDim = Color3.fromRGB(180, 180, 180),
+        Accent1 = Color3.fromRGB(255, 255, 255), 
+        Accent2 = Color3.fromRGB(200, 200, 200)
+    },
+}
 
--- tween(object, {Property = 'value'}, 0.2, 1)
-local tween
-do
-    local styleEnum = Enum.EasingStyle
-    local dirEnum = Enum.EasingDirection
+local ThemeRegistry = {Objects = {}, Gradients = {}, Customs = {}}
+
+local function RegisterTheme(obj, prop, key) 
+    table.insert(ThemeRegistry.Objects, {Object=obj, Property=prop, Key=key}) 
+    obj[prop] = Theme[key] 
+    return obj 
+end
+
+local function RegisterGradient(gradient, key1, key2)
+    table.insert(ThemeRegistry.Gradients, {Object=gradient, K1=key1, K2=key2})
+    gradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Theme[key1]), ColorSequenceKeypoint.new(1, Theme[key2])}
+    return gradient
+end
+
+local function UpdateTheme(themeName)
+    local newTheme = ThemePresets[themeName] or ThemePresets["Eternal (Default)"]
+    for k, v in pairs(newTheme) do Theme[k] = v end
     
-    local direction = dirEnum.Out
-    local styles = {styleEnum.Exponential, styleEnum.Linear}
+    for i = #ThemeRegistry.Objects, 1, -1 do
+        local data = ThemeRegistry.Objects[i]
+        if data.Object and data.Object.Parent then
+            pcall(function() TweenService:Create(data.Object, TweenInfo.new(0.5), {[data.Property]=Theme[data.Key]}):Play() end)
+        else
+            table.remove(ThemeRegistry.Objects, i)
+        end
+    end
     
-    
-    function tween(object, shit, duration, style) 
-        local tweenInfo = TweenInfo.new(duration, styles[style], direction)
-        local tween = tweenService:Create(object, tweenInfo, shit)
-        tween:Play()
-        return tween 
+    for i = #ThemeRegistry.Gradients, 1, -1 do
+        local data = ThemeRegistry.Gradients[i]
+        if data.Object and data.Object.Parent then
+            pcall(function() data.Object.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Theme[data.K1]), ColorSequenceKeypoint.new(1, Theme[data.K2])} end)
+        else
+            table.remove(ThemeRegistry.Gradients, i)
+        end
     end
 end
 
--- ui config shit
-local args = {...}
-local theme
-local rounding
-local animSpeed = 1e-12
+local FontID = "rbxassetid://12187365364"
+local FontMain = Font.new(FontID, Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+local FontBold = Font.new(FontID, Enum.FontWeight.Bold, Enum.FontStyle.Normal)
 
--- theme 
-do
-    if (#args > 0 and typeof(args[1]) == 'table') then
-        local settings = args[1]
-        theme = settings.theme
-        rounding = settings.rounding
-        if (settings.smoothDragging == nil) then 
-            settings.smoothDragging = true 
-        end
-        animSpeed = settings.smoothDragging and 1e-12 or 0
-        if (typeof(theme) == 'string') then
-            if (theme == 'cherry') then          -- red
-                theme = {
-                    Primary = Color3.fromRGB(249, 22, 52);
-                    Secondary = Color3.fromRGB(247, 22, 149);
-                    
-                    Window1 = Color3.fromRGB(11, 11, 11);
-                    Window2 = Color3.fromRGB(5, 5, 5);
-                    Window3 = Color3.fromRGB(8, 8, 8);
-                    
-                    Button1 = Color3.fromRGB(12, 12, 12);
-                    Button2 = Color3.fromRGB(15, 15, 15);
-                    Button3 = Color3.fromRGB(21, 21, 21);
-                    Button4 = Color3.fromRGB(24, 24, 24);
-                    
-                    Stroke = Color3.fromRGB(30, 30, 30);
-                    StrokeHover = Color3.fromRGB(83, 23, 31);
-                    
-                    Inset1 = Color3.fromRGB(3, 3, 3);
-                    Inset2 = Color3.fromRGB(1, 1, 1);
-                    Inset3 = Color3.fromRGB(2, 2, 2);
-                    
-                    TextPrimary = Color3.fromRGB(255, 255, 255);
-                    TextStroke = Color3.fromRGB(0, 0, 0);
-                    TextDim = Color3.fromRGB(164, 164, 164);
-                    
-                    ControlGradient1 = Color3.fromRGB(255, 255, 255);
-                    ControlGradient2 = Color3.fromRGB(200, 200, 200);
-                }
-            elseif (theme == 'orange') then      -- orange
-                theme = {
-                    Primary = Color3.fromRGB(244, 148, 22);
-                    Secondary = Color3.fromRGB(247, 37, 22);
-                    
-                    Window1 = Color3.fromRGB(20, 20, 22);
-                    Window2 = Color3.fromRGB(10, 10, 12);
-                    Window3 = Color3.fromRGB(15, 15, 17);
-                    
-                    Button1 = Color3.fromRGB(18, 18, 20);
-                    Button2 = Color3.fromRGB(20, 20, 22);
-                    Button3 = Color3.fromRGB(28, 28, 30);
-                    Button4 = Color3.fromRGB(30, 30, 32);
-                    
-                    Stroke = Color3.fromRGB(60, 60, 60);
-                    StrokeHover = Color3.fromRGB(110, 110, 110);
-                    
-                    Inset1 = Color3.fromRGB(10, 10, 12);
-                    Inset2 = Color3.fromRGB(0, 0, 2);
-                    Inset3 = Color3.fromRGB(5, 5, 7);
-                    
-                    TextPrimary = Color3.fromRGB(255, 255, 255);
-                    TextStroke = Color3.fromRGB(0, 0, 0);
-                    TextDim = Color3.fromRGB(192, 192, 192);
-                    
-                    ControlGradient1 = Color3.fromRGB(255, 255, 255);
-                    ControlGradient2 = Color3.fromRGB(192, 192, 192);
-                }
-            elseif (theme == 'lemon') then       -- yellow
-                theme = {
-                    Primary = Color3.fromRGB(220, 255, 66);
-                    Secondary = Color3.fromRGB(232, 173, 25);
-                    
-                    Window1 = Color3.fromRGB(30, 30, 30);
-                    Window2 = Color3.fromRGB(20, 20, 20);
-                    Window3 = Color3.fromRGB(25, 25, 25);
-                    
-                    Button1 = Color3.fromRGB(35, 35, 35);
-                    Button2 = Color3.fromRGB(40, 40, 40);
-                    Button3 = Color3.fromRGB(50, 50, 50);
-                    Button4 = Color3.fromRGB(55, 55, 55);
-                    
-                    Stroke = Color3.fromRGB(55, 55, 55);
-                    StrokeHover = Color3.fromRGB(80, 80, 80);
-                    
-                    Inset1 = Color3.fromRGB(18, 18, 18);
-                    Inset2 = Color3.fromRGB(8, 8, 8);
-                    Inset3 = Color3.fromRGB(13, 13, 13);
-                    
-                    TextPrimary = Color3.fromRGB(255, 255, 255);
-                    TextStroke = Color3.fromRGB(0, 0, 0);
-                    TextDim = Color3.fromRGB(192, 192, 192);
-                    
-                    ControlGradient1 = Color3.fromRGB(255, 255, 255);
-                    ControlGradient2 = Color3.fromRGB(192, 192, 192);
-                }
-            elseif (theme == 'lime') then        -- green
-                theme = {
-                    Primary = Color3.fromRGB(33, 255, 120);
-                    Secondary = Color3.fromRGB(120, 255, 33);
-                    
-                    Window1 = Color3.fromRGB(30, 30, 32);
-                    Window2 = Color3.fromRGB(24, 24, 26);
-                    Window3 = Color3.fromRGB(28, 28, 30);
-                    
-                    Button1 = Color3.fromRGB(36, 36, 38);
-                    Button2 = Color3.fromRGB(40, 40, 42);
-                    Button3 = Color3.fromRGB(46, 46, 48);
-                    Button4 = Color3.fromRGB(50, 50, 52);
-                    
-                    Stroke = Color3.fromRGB(60, 60, 60);
-                    StrokeHover = Color3.fromRGB(110, 110, 110);
-                    
-                    Inset1 = Color3.fromRGB(20, 20, 22);
-                    Inset2 = Color3.fromRGB(14, 14, 16);
-                    Inset3 = Color3.fromRGB(18, 18, 20);
-                    
-                    TextPrimary = Color3.fromRGB(255, 255, 255);
-                    TextStroke = Color3.fromRGB(0, 0, 0);
-                    TextDim = Color3.fromRGB(192, 192, 192);
-                    
-                    ControlGradient1 = Color3.fromRGB(255, 255, 255);
-                    ControlGradient2 = Color3.fromRGB(192, 192, 192);
-                }
-            elseif (theme == 'raspberry') then   -- cyan
-                theme = {
-                    Primary = Color3.fromRGB(0, 190, 255);
-                    Secondary = Color3.fromRGB(0, 255, 190);
-                    
-                    Window1 = Color3.fromRGB(25, 25, 27);
-                    Window2 = Color3.fromRGB(19, 19, 21);
-                    Window3 = Color3.fromRGB(23, 23, 25);
-                    
-                    Button1 = Color3.fromRGB(24, 24, 26);
-                    Button2 = Color3.fromRGB(28, 28, 30);
-                    Button3 = Color3.fromRGB(34, 40, 42);
-                    Button4 = Color3.fromRGB(38, 44, 46);
-                    
-                    Stroke = Color3.fromRGB(60, 60, 60);
-                    StrokeHover = Color3.fromRGB(110, 110, 110);
-                    
-                    Inset1 = Color3.fromRGB(20, 20, 22);
-                    Inset2 = Color3.fromRGB(14, 14, 16);
-                    Inset3 = Color3.fromRGB(18, 18, 20);
-                    
-                    TextPrimary = Color3.fromRGB(255, 255, 255);
-                    TextStroke = Color3.fromRGB(0, 0, 0);
-                    TextDim = Color3.fromRGB(192, 192, 192);
-                    
-                    ControlGradient1 = Color3.fromRGB(255, 255, 255);
-                    ControlGradient2 = Color3.fromRGB(192, 192, 192);
-                }
-            elseif (theme == 'blueberry') then   -- blue
-                theme = {
-                    Primary = Color3.fromRGB(91, 77, 249);
-                    Secondary = Color3.fromRGB(130, 76, 247);
-                    
-                    Window1 = Color3.fromRGB(20, 20, 23);
-                    Window2 = Color3.fromRGB(12, 12, 15);
-                    Window3 = Color3.fromRGB(15, 15, 18);
-                    
-                    Button1 = Color3.fromRGB(18, 18, 21);
-                    Button2 = Color3.fromRGB(21, 21, 24);
-                    Button3 = Color3.fromRGB(38, 38, 41);
-                    Button4 = Color3.fromRGB(41, 41, 44);
-                    
-                    Stroke = Color3.fromRGB(50, 50, 53);
-                    StrokeHover = Color3.fromRGB(60, 60, 63);
-                    
-                    Inset1 = Color3.fromRGB(15, 15, 18);
-                    Inset2 = Color3.fromRGB(7, 7, 10);
-                    Inset3 = Color3.fromRGB(13, 13, 16);
-                    
-                    TextPrimary = Color3.fromRGB(255, 255, 255);
-                    TextStroke = Color3.fromRGB(0, 0, 0);
-                    TextDim = Color3.fromRGB(168, 168, 168);
-                    
-                    ControlGradient1 = Color3.fromRGB(255, 255, 255);
-                    ControlGradient2 = Color3.fromRGB(192, 192, 192);
-                }
-            elseif (theme == 'grape') then       -- purple
-                
-                theme = {
-                    Primary = Color3.fromRGB(134, 53, 255);
-                    Secondary = Color3.fromRGB(211, 53, 255);
-                    
-                    Window1 = Color3.fromRGB(20, 20, 20);
-                    Window2 = Color3.fromRGB(10, 10, 10);
-                    Window3 = Color3.fromRGB(15, 15, 15);
-                    
-                    Button1 = Color3.fromRGB(15, 15, 15);
-                    Button2 = Color3.fromRGB(20, 20, 20);
-                    Button3 = Color3.fromRGB(35, 35, 35);
-                    Button4 = Color3.fromRGB(40, 40, 40);
-                    
-                    Stroke = Color3.fromRGB(34, 34, 34);
-                    StrokeHover = Color3.fromRGB(89, 49, 150);
-                    
-                    Inset1 = Color3.fromRGB(5, 5, 5);
-                    Inset2 = Color3.fromRGB(0, 0, 0);
-                    Inset3 = Color3.fromRGB(3, 3, 3);
-                    
-                    TextPrimary = Color3.fromRGB(255, 255, 255);
-                    TextStroke = Color3.fromRGB(0, 0, 0);
-                    TextDim = Color3.fromRGB(74, 42, 122);
-                    
-                    ControlGradient1 = Color3.fromRGB(255, 255, 255);
-                    ControlGradient2 = Color3.fromRGB(192, 192, 192);
-                }
-            elseif (theme == 'watermelon') then  -- legacy red-aqua
-                theme = nil
-            end
-        end
-    end
-    
-    
-    
-    if (rounding == nil) then
-        rounding = true 
-    end
-    if (typeof(theme) ~= 'table') then
-        theme = {
-            Primary = Color3.fromRGB(38, 233, 195); -- primary accent
-            Secondary = Color3.fromRGB(233, 38, 115); -- secondary accent
-            
-            Window1 = Color3.fromRGB(30, 30, 35); -- window headers (the tool bar w/ title and min/max buttons)
-            Window2 = Color3.fromRGB(20, 20, 25); -- window background
-            Window3 = Color3.fromRGB(25, 25, 30); -- sidebar, section header, tooltip header
-            
-            Button1 = Color3.fromRGB(35, 35, 40); -- idle disabled button
-            Button2 = Color3.fromRGB(45, 45, 50); -- disabled button focused
-            Button3 = Color3.fromRGB(65, 65, 70); -- idle enabled button
-            Button4 = Color3.fromRGB(75, 75, 80); -- enabled button focused
-            
-            Stroke = Color3.fromRGB(50, 50, 55); -- stroke for everything
-            StrokeHover = Color3.fromRGB(70, 70, 75); -- stroke for everything
-            
-            Inset1 = Color3.fromRGB(20, 20, 25); -- inner stroke of Window1
-            Inset2 = Color3.fromRGB(10, 10, 15); -- inner stroke of Window2
-            Inset3 = Color3.fromRGB(15, 15, 20); -- inner stroke of Window3
-            
-            TextPrimary = Color3.fromRGB(255, 255, 255); -- primary text color
-            TextStroke = Color3.fromRGB(0, 0, 0); -- text stroke
-            TextDim = Color3.fromRGB(164, 164, 164); -- dim text color
-            
-            ControlGradient1 = Color3.fromRGB(255, 255, 255); -- top color for extra gradient effects
-            ControlGradient2 = Color3.fromRGB(192, 192, 192); -- bottom color for extra gradient effects
-        }
-    end
+local Icons = {
+
+["a-arrow-down"] = "rbxassetid://92867583610071",
+["a-arrow-up"] = "rbxassetid://132318504999733",
+["a-large-small"] = "rbxassetid://111491496660216",
+["accessibility"] = "rbxassetid://114029945302017",
+["activity"] = "rbxassetid://94212016861936",
+["air-vent"] = "rbxassetid://81517226012329",
+["airplay"] = "rbxassetid://115020759309179",
+["alarm-clock-check"] = "rbxassetid://76437352099157",
+["alarm-clock-minus"] = "rbxassetid://77364179863205",
+["alarm-clock-off"] = "rbxassetid://97904885874823",
+["alarm-clock-plus"] = "rbxassetid://80468822979214",
+["alarm-clock"] = "rbxassetid://126259032907535",
+["alarm-smoke"] = "rbxassetid://96965448419685",
+["album"] = "rbxassetid://127358331163602",
+["align-center-horizontal"] = "rbxassetid://81570549209434",
+["align-center-vertical"] = "rbxassetid://118470463752466",
+["align-end-horizontal"] = "rbxassetid://139502909745427",
+["align-end-vertical"] = "rbxassetid://96528869059554",
+["align-horizontal-distribute-center"] = "rbxassetid://97220086126656",
+["align-horizontal-distribute-end"] = "rbxassetid://106128590702022",
+["align-horizontal-distribute-start"] = "rbxassetid://76074660002997",
+["align-horizontal-justify-center"] = "rbxassetid://75732302772427",
+["align-horizontal-justify-end"] = "rbxassetid://129167626402283",
+["align-horizontal-justify-start"] = "rbxassetid://130161830325281",
+["align-horizontal-space-around"] = "rbxassetid://91646106782950",
+["align-horizontal-space-between"] = "rbxassetid://103886093046990",
+["align-start-horizontal"] = "rbxassetid://125674804697729",
+["align-start-vertical"] = "rbxassetid://105020230154823",
+["align-vertical-distribute-center"] = "rbxassetid://93791183635525",
+["align-vertical-distribute-end"] = "rbxassetid://139354223511433",
+["align-vertical-distribute-start"] = "rbxassetid://74961997822126",
+["align-vertical-justify-center"] = "rbxassetid://134754696166569",
+["align-vertical-justify-end"] = "rbxassetid://92569381441969",
+["align-vertical-justify-start"] = "rbxassetid://99692844572718",
+["align-vertical-space-around"] = "rbxassetid://96206012459190",
+["align-vertical-space-between"] = "rbxassetid://124998077349706",
+["ambulance"] = "rbxassetid://78599995190651",
+["ampersand"] = "rbxassetid://75272915739209",
+["ampersands"] = "rbxassetid://126947193455996",
+["amphora"] = "rbxassetid://137370389604364",
+["anchor"] = "rbxassetid://92181172123618",
+["angry"] = "rbxassetid://74237056000103",
+["annoyed"] = "rbxassetid://80064369052011",
+["antenna"] = "rbxassetid://99628923540956",
+["anvil"] = "rbxassetid://100203029845919",
+["aperture"] = "rbxassetid://83396154449972",
+["app-window-mac"] = "rbxassetid://79587216113811",
+["app-window"] = "rbxassetid://93142176757189",
+["apple"] = "rbxassetid://104349242902442",
+["archive-restore"] = "rbxassetid://78956681942188",
+["archive-x"] = "rbxassetid://75830115088395",
+["archive"] = "rbxassetid://122180020814574",
+["armchair"] = "rbxassetid://105384358373973",
+["arrow-big-down-dash"] = "rbxassetid://137987229582002",
+["arrow-big-down"] = "rbxassetid://81081164158885",
+["arrow-big-left-dash"] = "rbxassetid://97827621354677",
+["arrow-big-left"] = "rbxassetid://85973092492641",
+["arrow-big-right-dash"] = "rbxassetid://117825834972403",
+["arrow-big-right"] = "rbxassetid://82960676755590",
+["arrow-big-up-dash"] = "rbxassetid://99260194327483",
+["arrow-big-up"] = "rbxassetid://93136954756149",
+["arrow-down-0-1"] = "rbxassetid://120961896217875",
+["arrow-down-1-0"] = "rbxassetid://93474255891850",
+["arrow-down-a-z"] = "rbxassetid://99554596207900",
+["arrow-down-from-line"] = "rbxassetid://132045845807798",
+["arrow-down-left"] = "rbxassetid://102899325237364",
+["arrow-down-narrow-wide"] = "rbxassetid://129105261655061",
+["arrow-down-right"] = "rbxassetid://123109928624974",
+["arrow-down-to-dot"] = "rbxassetid://101675355931221",
+["arrow-down-to-line"] = "rbxassetid://87050478931254",
+["arrow-down-up"] = "rbxassetid://85780258549577",
+["arrow-down-wide-narrow"] = "rbxassetid://88461733425991",
+["arrow-down-z-a"] = "rbxassetid://76115279362232",
+["arrow-down"] = "rbxassetid://98764963621439",
+["arrow-left-from-line"] = "rbxassetid://87857914437603",
+["arrow-left-right"] = "rbxassetid://131324733048447",
+["arrow-left-to-line"] = "rbxassetid://118645136026970",
+["arrow-left"] = "rbxassetid://102531941843733",
+["arrow-right-from-line"] = "rbxassetid://74073639809355",
+["arrow-right-left"] = "rbxassetid://77015754304300",
+["arrow-right-to-line"] = "rbxassetid://78632510329852",
+["arrow-right"] = "rbxassetid://113692007244654",
+["arrow-up-0-1"] = "rbxassetid://105257823943016",
+["arrow-up-1-0"] = "rbxassetid://134175521693798",
+["arrow-up-a-z"] = "rbxassetid://77763416595160",
+["arrow-up-down"] = "rbxassetid://81019887641527",
+["arrow-up-from-dot"] = "rbxassetid://124408496673275",
+["arrow-up-from-line"] = "rbxassetid://95777664626453",
+["arrow-up-left"] = "rbxassetid://123490598231261",
+["arrow-up-narrow-wide"] = "rbxassetid://73006024672636",
+["arrow-up-right"] = "rbxassetid://129280608535523",
+["arrow-up-to-line"] = "rbxassetid://108818207813537",
+["arrow-up-wide-narrow"] = "rbxassetid://87437426951568",
+["arrow-up-z-a"] = "rbxassetid://107546173611884",
+["arrow-up"] = "rbxassetid://89282378235317",
+["arrows-up-from-line"] = "rbxassetid://133710016938621",
+["asterisk"] = "rbxassetid://88552752106723",
+["at-sign"] = "rbxassetid://79059152889146",
+["atom"] = "rbxassetid://73167696981648",
+["audio-lines"] = "rbxassetid://70930641819242",
+["audio-waveform"] = "rbxassetid://86462036665209",
+["award"] = "rbxassetid://132740088158419",
+["axe"] = "rbxassetid://132405197863294",
+["axis-3d"] = "rbxassetid://122438676546804",
+["baby"] = "rbxassetid://93472926933440",
+["backpack"] = "rbxassetid://140420225386018",
+["badge-alert"] = "rbxassetid://101829200081951",
+["badge-cent"] = "rbxassetid://133345018873154",
+["badge-check"] = "rbxassetid://76078495178149",
+["badge-dollar-sign"] = "rbxassetid://127139803581141",
+["badge-euro"] = "rbxassetid://120016477674659",
+["badge-indian-rupee"] = "rbxassetid://75659682309981",
+["badge-info"] = "rbxassetid://131995373201472",
+["badge-japanese-yen"] = "rbxassetid://99081574588615",
+["badge-minus"] = "rbxassetid://140321561183881",
+["badge-percent"] = "rbxassetid://121359224294885",
+["badge-plus"] = "rbxassetid://100325578561866",
+["badge-pound-sterling"] = "rbxassetid://119688217279444",
+["badge-question-mark"] = "rbxassetid://121464963737502",
+["badge-russian-ruble"] = "rbxassetid://108839463659864",
+["badge-swiss-franc"] = "rbxassetid://91447608372740",
+["badge-turkish-lira"] = "rbxassetid://137839965873529",
+["badge-x"] = "rbxassetid://122931434733842",
+["badge"] = "rbxassetid://116620312917084",
+["baggage-claim"] = "rbxassetid://86922213051957",
+["ban"] = "rbxassetid://90767043015246",
+["banana"] = "rbxassetid://140713420056179",
+["bandage"] = "rbxassetid://129660129590770",
+["banknote-arrow-down"] = "rbxassetid://139366449345199",
+["banknote-arrow-up"] = "rbxassetid://133758343082529",
+["banknote-x"] = "rbxassetid://95348701438065",
+["banknote"] = "rbxassetid://104840231536668",
+["barcode"] = "rbxassetid://118473018143689",
+["barrel"] = "rbxassetid://130647115622774",
+["baseline"] = "rbxassetid://124677132511270",
+["bath"] = "rbxassetid://76031400297942",
+["battery-charging"] = "rbxassetid://80139357470047",
+["battery-full"] = "rbxassetid://70906718268972",
+["battery-low"] = "rbxassetid://139659256984314",
+["battery-medium"] = "rbxassetid://105934079398915",
+["battery-plus"] = "rbxassetid://91931341486966",
+["battery-warning"] = "rbxassetid://115230083817257",
+["battery"] = "rbxassetid://70765800346189",
+["beaker"] = "rbxassetid://80902539995520",
+["bean-off"] = "rbxassetid://98164436608714",
+["bean"] = "rbxassetid://89491967076869",
+["bed-double"] = "rbxassetid://73820193212911",
+["bed-single"] = "rbxassetid://113423940880634",
+["bed"] = "rbxassetid://97726529032925",
+["beef"] = "rbxassetid://105850162318915",
+["beer-off"] = "rbxassetid://120333134736361",
+["beer"] = "rbxassetid://116404978807744",
+["bell-dot"] = "rbxassetid://93161277118810",
+["bell-electric"] = "rbxassetid://100277767266983",
+["bell-minus"] = "rbxassetid://126334890449727",
+["bell-off"] = "rbxassetid://78560046118930",
+["bell-plus"] = "rbxassetid://77014333795836",
+["bell-ring"] = "rbxassetid://94612128913941",
+["bell"] = "rbxassetid://97392696311902",
+["between-horizontal-end"] = "rbxassetid://81602774794322",
+["between-horizontal-start"] = "rbxassetid://76112384929846",
+["between-vertical-end"] = "rbxassetid://72817612571631",
+["between-vertical-start"] = "rbxassetid://85278312190301",
+["biceps-flexed"] = "rbxassetid://82004462003936",
+["bike"] = "rbxassetid://102930322246035",
+["binary"] = "rbxassetid://91751953950088",
+["binoculars"] = "rbxassetid://101460003267896",
+["biohazard"] = "rbxassetid://95956532900432",
+["bird"] = "rbxassetid://132284145117371",
+["birdhouse"] = "rbxassetid://83999157401433",
+["bitcoin"] = "rbxassetid://95459240442938",
+["blend"] = "rbxassetid://111679612185257",
+["blinds"] = "rbxassetid://71164165283925",
+["blocks"] = "rbxassetid://72212693357737",
+["bluetooth-connected"] = "rbxassetid://96315134002985",
+["bluetooth-off"] = "rbxassetid://80600044218117",
+["bluetooth-searching"] = "rbxassetid://100673019606426",
+["bluetooth"] = "rbxassetid://90506573139443",
+["bold"] = "rbxassetid://116141470019166",
+["bolt"] = "rbxassetid://102881251417484",
+["bomb"] = "rbxassetid://139223800924636",
+["bone"] = "rbxassetid://111242153474115",
+["book-a"] = "rbxassetid://104067275658465",
+["book-alert"] = "rbxassetid://124159928044853",
+["book-audio"] = "rbxassetid://109208148317037",
+["book-check"] = "rbxassetid://115999656081696",
+["book-copy"] = "rbxassetid://108543407492005",
+["book-dashed"] = "rbxassetid://127430784795958",
+["book-down"] = "rbxassetid://101011730128222",
+["book-headphones"] = "rbxassetid://108670200799574",
+["book-heart"] = "rbxassetid://112788845135284",
+["book-image"] = "rbxassetid://80808285757226",
+["book-key"] = "rbxassetid://116024426170705",
+["book-lock"] = "rbxassetid://118765061220571",
+["book-marked"] = "rbxassetid://73211024251780",
+["book-minus"] = "rbxassetid://112724962046282",
+["book-open-check"] = "rbxassetid://130848362492667",
+["book-open-text"] = "rbxassetid://100629528672195",
+["book-open"] = "rbxassetid://129845326810392",
+["book-plus"] = "rbxassetid://140267785051233",
+["book-text"] = "rbxassetid://94011772484232",
+["book-type"] = "rbxassetid://97817304725443",
+["book-up-2"] = "rbxassetid://130161620853665",
+["book-up"] = "rbxassetid://98640174079190",
+["book-user"] = "rbxassetid://128489189240523",
+["book-x"] = "rbxassetid://118754548186537",
+["book"] = "rbxassetid://125383279695672",
+["bookmark-check"] = "rbxassetid://93940443347986",
+["bookmark-minus"] = "rbxassetid://96807096039910",
+["bookmark-plus"] = "rbxassetid://121469724491615",
+["bookmark-x"] = "rbxassetid://112272342584706",
+["bookmark"] = "rbxassetid://121093149326239",
+["boom-box"] = "rbxassetid://99901322535868",
+["bot-message-square"] = "rbxassetid://96145330292478",
+["bot-off"] = "rbxassetid://140417690560013",
+["bot"] = "rbxassetid://80451686744860",
+["bottle-wine"] = "rbxassetid://131675403196921",
+["bow-arrow"] = "rbxassetid://124089655150375",
+["box"] = "rbxassetid://101768155599700",
+["boxes"] = "rbxassetid://136372617578355",
+["braces"] = "rbxassetid://117761094704041",
+["brackets"] = "rbxassetid://74368995728099",
+["brain-circuit"] = "rbxassetid://70547962410202",
+["brain-cog"] = "rbxassetid://132039205501538",
+["brain"] = "rbxassetid://92424107303177",
+["brick-wall-fire"] = "rbxassetid://92980588705520",
+["brick-wall-shield"] = "rbxassetid://75954432775071",
+["brick-wall"] = "rbxassetid://112878522258821",
+["briefcase-business"] = "rbxassetid://129135125207283",
+["briefcase-conveyor-belt"] = "rbxassetid://108665725653714",
+["briefcase-medical"] = "rbxassetid://119917756334087",
+["briefcase"] = "rbxassetid://96754188164225",
+["bring-to-front"] = "rbxassetid://132975903553748",
+["brush-cleaning"] = "rbxassetid://71728977448805",
+["brush"] = "rbxassetid://127035535799640",
+["bubbles"] = "rbxassetid://106183424168227",
+["bug-off"] = "rbxassetid://88020025049245",
+["bug-play"] = "rbxassetid://80107955888092",
+["bug"] = "rbxassetid://83626408925438",
+["building-2"] = "rbxassetid://77873775611951",
+["building"] = "rbxassetid://110616258983082",
+["bus-front"] = "rbxassetid://89863432456045",
+["bus"] = "rbxassetid://133798469717463",
+["cable-car"] = "rbxassetid://128643682205596",
+["cable"] = "rbxassetid://128449944504901",
+["cake-slice"] = "rbxassetid://136769828413242",
+["cake"] = "rbxassetid://103131590503275",
+["calculator"] = "rbxassetid://74915716529646",
+["calendar-1"] = "rbxassetid://98458364171044",
+["calendar-arrow-down"] = "rbxassetid://108415736543437",
+["calendar-arrow-up"] = "rbxassetid://70574654109118",
+["calendar-check-2"] = "rbxassetid://120231170248276",
+["calendar-check"] = "rbxassetid://71551019465748",
+["calendar-clock"] = "rbxassetid://119132152594595",
+["calendar-cog"] = "rbxassetid://122402172360287",
+["calendar-days"] = "rbxassetid://99072017568595",
+["calendar-fold"] = "rbxassetid://117368871270394",
+["calendar-heart"] = "rbxassetid://88839008103676",
+["calendar-minus-2"] = "rbxassetid://98846170279891",
+["calendar-minus"] = "rbxassetid://137354318924383",
+["calendar-off"] = "rbxassetid://109726151749217",
+["calendar-plus-2"] = "rbxassetid://112264562093883",
+["calendar-plus"] = "rbxassetid://125266115249843",
+["calendar-range"] = "rbxassetid://103641849247576",
+["calendar-search"] = "rbxassetid://92010083223634",
+["calendar-sync"] = "rbxassetid://78082218499697",
+["calendar-x-2"] = "rbxassetid://107518051061147",
+["calendar-x"] = "rbxassetid://106703374806500",
+["calendar"] = "rbxassetid://114792700814035",
+["camera-off"] = "rbxassetid://81057636835256",
+["camera"] = "rbxassetid://79950339943067",
+["candy-cane"] = "rbxassetid://71689468772492",
+["candy-off"] = "rbxassetid://110232752314832",
+["candy"] = "rbxassetid://107812129154678",
+["cannabis"] = "rbxassetid://98792006538601",
+["captions-off"] = "rbxassetid://105223545364193",
+["captions"] = "rbxassetid://104960225031445",
+["car-front"] = "rbxassetid://87380942739063",
+["car-taxi-front"] = "rbxassetid://122455403384057",
+["car"] = "rbxassetid://121065933462582",
+["caravan"] = "rbxassetid://120070979471783",
+["card-sim"] = "rbxassetid://134490550095771",
+["carrot"] = "rbxassetid://119118221444304",
+["case-lower"] = "rbxassetid://129303130603241",
+["case-sensitive"] = "rbxassetid://125410273293056",
+["case-upper"] = "rbxassetid://111633433531325",
+["cassette-tape"] = "rbxassetid://137065788934157",
+["cast"] = "rbxassetid://98202245922071",
+["castle"] = "rbxassetid://119275077187784",
+["cat"] = "rbxassetid://124252153404931",
+["cctv"] = "rbxassetid://99979894766624",
+["chart-area"] = "rbxassetid://123446436762366",
+["chart-bar-big"] = "rbxassetid://72336824986044",
+["chart-bar-decreasing"] = "rbxassetid://107217459044963",
+["chart-bar-increasing"] = "rbxassetid://88268905998571",
+["chart-bar-stacked"] = "rbxassetid://98478751113024",
+["chart-bar"] = "rbxassetid://105389816384108",
+["chart-candlestick"] = "rbxassetid://125676898615697",
+["chart-column-big"] = "rbxassetid://98598733210787",
+["chart-column-decreasing"] = "rbxassetid://73586137373563",
+["chart-column-increasing"] = "rbxassetid://120421615068601",
+["chart-column-stacked"] = "rbxassetid://86031449675105",
+["chart-column"] = "rbxassetid://97915995538580",
+["chart-gantt"] = "rbxassetid://88811660555940",
+["chart-line"] = "rbxassetid://101833156055618",
+["chart-network"] = "rbxassetid://104027882693561",
+["chart-no-axes-column-decreasing"] = "rbxassetid://123371717192542",
+["chart-no-axes-column-increasing"] = "rbxassetid://140383830943049",
+["chart-no-axes-column"] = "rbxassetid://94078751170351",
+["chart-no-axes-combined"] = "rbxassetid://121424233161912",
+["chart-no-axes-gantt"] = "rbxassetid://131936541106368",
+["chart-pie"] = "rbxassetid://113412261630136",
+["chart-scatter"] = "rbxassetid://108217585014571",
+["chart-spline"] = "rbxassetid://90307460742494",
+["check-check"] = "rbxassetid://95183312173858",
+["check-line"] = "rbxassetid://115122343485290",
+["check"] = "rbxassetid://93898873302694",
+["chef-hat"] = "rbxassetid://121744015002573",
+["cherry"] = "rbxassetid://139519182403183",
+["chess-bishop"] = "rbxassetid://121701705580238",
+["chess-king"] = "rbxassetid://90885687223462",
+["chess-knight"] = "rbxassetid://96467707042169",
+["chess-pawn"] = "rbxassetid://111318574652751",
+["chess-queen"] = "rbxassetid://98304702099749",
+["chess-rook"] = "rbxassetid://76223925830262",
+["chevron-down"] = "rbxassetid://134243273101015",
+["chevron-first"] = "rbxassetid://105243363790238",
+["chevron-last"] = "rbxassetid://89268452603731",
+["chevron-left"] = "rbxassetid://73780377692148",
+["chevron-right"] = "rbxassetid://92473583511724",
+["chevron-up"] = "rbxassetid://122444883127455",
+["chevrons-down-up"] = "rbxassetid://139404716013205",
+["chevrons-down"] = "rbxassetid://100524612205956",
+["chevrons-left-right-ellipsis"] = "rbxassetid://125035817741526",
+["chevrons-left-right"] = "rbxassetid://87910685945204",
+["chevrons-left"] = "rbxassetid://82617201744347",
+["chevrons-right-left"] = "rbxassetid://87149546686569",
+["chevrons-right"] = "rbxassetid://139121276490483",
+["chevrons-up-down"] = "rbxassetid://131833120209646",
+["chevrons-up"] = "rbxassetid://100463452364672",
+["chromium"] = "rbxassetid://128165143739006",
+["church"] = "rbxassetid://113714744350666",
+["cigarette-off"] = "rbxassetid://77797883078452",
+["circle-alert"] = "rbxassetid://83898160590116",
+["circle-arrow-down"] = "rbxassetid://95901860261344",
+["circle-arrow-left"] = "rbxassetid://102148876968988",
+["circle-arrow-out-down-left"] = "rbxassetid://140598097856694",
+["circle-arrow-out-down-right"] = "rbxassetid://119952801379305",
+["circle-arrow-out-up-left"] = "rbxassetid://132858212688303",
+["circle-arrow-out-up-right"] = "rbxassetid://81783743753173",
+["circle-arrow-right"] = "rbxassetid://70786767999559",
+["circle-arrow-up"] = "rbxassetid://84395128546494",
+["circle-check-big"] = "rbxassetid://93202927221730",
+["circle-check"] = "rbxassetid://85262178816537",
+["circle-chevron-down"] = "rbxassetid://137069490345718",
+["circle-chevron-left"] = "rbxassetid://130250009740827",
+["circle-chevron-right"] = "rbxassetid://125943696958495",
+["circle-chevron-up"] = "rbxassetid://111223574026321",
+["circle-dashed"] = "rbxassetid://126799443883746",
+["circle-divide"] = "rbxassetid://106398997754208",
+["circle-dollar-sign"] = "rbxassetid://91106238890387",
+["circle-dot-dashed"] = "rbxassetid://111451232827180",
+["circle-dot"] = "rbxassetid://82947033619201",
+["circle-ellipsis"] = "rbxassetid://91687150884779",
+["circle-equal"] = "rbxassetid://95133963751438",
+["circle-fading-arrow-up"] = "rbxassetid://104648212910336",
+["circle-fading-plus"] = "rbxassetid://91847890443490",
+["circle-gauge"] = "rbxassetid://108157549473765",
+["circle-minus"] = "rbxassetid://133556159576809",
+["circle-off"] = "rbxassetid://97923456918886",
+["circle-parking-off"] = "rbxassetid://128369410981252",
+["circle-parking"] = "rbxassetid://124034962915196",
+["circle-pause"] = "rbxassetid://139337739700879",
+["circle-percent"] = "rbxassetid://133311912860256",
+["circle-play"] = "rbxassetid://120408917249739",
+["circle-plus"] = "rbxassetid://113157136350384",
+["circle-pound-sterling"] = "rbxassetid://105476153083828",
+["circle-power"] = "rbxassetid://140676030155098",
+["circle-question-mark"] = "rbxassetid://97516698664325",
+["circle-slash-2"] = "rbxassetid://136766902186549",
+["circle-slash"] = "rbxassetid://125206439913049",
+["circle-small"] = "rbxassetid://73685402843600",
+["circle-star"] = "rbxassetid://120318414957104",
+["circle-stop"] = "rbxassetid://87400503942659",
+["circle-user-round"] = "rbxassetid://95489465399880",
+["circle-user"] = "rbxassetid://136220511671311",
+["circle-x"] = "rbxassetid://76821953846248",
+["circle"] = "rbxassetid://130359823580534",
+["circuit-board"] = "rbxassetid://107695264369312",
+["citrus"] = "rbxassetid://139018222976433",
+["clapperboard"] = "rbxassetid://132660667070200",
+["clipboard-check"] = "rbxassetid://92649798577170",
+["clipboard-clock"] = "rbxassetid://123957515687745",
+["clipboard-copy"] = "rbxassetid://125851897718493",
+["clipboard-list"] = "rbxassetid://96460215958908",
+["clipboard-minus"] = "rbxassetid://107968008485671",
+["clipboard-paste"] = "rbxassetid://74382068849983",
+["clipboard-pen-line"] = "rbxassetid://77711589791615",
+["clipboard-pen"] = "rbxassetid://75290966822953",
+["clipboard-plus"] = "rbxassetid://134285318675662",
+["clipboard-type"] = "rbxassetid://89949374318028",
+["clipboard-x"] = "rbxassetid://102222456890103",
+["clipboard"] = "rbxassetid://89601995828423",
+["clock-1"] = "rbxassetid://129363225422045",
+["clock-10"] = "rbxassetid://104332695855541",
+["clock-11"] = "rbxassetid://119023205186105",
+["clock-12"] = "rbxassetid://117789618723068",
+["clock-2"] = "rbxassetid://134710777209413",
+["clock-3"] = "rbxassetid://136385631189327",
+["clock-4"] = "rbxassetid://121808839832144",
+["clock-5"] = "rbxassetid://85082019959457",
+["clock-6"] = "rbxassetid://71009733505593",
+["clock-7"] = "rbxassetid://103111188546225",
+["clock-8"] = "rbxassetid://110059272125337",
+["clock-9"] = "rbxassetid://77610027126437",
+["clock-alert"] = "rbxassetid://97157344465162",
+["clock-arrow-down"] = "rbxassetid://92349314416042",
+["clock-arrow-up"] = "rbxassetid://111484286332629",
+["clock-check"] = "rbxassetid://85231630218857",
+["clock-fading"] = "rbxassetid://93205297285245",
+["clock-plus"] = "rbxassetid://93367709263150",
+["clock"] = "rbxassetid://121808839832144",
+["closed-caption"] = "rbxassetid://99832644030788",
+["cloud-alert"] = "rbxassetid://91967273658626",
+["cloud-check"] = "rbxassetid://97318598202432",
+["cloud-cog"] = "rbxassetid://96497764065749",
+["cloud-download"] = "rbxassetid://121435581993566",
+["cloud-drizzle"] = "rbxassetid://139525315752605",
+["cloud-fog"] = "rbxassetid://76650233148776",
+["cloud-hail"] = "rbxassetid://72320462748242",
+["cloud-lightning"] = "rbxassetid://133517088924849",
+["cloud-moon-rain"] = "rbxassetid://127667837827018",
+["cloud-moon"] = "rbxassetid://71938114737914",
+["cloud-off"] = "rbxassetid://131907154501444",
+["cloud-rain-wind"] = "rbxassetid://107414583736721",
+["cloud-rain"] = "rbxassetid://105547081967408",
+["cloud-snow"] = "rbxassetid://72307126270226",
+["cloud-sun-rain"] = "rbxassetid://99041604425705",
+["cloud-sun"] = "rbxassetid://86114208148727",
+["cloud-upload"] = "rbxassetid://93307473217005",
+["cloud"] = "rbxassetid://121226497050352",
+["cloudy"] = "rbxassetid://105360479023346",
+["clover"] = "rbxassetid://74925550436750",
+["club"] = "rbxassetid://108490365816628",
+["code-xml"] = "rbxassetid://130150477351734",
+["code"] = "rbxassetid://107380207681249",
+["codepen"] = "rbxassetid://135643965971885",
+["codesandbox"] = "rbxassetid://106911852964823",
+["coffee"] = "rbxassetid://106864403231093",
+["cog"] = "rbxassetid://116544501716299",
+["coins"] = "rbxassetid://116510979641930",
+["columns-2"] = "rbxassetid://113004100221850",
+["columns-3-cog"] = "rbxassetid://121589691981064",
+["columns-3"] = "rbxassetid://115223357399375",
+["columns-4"] = "rbxassetid://130807991968419",
+["combine"] = "rbxassetid://79908476334048",
+["command"] = "rbxassetid://93648221906330",
+["compass"] = "rbxassetid://115123411028382",
+["component"] = "rbxassetid://110027788875080",
+["computer"] = "rbxassetid://77480056459407",
+["concierge-bell"] = "rbxassetid://140384259310436",
+["cone"] = "rbxassetid://97759550688437",
+["construction"] = "rbxassetid://106539489968173",
+["contact-round"] = "rbxassetid://71907624112229",
+["contact"] = "rbxassetid://75868297719012",
+["container"] = "rbxassetid://91507237573499",
+["contrast"] = "rbxassetid://112796643981497",
+["cookie"] = "rbxassetid://73159504540002",
+["cooking-pot"] = "rbxassetid://94959783129799",
+["copy-check"] = "rbxassetid://91177247988892",
+["copy-minus"] = "rbxassetid://109524509933035",
+["copy-plus"] = "rbxassetid://113618379616952",
+["copy-slash"] = "rbxassetid://93805787810390",
+["copy-x"] = "rbxassetid://106557557978061",
+["copy"] = "rbxassetid://78979572434545",
+["copyleft"] = "rbxassetid://78559055698593",
+["copyright"] = "rbxassetid://129433635747111",
+["corner-down-left"] = "rbxassetid://90473561177832",
+["corner-down-right"] = "rbxassetid://86512767702085",
+["corner-left-down"] = "rbxassetid://139876989150630",
+["corner-left-up"] = "rbxassetid://126228268096099",
+["corner-right-down"] = "rbxassetid://89237035551302",
+["corner-right-up"] = "rbxassetid://112851237026705",
+["corner-up-left"] = "rbxassetid://84669279763024",
+["corner-up-right"] = "rbxassetid://115099889693145",
+["cpu"] = "rbxassetid://77549309870247",
+["creative-commons"] = "rbxassetid://90408210735312",
+["credit-card"] = "rbxassetid://99163352872346",
+["croissant"] = "rbxassetid://130710485559420",
+["crop"] = "rbxassetid://116344601101413",
+["cross"] = "rbxassetid://101833377863588",
+["crosshair"] = "rbxassetid://134242818164054",
+["crown"] = "rbxassetid://127843403295538",
+["cuboid"] = "rbxassetid://75618807946111",
+["cup-soda"] = "rbxassetid://121098640829562",
+["currency"] = "rbxassetid://90551250119972",
+["cylinder"] = "rbxassetid://90569677179169",
+["dam"] = "rbxassetid://76874486231393",
+["database-backup"] = "rbxassetid://103403210984699",
+["database-zap"] = "rbxassetid://131199921258418",
+["database"] = "rbxassetid://126791525623846",
+["decimals-arrow-left"] = "rbxassetid://120198500638749",
+["decimals-arrow-right"] = "rbxassetid://118263047146797",
+["delete"] = "rbxassetid://126279426372342",
+["dessert"] = "rbxassetid://71508133278830",
+["diameter"] = "rbxassetid://97429051503783",
+["diamond-minus"] = "rbxassetid://128989071438290",
+["diamond-percent"] = "rbxassetid://107717860105959",
+["diamond-plus"] = "rbxassetid://134701163723675",
+["diamond"] = "rbxassetid://105846996304890",
+["dice-1"] = "rbxassetid://112650149591038",
+["dice-2"] = "rbxassetid://112278274566793",
+["dice-3"] = "rbxassetid://118526270626312",
+["dice-4"] = "rbxassetid://113365650364004",
+["dice-5"] = "rbxassetid://72768312430593",
+["dice-6"] = "rbxassetid://85376239182543",
+["dices"] = "rbxassetid://81268120302865",
+["diff"] = "rbxassetid://135052708609715",
+["disc-2"] = "rbxassetid://91419420404185",
+["disc-3"] = "rbxassetid://135470554736048",
+["disc-album"] = "rbxassetid://74693460404344",
+["disc"] = "rbxassetid://101908120120777",
+["divide"] = "rbxassetid://136678191878278",
+["dna-off"] = "rbxassetid://89612426361540",
+["dna"] = "rbxassetid://74007982981741",
+["dock"] = "rbxassetid://121997427160252",
+["dog"] = "rbxassetid://71920105558570",
+["dollar-sign"] = "rbxassetid://127320961224019",
+["donut"] = "rbxassetid://72204922742657",
+["door-closed-locked"] = "rbxassetid://74027613267551",
+["door-closed"] = "rbxassetid://136249099949073",
+["door-open"] = "rbxassetid://91306356501736",
+["dot"] = "rbxassetid://137321056643916",
+["download"] = "rbxassetid://134814648082393",
+["drafting-compass"] = "rbxassetid://99701976182841",
+["drama"] = "rbxassetid://110297795801577",
+["dribbble"] = "rbxassetid://80231809663849",
+["drill"] = "rbxassetid://108644821412796",
+["drone"] = "rbxassetid://117299095794783",
+["droplet-off"] = "rbxassetid://119365002225172",
+["droplet"] = "rbxassetid://100597455015098",
+["droplets"] = "rbxassetid://140111846025180",
+["drum"] = "rbxassetid://136979060344890",
+["drumstick"] = "rbxassetid://104662462521709",
+["dumbbell"] = "rbxassetid://80277236776212",
+["ear-off"] = "rbxassetid://87421916192807",
+["ear"] = "rbxassetid://121894949934209",
+["earth-lock"] = "rbxassetid://88814147073745",
+["earth"] = "rbxassetid://76231597751076",
+["eclipse"] = "rbxassetid://114829622118222",
+["egg-fried"] = "rbxassetid://90622538210545",
+["egg-off"] = "rbxassetid://92288321309285",
+["egg"] = "rbxassetid://117851493400222",
+["ellipsis-vertical"] = "rbxassetid://117978708573781",
+["ellipsis"] = "rbxassetid://140019550645825",
+["equal-approximately"] = "rbxassetid://105382689698323",
+["equal-not"] = "rbxassetid://76864449458032",
+["equal"] = "rbxassetid://123467780715624",
+["eraser"] = "rbxassetid://133957773112410",
+["ethernet-port"] = "rbxassetid://75391715149314",
+["euro"] = "rbxassetid://72229646524456",
+["ev-charger"] = "rbxassetid://97906158859623",
+["expand"] = "rbxassetid://137492887754537",
+["external-link"] = "rbxassetid://129331830773832",
+["eye-closed"] = "rbxassetid://111063268625789",
+["eye-off"] = "rbxassetid://135928786788378",
+["eye"] = "rbxassetid://100033680381365",
+["facebook"] = "rbxassetid://72098528632192",
+["factory"] = "rbxassetid://102170024318039",
+["fan"] = "rbxassetid://78391400440696",
+["fast-forward"] = "rbxassetid://121615540167909",
+["feather"] = "rbxassetid://91872927606406",
+["fence"] = "rbxassetid://123451565578029",
+["ferris-wheel"] = "rbxassetid://79729205796176",
+["figma"] = "rbxassetid://134182122852301",
+["file-archive"] = "rbxassetid://77018106869967",
+["file-axis-3d"] = "rbxassetid://133912328009885",
+["file-badge"] = "rbxassetid://74564895394477",
+["file-box"] = "rbxassetid://119264004071690",
+["file-braces-corner"] = "rbxassetid://77253337986109",
+["file-braces"] = "rbxassetid://95314128621234",
+["file-chart-column-increasing"] = "rbxassetid://134449481172067",
+["file-chart-column"] = "rbxassetid://82048481252560",
+["file-chart-line"] = "rbxassetid://71954360551345",
+["file-chart-pie"] = "rbxassetid://81072193564497",
+["file-check-corner"] = "rbxassetid://76295552859171",
+["file-check"] = "rbxassetid://82604001452455",
+["file-clock"] = "rbxassetid://102325208830990",
+["file-code-corner"] = "rbxassetid://78293841184371",
+["file-code"] = "rbxassetid://130978036895504",
+["file-cog"] = "rbxassetid://101385347151368",
+["file-diff"] = "rbxassetid://96147216772241",
+["file-digit"] = "rbxassetid://89220220354580",
+["file-down"] = "rbxassetid://120650154178290",
+["file-exclamation-point"] = "rbxassetid://102821865889635",
+["file-headphone"] = "rbxassetid://100533735901986",
+["file-heart"] = "rbxassetid://132214916401696",
+["file-image"] = "rbxassetid://123334057511782",
+["file-input"] = "rbxassetid://124728604166044",
+["file-key"] = "rbxassetid://118790255921100",
+["file-lock"] = "rbxassetid://72170228691242",
+["file-minus-corner"] = "rbxassetid://119263271735124",
+["file-minus"] = "rbxassetid://111014798459222",
+["file-music"] = "rbxassetid://134948051536671",
+["file-output"] = "rbxassetid://92146832572911",
+["file-pen-line"] = "rbxassetid://104622936345006",
+["file-pen"] = "rbxassetid://79556179730240",
+["file-play"] = "rbxassetid://89006821567838",
+["file-plus-corner"] = "rbxassetid://76544604043974",
+["file-plus"] = "rbxassetid://78881710800060",
+["file-question-mark"] = "rbxassetid://127617422859576",
+["file-scan"] = "rbxassetid://129480105228213",
+["file-search-corner"] = "rbxassetid://90974165234008",
+["file-search"] = "rbxassetid://97780235974933",
+["file-signal"] = "rbxassetid://122070252538165",
+["file-sliders"] = "rbxassetid://85787771732439",
+["file-spreadsheet"] = "rbxassetid://134501869359270",
+["file-stack"] = "rbxassetid://138929929862605",
+["file-symlink"] = "rbxassetid://91865722036510",
+["file-terminal"] = "rbxassetid://116757454755476",
+["file-text"] = "rbxassetid://90496405707281",
+["file-type-corner"] = "rbxassetid://124902230275209",
+["file-type"] = "rbxassetid://115272552799361",
+["file-up"] = "rbxassetid://131173039312748",
+["file-user"] = "rbxassetid://99552018455009",
+["file-video-camera"] = "rbxassetid://81719056173960",
+["file-volume"] = "rbxassetid://111264764438958",
+["file-x-corner"] = "rbxassetid://87554136773609",
+["file-x"] = "rbxassetid://107333775515154",
+["file"] = "rbxassetid://74748492079329",
+["files"] = "rbxassetid://102806336233202",
+["film"] = "rbxassetid://120978945609706",
+["fingerprint"] = "rbxassetid://112173305232811",
+["fire-extinguisher"] = "rbxassetid://111643493006960",
+["fish-off"] = "rbxassetid://89756724887508",
+["fish-symbol"] = "rbxassetid://118475177681618",
+["fish"] = "rbxassetid://124360663785796",
+["flag-off"] = "rbxassetid://112944528856799",
+["flag-triangle-left"] = "rbxassetid://88045221285272",
+["flag-triangle-right"] = "rbxassetid://108292480304566",
+["flag"] = "rbxassetid://78183383236196",
+["flame-kindling"] = "rbxassetid://139728976917928",
+["flame"] = "rbxassetid://98218034436456",
+["flashlight-off"] = "rbxassetid://79780362871740",
+["flashlight"] = "rbxassetid://100286985600444",
+["flask-conical-off"] = "rbxassetid://112597970025298",
+["flask-conical"] = "rbxassetid://128406680901165",
+["flask-round"] = "rbxassetid://127508287324940",
+["flip-horizontal-2"] = "rbxassetid://103726993598186",
+["flip-horizontal"] = "rbxassetid://122937530107837",
+["flip-vertical-2"] = "rbxassetid://103836358956328",
+["flip-vertical"] = "rbxassetid://108003917346888",
+["flower-2"] = "rbxassetid://72934574245145",
+["flower"] = "rbxassetid://86129438272762",
+["focus"] = "rbxassetid://87493973153317",
+["fold-horizontal"] = "rbxassetid://92835712442240",
+["fold-vertical"] = "rbxassetid://108873727253656",
+["folder-archive"] = "rbxassetid://97312009460206",
+["folder-check"] = "rbxassetid://128492920904557",
+["folder-clock"] = "rbxassetid://111964836738545",
+["folder-closed"] = "rbxassetid://118286209350843",
+["folder-code"] = "rbxassetid://70624096349370",
+["folder-cog"] = "rbxassetid://85299519462846",
+["folder-dot"] = "rbxassetid://138687772725278",
+["folder-down"] = "rbxassetid://118044108459225",
+["folder-git-2"] = "rbxassetid://101394054141166",
+["folder-git"] = "rbxassetid://121885778095158",
+["folder-heart"] = "rbxassetid://79104747211105",
+["folder-input"] = "rbxassetid://90699920697871",
+["folder-kanban"] = "rbxassetid://78313285104072",
+["folder-key"] = "rbxassetid://85270407596791",
+["folder-lock"] = "rbxassetid://119201572260567",
+["folder-minus"] = "rbxassetid://85648718999010",
+["folder-open-dot"] = "rbxassetid://74741494767354",
+["folder-open"] = "rbxassetid://76018996254888",
+["folder-output"] = "rbxassetid://101532447937612",
+["folder-pen"] = "rbxassetid://112770491173911",
+["folder-plus"] = "rbxassetid://91865663406119",
+["folder-root"] = "rbxassetid://103333751154693",
+["folder-search-2"] = "rbxassetid://71276453442655",
+["folder-search"] = "rbxassetid://110568075123861",
+["folder-symlink"] = "rbxassetid://127485747227189",
+["folder-sync"] = "rbxassetid://91544602659796",
+["folder-tree"] = "rbxassetid://85577554337861",
+["folder-up"] = "rbxassetid://72008269765857",
+["folder-x"] = "rbxassetid://91699618247635",
+["folder"] = "rbxassetid://80846616596607",
+["folders"] = "rbxassetid://110351216219061",
+["footprints"] = "rbxassetid://139192589041315",
+["forklift"] = "rbxassetid://72030930983101",
+["forward"] = "rbxassetid://97545944739523",
+["frame"] = "rbxassetid://109080612832751",
+["framer"] = "rbxassetid://108384807262391",
+["frown"] = "rbxassetid://124407301067982",
+["fuel"] = "rbxassetid://106447647274511",
+["fullscreen"] = "rbxassetid://77793665526178",
+["funnel-plus"] = "rbxassetid://100780233821928",
+["funnel-x"] = "rbxassetid://70984385812555",
+["funnel"] = "rbxassetid://108829540827529",
+["gallery-horizontal-end"] = "rbxassetid://74672430161161",
+["gallery-horizontal"] = "rbxassetid://80004001442122",
+["gallery-thumbnails"] = "rbxassetid://136219289862706",
+["gallery-vertical-end"] = "rbxassetid://106461402088317",
+["gallery-vertical"] = "rbxassetid://119299431466725",
+["gamepad-2"] = "rbxassetid://92483947987410",
+["gamepad-directional"] = "rbxassetid://84342305212226",
+["gamepad"] = "rbxassetid://121607283959010",
+["gauge"] = "rbxassetid://110273524101447",
+["gavel"] = "rbxassetid://78952298198456",
+["gem"] = "rbxassetid://112904952151156",
+["georgian-lari"] = "rbxassetid://98084432591687",
+["ghost"] = "rbxassetid://113822048130017",
+["gift"] = "rbxassetid://109855212076373",
+["git-branch-minus"] = "rbxassetid://97385010649411",
+["git-branch-plus"] = "rbxassetid://125944221134316",
+["git-branch"] = "rbxassetid://90490195516649",
+["git-commit-horizontal"] = "rbxassetid://133646041800147",
+["git-commit-vertical"] = "rbxassetid://122098032990350",
+["git-compare-arrows"] = "rbxassetid://84874426520216",
+["git-compare"] = "rbxassetid://91945124438792",
+["git-fork"] = "rbxassetid://89954992404765",
+["git-graph"] = "rbxassetid://86166832019304",
+["git-merge"] = "rbxassetid://131833355158059",
+["git-pull-request-arrow"] = "rbxassetid://94507974577439",
+["git-pull-request-closed"] = "rbxassetid://78070600389091",
+["git-pull-request-create-arrow"] = "rbxassetid://127422677061091",
+["git-pull-request-create"] = "rbxassetid://105929577383926",
+["git-pull-request-draft"] = "rbxassetid://76173459869943",
+["git-pull-request"] = "rbxassetid://138463010991471",
+["github"] = "rbxassetid://120349554354380",
+["gitlab"] = "rbxassetid://114054627192933",
+["glass-water"] = "rbxassetid://115526102400988",
+["glasses"] = "rbxassetid://87936407455373",
+["globe-lock"] = "rbxassetid://134065526704402",
+["globe"] = "rbxassetid://114238209622913",
+["goal"] = "rbxassetid://120517954878160",
+["gpu"] = "rbxassetid://95577823614219",
+["graduation-cap"] = "rbxassetid://93771896340220",
+["grape"] = "rbxassetid://134760640415561",
+["grid-2x2-check"] = "rbxassetid://138468840220821",
+["grid-2x2-plus"] = "rbxassetid://91811610580247",
+["grid-2x2-x"] = "rbxassetid://72407303981388",
+["grid-2x2"] = "rbxassetid://99050491897640",
+["grid-3x2"] = "rbxassetid://95528684210010",
+["grid-3x3"] = "rbxassetid://70419024781206",
+["grip-horizontal"] = "rbxassetid://136255899715930",
+["grip-vertical"] = "rbxassetid://137183678565296",
+["grip"] = "rbxassetid://109058783556768",
+["group"] = "rbxassetid://107643418926671",
+["guitar"] = "rbxassetid://75915531867926",
+["ham"] = "rbxassetid://74465607934635",
+["hamburger"] = "rbxassetid://93086916815495",
+["hammer"] = "rbxassetid://83545120140895",
+["hand-coins"] = "rbxassetid://126990543175462",
+["hand-fist"] = "rbxassetid://83341608917591",
+["hand-grab"] = "rbxassetid://88867162163985",
+["hand-heart"] = "rbxassetid://117507367668412",
+["hand-helping"] = "rbxassetid://89897738419446",
+["hand-metal"] = "rbxassetid://113619498548713",
+["hand-platter"] = "rbxassetid://88594727743168",
+["hand"] = "rbxassetid://130703864968637",
+["handbag"] = "rbxassetid://135675846264061",
+["handshake"] = "rbxassetid://78442115255814",
+["hard-drive-download"] = "rbxassetid://73913801230614",
+["hard-drive-upload"] = "rbxassetid://85762133615118",
+["hard-drive"] = "rbxassetid://88183305858463",
+["hard-hat"] = "rbxassetid://128050846767382",
+["hash"] = "rbxassetid://82890331678520",
+["hat-glasses"] = "rbxassetid://101165538224815",
+["haze"] = "rbxassetid://108857561768901",
+["hdmi-port"] = "rbxassetid://103693661037020",
+["heading-1"] = "rbxassetid://118129315662110",
+["heading-2"] = "rbxassetid://110209069670094",
+["heading-3"] = "rbxassetid://90267885237062",
+["heading-4"] = "rbxassetid://129625620307602",
+["heading-5"] = "rbxassetid://120386663181267",
+["heading-6"] = "rbxassetid://90959079775093",
+["heading"] = "rbxassetid://129254312067735",
+["headphone-off"] = "rbxassetid://85038251615641",
+["headphones"] = "rbxassetid://118833729589183",
+["headset"] = "rbxassetid://129269236787694",
+["heart-crack"] = "rbxassetid://110987638564119",
+["heart-handshake"] = "rbxassetid://111483078692002",
+["heart-minus"] = "rbxassetid://96827380163326",
+["heart-off"] = "rbxassetid://89748414415617",
+["heart-plus"] = "rbxassetid://94877796283249",
+["heart-pulse"] = "rbxassetid://129352925579546",
+["heart"] = "rbxassetid://116559368303288",
+["heater"] = "rbxassetid://140478466880916",
+["helicopter"] = "rbxassetid://111557171735930",
+["hexagon"] = "rbxassetid://127592089339199",
+["highlighter"] = "rbxassetid://77411555641113",
+["history"] = "rbxassetid://123980022019922",
+["hop-off"] = "rbxassetid://103386036934034",
+["hop"] = "rbxassetid://82778923997672",
+["hospital"] = "rbxassetid://105868763850707",
+["hotel"] = "rbxassetid://132283390859718",
+["hourglass"] = "rbxassetid://86160434939203",
+["house-heart"] = "rbxassetid://136054771868597",
+["house-plug"] = "rbxassetid://71438263712075",
+["house-plus"] = "rbxassetid://118495165208309",
+["house-wifi"] = "rbxassetid://126495519725698",
+["house"] = "rbxassetid://98755624629571",
+["ice-cream-bowl"] = "rbxassetid://124867218454386",
+["ice-cream-cone"] = "rbxassetid://90751397288639",
+["id-card-lanyard"] = "rbxassetid://90761480469224",
+["id-card"] = "rbxassetid://75354294622640",
+["image-down"] = "rbxassetid://78972295741235",
+["image-minus"] = "rbxassetid://101066016918565",
+["image-off"] = "rbxassetid://81934811700938",
+["image-play"] = "rbxassetid://129501806784210",
+["image-plus"] = "rbxassetid://70391970623917",
+["image-up"] = "rbxassetid://126610009605241",
+["image-upscale"] = "rbxassetid://106963545024679",
+["images"] = "rbxassetid://79350649395557",
+["import"] = "rbxassetid://116545008906029",
+["inbox"] = "rbxassetid://112591360302868",
+["indian-rupee"] = "rbxassetid://113038778381805",
+["infinity"] = "rbxassetid://98083086936965",
+["info"] = "rbxassetid://124560466474914",
+["inspection-panel"] = "rbxassetid://70905313146088",
+["instagram"] = "rbxassetid://119864798614855",
+["italic"] = "rbxassetid://96220378864282",
+["iteration-ccw"] = "rbxassetid://140221832794083",
+["iteration-cw"] = "rbxassetid://95534489554662",
+["japanese-yen"] = "rbxassetid://106362863465813",
+["joystick"] = "rbxassetid://99416790224739",
+["kanban"] = "rbxassetid://125934100055431",
+["kayak"] = "rbxassetid://136107544609389",
+["key-round"] = "rbxassetid://83619031955390",
+["key-square"] = "rbxassetid://94621420033649",
+["key"] = "rbxassetid://96510194465420",
+["keyboard-music"] = "rbxassetid://121058541758636",
+["keyboard-off"] = "rbxassetid://92466375369772",
+["keyboard"] = "rbxassetid://121474456068237",
+["lamp-ceiling"] = "rbxassetid://80032758469141",
+["lamp-desk"] = "rbxassetid://85290686983238",
+["lamp-floor"] = "rbxassetid://104585881375892",
+["lamp-wall-down"] = "rbxassetid://91271394132073",
+["lamp-wall-up"] = "rbxassetid://132141464337445",
+["lamp"] = "rbxassetid://110730830653382",
+["land-plot"] = "rbxassetid://96449039620294",
+["landmark"] = "rbxassetid://76885079756393",
+["languages"] = "rbxassetid://90816903776498",
+["laptop-minimal-check"] = "rbxassetid://114352019833865",
+["laptop-minimal"] = "rbxassetid://136705765566068",
+["laptop"] = "rbxassetid://111387063244975",
+["lasso-select"] = "rbxassetid://105609719912753",
+["lasso"] = "rbxassetid://121072936884007",
+["laugh"] = "rbxassetid://104491311361166",
+["layers-2"] = "rbxassetid://70536710516357",
+["layers"] = "rbxassetid://81973586053257",
+["layout-dashboard"] = "rbxassetid://139929981863901",
+["layout-grid"] = "rbxassetid://81344910161871",
+["layout-list"] = "rbxassetid://87462136296578",
+["layout-panel-left"] = "rbxassetid://125092469751491",
+["layout-panel-top"] = "rbxassetid://91943941515944",
+["layout-template"] = "rbxassetid://115564446417985",
+["leaf"] = "rbxassetid://119951075637174",
+["leafy-green"] = "rbxassetid://105146290493154",
+["lectern"] = "rbxassetid://106166425183862",
+["library-big"] = "rbxassetid://106794530191412",
+["library"] = "rbxassetid://114334671982047",
+["life-buoy"] = "rbxassetid://81168450671956",
+["ligature"] = "rbxassetid://111397873269411",
+["lightbulb-off"] = "rbxassetid://83795722296178",
+["lightbulb"] = "rbxassetid://103871245626488",
+["line-squiggle"] = "rbxassetid://109555164424447",
+["link-2-off"] = "rbxassetid://76885956296867",
+["link-2"] = "rbxassetid://86072351557466",
+["link"] = "rbxassetid://131607023382430",
+["linkedin"] = "rbxassetid://132842789255788",
+["list-check"] = "rbxassetid://72374358471156",
+["list-checks"] = "rbxassetid://99809353635593",
+["list-chevrons-down-up"] = "rbxassetid://137409641500711",
+["list-chevrons-up-down"] = "rbxassetid://81825351389084",
+["list-collapse"] = "rbxassetid://124505247702401",
+["list-end"] = "rbxassetid://77650610048119",
+["list-filter-plus"] = "rbxassetid://96385120752336",
+["list-filter"] = "rbxassetid://103321376129527",
+["list-indent-decrease"] = "rbxassetid://137879979228193",
+["list-indent-increase"] = "rbxassetid://79051053161201",
+["list-minus"] = "rbxassetid://138507965142671",
+["list-music"] = "rbxassetid://126380635781840",
+["list-ordered"] = "rbxassetid://83212528113913",
+["list-plus"] = "rbxassetid://112384738137814",
+["list-restart"] = "rbxassetid://91703153577421",
+["list-start"] = "rbxassetid://84828348299727",
+["list-todo"] = "rbxassetid://132980603752108",
+["list-tree"] = "rbxassetid://97685396239010",
+["list-video"] = "rbxassetid://93648525452489",
+["list-x"] = "rbxassetid://113025303988861",
+["list"] = "rbxassetid://113179976918783",
+["loader-circle"] = "rbxassetid://116535712789945",
+["loader-pinwheel"] = "rbxassetid://108513357940900",
+["loader"] = "rbxassetid://78408734580845",
+["locate-fixed"] = "rbxassetid://137367361548433",
+["locate-off"] = "rbxassetid://73729216338137",
+["locate"] = "rbxassetid://84467676590391",
+["lock-keyhole-open"] = "rbxassetid://110863509313073",
+["lock-keyhole"] = "rbxassetid://78672912777756",
+["lock-open"] = "rbxassetid://93597915325122",
+["lock"] = "rbxassetid://134724289526879",
+["log-in"] = "rbxassetid://103768533135201",
+["log-out"] = "rbxassetid://84895399304975",
+["logs"] = "rbxassetid://89772091251787",
+["lollipop"] = "rbxassetid://84681611583044",
+["luggage"] = "rbxassetid://76619236486400",
+["magnet"] = "rbxassetid://135162361226972",
+["mail-check"] = "rbxassetid://86921536259917",
+["mail-minus"] = "rbxassetid://81989813236553",
+["mail-open"] = "rbxassetid://122785416858638",
+["mail-plus"] = "rbxassetid://104886401588341",
+["mail-question-mark"] = "rbxassetid://126540170949819",
+["mail-search"] = "rbxassetid://135616173775287",
+["mail-warning"] = "rbxassetid://81495303676089",
+["mail-x"] = "rbxassetid://74607841705644",
+["mail"] = "rbxassetid://103945161245599",
+["mailbox"] = "rbxassetid://82765503320335",
+["mails"] = "rbxassetid://90673453450080",
+["map-minus"] = "rbxassetid://129525760577747",
+["map-pin-check-inside"] = "rbxassetid://107130529843809",
+["map-pin-check"] = "rbxassetid://118110914690154",
+["map-pin-house"] = "rbxassetid://80546885029816",
+["map-pin-minus-inside"] = "rbxassetid://79005529692964",
+["map-pin-minus"] = "rbxassetid://74518762643623",
+["map-pin-off"] = "rbxassetid://82474689391020",
+["map-pin-pen"] = "rbxassetid://113515395277504",
+["map-pin-plus-inside"] = "rbxassetid://134639656514430",
+["map-pin-plus"] = "rbxassetid://91875228967029",
+["map-pin-x-inside"] = "rbxassetid://126235934252379",
+["map-pin-x"] = "rbxassetid://101085273547316",
+["map-pin"] = "rbxassetid://84279202219901",
+["map-pinned"] = "rbxassetid://103963788475034",
+["map-plus"] = "rbxassetid://129388826743495",
+["map"] = "rbxassetid://95107167260947",
+["mars-stroke"] = "rbxassetid://131973193186828",
+["mars"] = "rbxassetid://111287112372511",
+["martini"] = "rbxassetid://82977695401058",
+["maximize-2"] = "rbxassetid://73085922906397",
+["maximize"] = "rbxassetid://76045941763188",
+["medal"] = "rbxassetid://79016002264450",
+["megaphone-off"] = "rbxassetid://124280774193935",
+["megaphone"] = "rbxassetid://118759541854879",
+["meh"] = "rbxassetid://132197867028557",
+["memory-stick"] = "rbxassetid://93212591343119",
+["menu"] = "rbxassetid://77021539815611",
+["merge"] = "rbxassetid://126201866476775",
+["message-circle-code"] = "rbxassetid://112865244991651",
+["message-circle-dashed"] = "rbxassetid://81525157881897",
+["message-circle-heart"] = "rbxassetid://101990756073677",
+["message-circle-more"] = "rbxassetid://92856823884663",
+["message-circle-off"] = "rbxassetid://134955643890328",
+["message-circle-plus"] = "rbxassetid://106562979649273",
+["message-circle-question-mark"] = "rbxassetid://107700302759934",
+["message-circle-reply"] = "rbxassetid://137071749508334",
+["message-circle-warning"] = "rbxassetid://119020096067894",
+["message-circle-x"] = "rbxassetid://126843387725536",
+["message-circle"] = "rbxassetid://127255077587058",
+["message-square-code"] = "rbxassetid://110968863152123",
+["message-square-dashed"] = "rbxassetid://107653455516238",
+["message-square-diff"] = "rbxassetid://75472190472625",
+["message-square-dot"] = "rbxassetid://127806382463916",
+["message-square-heart"] = "rbxassetid://75612811742074",
+["message-square-lock"] = "rbxassetid://81268215619563",
+["message-square-more"] = "rbxassetid://120139782405970",
+["message-square-off"] = "rbxassetid://99961019005789",
+["message-square-plus"] = "rbxassetid://76934450256199",
+["message-square-quote"] = "rbxassetid://116670768629340",
+["message-square-reply"] = "rbxassetid://130985622754637",
+["message-square-share"] = "rbxassetid://131017005324026",
+["message-square-text"] = "rbxassetid://94899503194205",
+["message-square-warning"] = "rbxassetid://138432903962261",
+["message-square-x"] = "rbxassetid://137285463279462",
+["message-square"] = "rbxassetid://83881670383280",
+["messages-square"] = "rbxassetid://97532166733358",
+["mic-off"] = "rbxassetid://82123034444822",
+["mic-vocal"] = "rbxassetid://99082286164362",
+["mic"] = "rbxassetid://89640799126523",
+["microchip"] = "rbxassetid://73937907669903",
+["microscope"] = "rbxassetid://116875530102782",
+["microwave"] = "rbxassetid://108411735353008",
+["milestone"] = "rbxassetid://101618292325920",
+["milk-off"] = "rbxassetid://72388480962742",
+["milk"] = "rbxassetid://96221903896918",
+["minimize-2"] = "rbxassetid://116269596042539",
+["minimize"] = "rbxassetid://121304296213645",
+["minus"] = "rbxassetid://118026365011536",
+["monitor-check"] = "rbxassetid://86651948439229",
+["monitor-cloud"] = "rbxassetid://85931096038318",
+["monitor-cog"] = "rbxassetid://94345128715799",
+["monitor-dot"] = "rbxassetid://130394010063680",
+["monitor-down"] = "rbxassetid://97466933743423",
+["monitor-off"] = "rbxassetid://74395526657953",
+["monitor-pause"] = "rbxassetid://76002184067562",
+["monitor-play"] = "rbxassetid://133018824306217",
+["monitor-smartphone"] = "rbxassetid://84335680433378",
+["monitor-speaker"] = "rbxassetid://81744810060380",
+["monitor-stop"] = "rbxassetid://98708958984757",
+["monitor-up"] = "rbxassetid://96035360858377",
+["monitor-x"] = "rbxassetid://126265210441423",
+["monitor"] = "rbxassetid://72664649203050",
+["moon-star"] = "rbxassetid://82782200506348",
+["moon"] = "rbxassetid://83380517901735",
+["motorbike"] = "rbxassetid://94580787368233",
+["mountain-snow"] = "rbxassetid://105315495740588",
+["mountain"] = "rbxassetid://73269957566415",
+["mouse-off"] = "rbxassetid://75267871697595",
+["mouse-pointer-2-off"] = "rbxassetid://104701076865632",
+["mouse-pointer-2"] = "rbxassetid://117093892862228",
+["mouse-pointer-ban"] = "rbxassetid://106849413057133",
+["mouse-pointer-click"] = "rbxassetid://107150227368485",
+["mouse-pointer"] = "rbxassetid://72322454962935",
+["mouse"] = "rbxassetid://73096068864710",
+["move-3d"] = "rbxassetid://103365982054003",
+["move-diagonal-2"] = "rbxassetid://117298577948096",
+["move-diagonal"] = "rbxassetid://101433481954184",
+["move-down-left"] = "rbxassetid://102819433534567",
+["move-down-right"] = "rbxassetid://101479760041877",
+["move-down"] = "rbxassetid://70510115135583",
+["move-horizontal"] = "rbxassetid://88513523439149",
+["move-left"] = "rbxassetid://137614740247980",
+["move-right"] = "rbxassetid://132455779472989",
+["move-up-left"] = "rbxassetid://139079815540148",
+["move-up-right"] = "rbxassetid://105885140592646",
+["move-up"] = "rbxassetid://84505444262658",
+["move-vertical"] = "rbxassetid://86234730730899",
+["move"] = "rbxassetid://116138709011735",
+["music-2"] = "rbxassetid://134397426600888",
+["music-3"] = "rbxassetid://94466120066498",
+["music-4"] = "rbxassetid://132459323665838",
+["music"] = "rbxassetid://113343203848535",
+["navigation-2-off"] = "rbxassetid://116569611780763",
+["navigation-2"] = "rbxassetid://81889066747907",
+["navigation-off"] = "rbxassetid://87003270290777",
+["navigation"] = "rbxassetid://79308213542922",
+["network"] = "rbxassetid://127410729922644",
+["newspaper"] = "rbxassetid://123479530460544",
+["nfc"] = "rbxassetid://76822396542242",
+["non-binary"] = "rbxassetid://78442360386235",
+["notebook-pen"] = "rbxassetid://140380614761023",
+["notebook-tabs"] = "rbxassetid://127371085570083",
+["notebook-text"] = "rbxassetid://93061585217270",
+["notebook"] = "rbxassetid://136132108664987",
+["notepad-text-dashed"] = "rbxassetid://135793446376219",
+["notepad-text"] = "rbxassetid://93404682958966",
+["nut-off"] = "rbxassetid://78795397311573",
+["nut"] = "rbxassetid://127146410705656",
+["octagon-alert"] = "rbxassetid://140438367956051",
+["octagon-minus"] = "rbxassetid://74720436795421",
+["octagon-pause"] = "rbxassetid://103161463909039",
+["octagon-x"] = "rbxassetid://90498161006311",
+["octagon"] = "rbxassetid://120803515514852",
+["omega"] = "rbxassetid://70414080018786",
+["option"] = "rbxassetid://100776883894054",
+["orbit"] = "rbxassetid://108926136860562",
+["origami"] = "rbxassetid://136020626667101",
+["package-2"] = "rbxassetid://70394974762575",
+["package-check"] = "rbxassetid://102374216055130",
+["package-minus"] = "rbxassetid://114492858789692",
+["package-open"] = "rbxassetid://132890233237818",
+["package-plus"] = "rbxassetid://129261988138366",
+["package-search"] = "rbxassetid://95465120894145",
+["package-x"] = "rbxassetid://70818501607442",
+["package"] = "rbxassetid://97261141732706",
+["paint-bucket"] = "rbxassetid://124275586663284",
+["paint-roller"] = "rbxassetid://115248074358348",
+["paintbrush-vertical"] = "rbxassetid://105151296591292",
+["paintbrush"] = "rbxassetid://125572663700289",
+["palette"] = "rbxassetid://86350350950064",
+["panda"] = "rbxassetid://132509022802512",
+["panel-bottom-close"] = "rbxassetid://74287004071159",
+["panel-bottom-dashed"] = "rbxassetid://131084651621603",
+["panel-bottom-open"] = "rbxassetid://107768659586540",
+["panel-bottom"] = "rbxassetid://132127145048511",
+["panel-left-close"] = "rbxassetid://126579818823552",
+["panel-left-dashed"] = "rbxassetid://75536606374585",
+["panel-left-open"] = "rbxassetid://111075816195767",
+["panel-left-right-dashed"] = "rbxassetid://110100707973959",
+["panel-left"] = "rbxassetid://97419752870313",
+["panel-right-close"] = "rbxassetid://139528655524132",
+["panel-right-dashed"] = "rbxassetid://94959793877311",
+["panel-right-open"] = "rbxassetid://118114419142794",
+["panel-right"] = "rbxassetid://116365035443156",
+["panel-top-bottom-dashed"] = "rbxassetid://134737235653344",
+["panel-top-close"] = "rbxassetid://83578325777808",
+["panel-top-dashed"] = "rbxassetid://70522913169237",
+["panel-top-open"] = "rbxassetid://137959875507454",
+["panel-top"] = "rbxassetid://75838479462875",
+["panels-left-bottom"] = "rbxassetid://72996856149149",
+["panels-right-bottom"] = "rbxassetid://90659068960726",
+["panels-top-left"] = "rbxassetid://79858853850600",
+["paperclip"] = "rbxassetid://92088291163453",
+["parentheses"] = "rbxassetid://78950955173096",
+["parking-meter"] = "rbxassetid://84652733960568",
+["party-popper"] = "rbxassetid://111626795712193",
+["pause"] = "rbxassetid://74873705394436",
+["paw-print"] = "rbxassetid://112218825427601",
+["pc-case"] = "rbxassetid://122978648019101",
+["pen-line"] = "rbxassetid://109108135755303",
+["pen-off"] = "rbxassetid://84807123119438",
+["pen-tool"] = "rbxassetid://106145404953445",
+["pen"] = "rbxassetid://72037878096321",
+["pencil-line"] = "rbxassetid://88392917053533",
+["pencil-off"] = "rbxassetid://103330927652832",
+["pencil-ruler"] = "rbxassetid://110120288284597",
+["pencil"] = "rbxassetid://137986121120732",
+["pentagon"] = "rbxassetid://79184802179890",
+["percent"] = "rbxassetid://130155041032013",
+["person-standing"] = "rbxassetid://125020872044147",
+["philippine-peso"] = "rbxassetid://91173798254675",
+["phone-call"] = "rbxassetid://70555587592860",
+["phone-forwarded"] = "rbxassetid://113269614319737",
+["phone-incoming"] = "rbxassetid://82863576359288",
+["phone-missed"] = "rbxassetid://130156165198376",
+["phone-off"] = "rbxassetid://133318623553383",
+["phone-outgoing"] = "rbxassetid://104576478735825",
+["phone"] = "rbxassetid://128804946640049",
+["pi"] = "rbxassetid://74936036243146",
+["piano"] = "rbxassetid://85008880789520",
+["pickaxe"] = "rbxassetid://105888023317688",
+["picture-in-picture-2"] = "rbxassetid://112803319544468",
+["picture-in-picture"] = "rbxassetid://80579597835123",
+["piggy-bank"] = "rbxassetid://79498575790721",
+["pilcrow-left"] = "rbxassetid://103803000849583",
+["pilcrow-right"] = "rbxassetid://104881733911870",
+["pilcrow"] = "rbxassetid://139512780392871",
+["pill-bottle"] = "rbxassetid://118394692404597",
+["pill"] = "rbxassetid://73280534813448",
+["pin-off"] = "rbxassetid://127696372451750",
+["pin"] = "rbxassetid://120978111007514",
+["pipette"] = "rbxassetid://133167932934404",
+["pizza"] = "rbxassetid://126964453193501",
+["plane-landing"] = "rbxassetid://122555692211889",
+["plane-takeoff"] = "rbxassetid://117179478829575",
+["plane"] = "rbxassetid://126985561580989",
+["play"] = "rbxassetid://135609604299893",
+["plug-2"] = "rbxassetid://97912386476366",
+["plug-zap"] = "rbxassetid://74506269884055",
+["plug"] = "rbxassetid://99782373064495",
+["plus"] = "rbxassetid://111774323017047",
+["pocket-knife"] = "rbxassetid://134075428063965",
+["pocket"] = "rbxassetid://136686762542964",
+["podcast"] = "rbxassetid://109577075549215",
+["pointer-off"] = "rbxassetid://95488389312794",
+["pointer"] = "rbxassetid://92615117311099",
+["popcorn"] = "rbxassetid://139446511232750",
+["popsicle"] = "rbxassetid://112696318077073",
+["pound-sterling"] = "rbxassetid://127482649469130",
+["power-off"] = "rbxassetid://118768311012214",
+["power"] = "rbxassetid://96479131758775",
+["presentation"] = "rbxassetid://106134583757890",
+["printer-check"] = "rbxassetid://130273549443689",
+["printer"] = "rbxassetid://76080649734247",
+["projector"] = "rbxassetid://103281856385283",
+["proportions"] = "rbxassetid://130046855997237",
+["puzzle"] = "rbxassetid://136837798892463",
+["pyramid"] = "rbxassetid://107811442374127",
+["qr-code"] = "rbxassetid://105329945723350",
+["quote"] = "rbxassetid://103271711590001",
+["rabbit"] = "rbxassetid://98580518804206",
+["radar"] = "rbxassetid://138528222906635",
+["radiation"] = "rbxassetid://104499586848433",
+["radical"] = "rbxassetid://132758286926047",
+["radio-receiver"] = "rbxassetid://129598303378835",
+["radio-tower"] = "rbxassetid://93958663130054",
+["radio"] = "rbxassetid://85611589536956",
+["radius"] = "rbxassetid://89814505307129",
+["rail-symbol"] = "rbxassetid://134295386306962",
+["rainbow"] = "rbxassetid://132488862841895",
+["rat"] = "rbxassetid://127400975953159",
+["ratio"] = "rbxassetid://126369423897295",
+["receipt-cent"] = "rbxassetid://91557573925201",
+["receipt-euro"] = "rbxassetid://94015722210295",
+["receipt-indian-rupee"] = "rbxassetid://89718170439990",
+["receipt-japanese-yen"] = "rbxassetid://132472560758851",
+["receipt-pound-sterling"] = "rbxassetid://73934967569625",
+["receipt-russian-ruble"] = "rbxassetid://105164576936853",
+["receipt-swiss-franc"] = "rbxassetid://72503668620116",
+["receipt-text"] = "rbxassetid://138483536013737",
+["receipt-turkish-lira"] = "rbxassetid://91950765836342",
+["receipt"] = "rbxassetid://77877895901792",
+["rectangle-circle"] = "rbxassetid://100642423153903",
+["rectangle-ellipsis"] = "rbxassetid://112919953980965",
+["rectangle-goggles"] = "rbxassetid://98605436666727",
+["rectangle-horizontal"] = "rbxassetid://90224199814966",
+["rectangle-vertical"] = "rbxassetid://117277050590967",
+["recycle"] = "rbxassetid://140417023381961",
+["redo-2"] = "rbxassetid://70451039017914",
+["redo-dot"] = "rbxassetid://94252981719732",
+["redo"] = "rbxassetid://116150342119054",
+["refresh-ccw-dot"] = "rbxassetid://106702246753270",
+["refresh-ccw"] = "rbxassetid://117913330389477",
+["refresh-cw-off"] = "rbxassetid://140179498843054",
+["refresh-cw"] = "rbxassetid://138133190015277",
+["refrigerator"] = "rbxassetid://102614042652753",
+["regex"] = "rbxassetid://100727200791841",
+["remove-formatting"] = "rbxassetid://112833162022628",
+["repeat-1"] = "rbxassetid://130144534857095",
+["repeat-2"] = "rbxassetid://85927537182704",
+["repeat"] = "rbxassetid://121886242955173",
+["replace-all"] = "rbxassetid://127862728198635",
+["replace"] = "rbxassetid://128404082279430",
+["reply-all"] = "rbxassetid://71723137343562",
+["reply"] = "rbxassetid://109788633497028",
+["rewind"] = "rbxassetid://95205297521988",
+["ribbon"] = "rbxassetid://94265331526851",
+["rocket"] = "rbxassetid://87412317685854",
+["rocking-chair"] = "rbxassetid://110420269495360",
+["roller-coaster"] = "rbxassetid://112426178972099",
+["rose"] = "rbxassetid://126336840238769",
+["rotate-3d"] = "rbxassetid://76300551576392",
+["rotate-ccw-key"] = "rbxassetid://74976035240976",
+["rotate-ccw-square"] = "rbxassetid://90515853170424",
+["rotate-ccw"] = "rbxassetid://110116685948665",
+["rotate-cw-square"] = "rbxassetid://77095448159303",
+["rotate-cw"] = "rbxassetid://84183336178654",
+["route-off"] = "rbxassetid://106350402024079",
+["route"] = "rbxassetid://89968303228953",
+["router"] = "rbxassetid://102130331994471",
+["rows-2"] = "rbxassetid://112556185960101",
+["rows-3"] = "rbxassetid://117215586961375",
+["rows-4"] = "rbxassetid://125646021959055",
+["rss"] = "rbxassetid://131789058984793",
+["ruler-dimension-line"] = "rbxassetid://70673861371412",
+["ruler"] = "rbxassetid://81432445547423",
+["russian-ruble"] = "rbxassetid://126357936542156",
+["sailboat"] = "rbxassetid://87110567187540",
+["salad"] = "rbxassetid://128864507821603",
+["sandwich"] = "rbxassetid://104573187458917",
+["satellite-dish"] = "rbxassetid://136742443888305",
+["satellite"] = "rbxassetid://134967053164645",
+["saudi-riyal"] = "rbxassetid://102282769104635",
+["save-all"] = "rbxassetid://116946975799440",
+["save-off"] = "rbxassetid://87085435778560",
+["save"] = "rbxassetid://126116963775616",
+["scale-3d"] = "rbxassetid://72414199620352",
+["scale"] = "rbxassetid://108203682317477",
+["scaling"] = "rbxassetid://122360365318466",
+["scan-barcode"] = "rbxassetid://96889457154761",
+["scan-eye"] = "rbxassetid://99244790601968",
+["scan-face"] = "rbxassetid://109959345069668",
+["scan-heart"] = "rbxassetid://106280819776142",
+["scan-line"] = "rbxassetid://126544908146540",
+["scan-qr-code"] = "rbxassetid://105409149549927",
+["scan-search"] = "rbxassetid://80009010551347",
+["scan-text"] = "rbxassetid://73702396787766",
+["scan"] = "rbxassetid://123104789658180",
+["school"] = "rbxassetid://76351530290068",
+["scissors-line-dashed"] = "rbxassetid://122237447974173",
+["scissors"] = "rbxassetid://118665510911274",
+["screen-share-off"] = "rbxassetid://107677572669805",
+["screen-share"] = "rbxassetid://85137895705653",
+["scroll-text"] = "rbxassetid://97321022666868",
+["scroll"] = "rbxassetid://74072101474951",
+["search-check"] = "rbxassetid://75442076191356",
+["search-code"] = "rbxassetid://117114794592802",
+["search-slash"] = "rbxassetid://96483932261041",
+["search-x"] = "rbxassetid://137319957522951",
+["search"] = "rbxassetid://121018724060431",
+["section"] = "rbxassetid://91732188298948",
+["send-horizontal"] = "rbxassetid://111734392411664",
+["send-to-back"] = "rbxassetid://75340312862253",
+["send"] = "rbxassetid://127751956873796",
+["separator-horizontal"] = "rbxassetid://84864453699927",
+["separator-vertical"] = "rbxassetid://84031801478581",
+["server-cog"] = "rbxassetid://138470287250966",
+["server-crash"] = "rbxassetid://132810618000212",
+["server-off"] = "rbxassetid://114048751507723",
+["server"] = "rbxassetid://92188766517878",
+["settings-2"] = "rbxassetid://135684703553372",
+["settings"] = "rbxassetid://80758916183665",
+["shapes"] = "rbxassetid://129989433311409",
+["share-2"] = "rbxassetid://71210767962065",
+["share"] = "rbxassetid://87340985053299",
+["sheet"] = "rbxassetid://134902122480171",
+["shell"] = "rbxassetid://140212943563599",
+["shield-alert"] = "rbxassetid://114995877719925",
+["shield-ban"] = "rbxassetid://108765041044649",
+["shield-check"] = "rbxassetid://87354736164608",
+["shield-ellipsis"] = "rbxassetid://114794739892123",
+["shield-half"] = "rbxassetid://117842634172647",
+["shield-minus"] = "rbxassetid://89965059528921",
+["shield-off"] = "rbxassetid://133426959132690",
+["shield-plus"] = "rbxassetid://100664857995498",
+["shield-question-mark"] = "rbxassetid://135722075265150",
+["shield-user"] = "rbxassetid://124832775645347",
+["shield-x"] = "rbxassetid://73370117343811",
+["shield"] = "rbxassetid://110987169760162",
+["ship-wheel"] = "rbxassetid://130797795829448",
+["ship"] = "rbxassetid://83995100553930",
+["shirt"] = "rbxassetid://106579555405966",
+["shopping-bag"] = "rbxassetid://71885477293226",
+["shopping-basket"] = "rbxassetid://138646411956433",
+["shopping-cart"] = "rbxassetid://128420521375441",
+["shovel"] = "rbxassetid://102465000512056",
+["shower-head"] = "rbxassetid://75884944024117",
+["shredder"] = "rbxassetid://122125164414463",
+["shrimp"] = "rbxassetid://102625900815307",
+["shrink"] = "rbxassetid://90953687918880",
+["shrub"] = "rbxassetid://127326280714343",
+["shuffle"] = "rbxassetid://132382786975101",
+["sigma"] = "rbxassetid://126884244870899",
+["signal-high"] = "rbxassetid://130436670012270",
+["signal-low"] = "rbxassetid://73674683500458",
+["signal-medium"] = "rbxassetid://125003021367019",
+["signal-zero"] = "rbxassetid://130045332414754",
+["signal"] = "rbxassetid://78424889355261",
+["signature"] = "rbxassetid://114402748013000",
+["signpost-big"] = "rbxassetid://115780185675001",
+["signpost"] = "rbxassetid://106584743791433",
+["siren"] = "rbxassetid://134210267818039",
+["skip-back"] = "rbxassetid://70466132711334",
+["skip-forward"] = "rbxassetid://124844823753990",
+["skull"] = "rbxassetid://137726256442333",
+["slack"] = "rbxassetid://96089719516736",
+["slash"] = "rbxassetid://117792185664263",
+["slice"] = "rbxassetid://95810504278179",
+["sliders-horizontal"] = "rbxassetid://85538382643347",
+["sliders-vertical"] = "rbxassetid://101190569086853",
+["smartphone-charging"] = "rbxassetid://102837532613995",
+["smartphone-nfc"] = "rbxassetid://82326425754446",
+["smartphone"] = "rbxassetid://96623008834511",
+["smile-plus"] = "rbxassetid://131981881472144",
+["smile"] = "rbxassetid://105880397565283",
+["snail"] = "rbxassetid://70904536548363",
+["snowflake"] = "rbxassetid://101235206534566",
+["soap-dispenser-droplet"] = "rbxassetid://77258480479465",
+["sofa"] = "rbxassetid://114427687218324",
+["solar-panel"] = "rbxassetid://132448188047921",
+["soup"] = "rbxassetid://115092551871618",
+["space"] = "rbxassetid://87072088914178",
+["spade"] = "rbxassetid://131444449466462",
+["sparkle"] = "rbxassetid://111044800239623",
+["sparkles"] = "rbxassetid://138635884129147",
+["speaker"] = "rbxassetid://96227183003618",
+["speech"] = "rbxassetid://87013139446349",
+["spell-check-2"] = "rbxassetid://81556731785534",
+["spell-check"] = "rbxassetid://91913483031334",
+["spline-pointer"] = "rbxassetid://84842840956804",
+["spline"] = "rbxassetid://129406685807412",
+["split"] = "rbxassetid://105112438805988",
+["spool"] = "rbxassetid://124541981347743",
+["spotlight"] = "rbxassetid://77571742539344",
+["spray-can"] = "rbxassetid://128372039366326",
+["sprout"] = "rbxassetid://100091687832508",
+["square-activity"] = "rbxassetid://89496630185293",
+["square-arrow-down-left"] = "rbxassetid://108194680296901",
+["square-arrow-down-right"] = "rbxassetid://99403846801050",
+["square-arrow-down"] = "rbxassetid://135962519626588",
+["square-arrow-left"] = "rbxassetid://111671474549238",
+["square-arrow-out-down-left"] = "rbxassetid://125714881756353",
+["square-arrow-out-down-right"] = "rbxassetid://89971003001390",
+["square-arrow-out-up-left"] = "rbxassetid://103759986579087",
+["square-arrow-out-up-right"] = "rbxassetid://91221896066807",
+["square-arrow-right"] = "rbxassetid://113920471701361",
+["square-arrow-up-left"] = "rbxassetid://112424670290693",
+["square-arrow-up-right"] = "rbxassetid://76602291406940",
+["square-arrow-up"] = "rbxassetid://106998604646718",
+["square-asterisk"] = "rbxassetid://89186832353625",
+["square-bottom-dashed-scissors"] = "rbxassetid://79076980104803",
+["square-chart-gantt"] = "rbxassetid://104034017316411",
+["square-check-big"] = "rbxassetid://115320390907184",
+["square-check"] = "rbxassetid://134682053539509",
+["square-chevron-down"] = "rbxassetid://91032307924592",
+["square-chevron-left"] = "rbxassetid://73143404829510",
+["square-chevron-right"] = "rbxassetid://90612077729930",
+["square-chevron-up"] = "rbxassetid://85565910197337",
+["square-code"] = "rbxassetid://81604576616881",
+["square-dashed-bottom-code"] = "rbxassetid://100354801563230",
+["square-dashed-bottom"] = "rbxassetid://101102319625624",
+["square-dashed-kanban"] = "rbxassetid://90388067649847",
+["square-dashed-mouse-pointer"] = "rbxassetid://121016142178467",
+["square-dashed-top-solid"] = "rbxassetid://117157577548540",
+["square-dashed"] = "rbxassetid://136905537847606",
+["square-divide"] = "rbxassetid://99894657101970",
+["square-dot"] = "rbxassetid://116613421354866",
+["square-equal"] = "rbxassetid://110283363706707",
+["square-function"] = "rbxassetid://86075219551088",
+["square-kanban"] = "rbxassetid://114537101260131",
+["square-library"] = "rbxassetid://73810931222081",
+["square-m"] = "rbxassetid://117662700410577",
+["square-menu"] = "rbxassetid://104067089444415",
+["square-minus"] = "rbxassetid://116764432015770",
+["square-mouse-pointer"] = "rbxassetid://76141850603920",
+["square-parking-off"] = "rbxassetid://100857293535141",
+["square-parking"] = "rbxassetid://133116656122387",
+["square-pause"] = "rbxassetid://86608552787615",
+["square-pen"] = "rbxassetid://120239476110475",
+["square-percent"] = "rbxassetid://87111930314567",
+["square-pi"] = "rbxassetid://75383328781618",
+["square-pilcrow"] = "rbxassetid://131854284699367",
+["square-play"] = "rbxassetid://108186325238481",
+["square-plus"] = "rbxassetid://114713264461873",
+["square-power"] = "rbxassetid://129240437805187",
+["square-radical"] = "rbxassetid://132645931868292",
+["square-round-corner"] = "rbxassetid://104592745113567",
+["square-scissors"] = "rbxassetid://110601255612411",
+["square-sigma"] = "rbxassetid://113231244246816",
+["square-slash"] = "rbxassetid://105477013908757",
+["square-split-horizontal"] = "rbxassetid://76095370148660",
+["square-split-vertical"] = "rbxassetid://88589192032058",
+["square-square"] = "rbxassetid://136555087357875",
+["square-stack"] = "rbxassetid://100463396619394",
+["square-star"] = "rbxassetid://94506958703720",
+["square-stop"] = "rbxassetid://80018708472943",
+["square-terminal"] = "rbxassetid://83969264476798",
+["square-user-round"] = "rbxassetid://86484997229302",
+["square-user"] = "rbxassetid://70771214183445",
+["square-x"] = "rbxassetid://125136183850190",
+["square"] = "rbxassetid://86304921356806",
+["squares-exclude"] = "rbxassetid://102345385822324",
+["squares-intersect"] = "rbxassetid://120869602570119",
+["squares-subtract"] = "rbxassetid://131484650948795",
+["squares-unite"] = "rbxassetid://96673080107843",
+["squircle-dashed"] = "rbxassetid://129936702532522",
+["squircle"] = "rbxassetid://82426632573807",
+["squirrel"] = "rbxassetid://112864252085343",
+["stamp"] = "rbxassetid://92370779813368",
+["star-half"] = "rbxassetid://117449275562979",
+["star-off"] = "rbxassetid://75742832732503",
+["star"] = "rbxassetid://136141469398409",
+["step-back"] = "rbxassetid://108672750005121",
+["step-forward"] = "rbxassetid://126131872136145",
+["stethoscope"] = "rbxassetid://122331031702148",
+["sticker"] = "rbxassetid://79938203791608",
+["sticky-note"] = "rbxassetid://111894074643919",
+["store"] = "rbxassetid://90338129673705",
+["stretch-horizontal"] = "rbxassetid://87665042192343",
+["stretch-vertical"] = "rbxassetid://95265463417122",
+["strikethrough"] = "rbxassetid://103417324549613",
+["subscript"] = "rbxassetid://74553514785183",
+["sun-dim"] = "rbxassetid://129141645592715",
+["sun-medium"] = "rbxassetid://130278807964710",
+["sun-moon"] = "rbxassetid://75752898854559",
+["sun-snow"] = "rbxassetid://112791898014579",
+["sun"] = "rbxassetid://110150589884127",
+["sunrise"] = "rbxassetid://134705665494098",
+["sunset"] = "rbxassetid://75904872203588",
+["superscript"] = "rbxassetid://96887696590118",
+["swatch-book"] = "rbxassetid://126786244872453",
+["swiss-franc"] = "rbxassetid://113497920041625",
+["switch-camera"] = "rbxassetid://76841154349737",
+["sword"] = "rbxassetid://124448418211665",
+["swords"] = "rbxassetid://81872698913435",
+["syringe"] = "rbxassetid://123891270479254",
+["table-2"] = "rbxassetid://95751552281545",
+["table-cells-merge"] = "rbxassetid://95363715175258",
+["table-cells-split"] = "rbxassetid://114799086088649",
+["table-columns-split"] = "rbxassetid://111011625447949",
+["table-of-contents"] = "rbxassetid://135044763275414",
+["table-properties"] = "rbxassetid://125062886015372",
+["table-rows-split"] = "rbxassetid://96443733673997",
+["table"] = "rbxassetid://109109148250737",
+["tablet-smartphone"] = "rbxassetid://133680859813404",
+["tablet"] = "rbxassetid://128403991264386",
+["tablets"] = "rbxassetid://80835787970735",
+["tag"] = "rbxassetid://129104970103940",
+["tags"] = "rbxassetid://107179263080798",
+["tally-1"] = "rbxassetid://115301298241643",
+["tally-2"] = "rbxassetid://110363186864027",
+["tally-3"] = "rbxassetid://97655344572540",
+["tally-4"] = "rbxassetid://102633494371890",
+["tally-5"] = "rbxassetid://88031817475886",
+["tangent"] = "rbxassetid://123263132981724",
+["target"] = "rbxassetid://87563802520297",
+["telescope"] = "rbxassetid://91755049143647",
+["tent-tree"] = "rbxassetid://76698322463977",
+["tent"] = "rbxassetid://109779587826330",
+["terminal"] = "rbxassetid://106783148545356",
+["test-tube-diagonal"] = "rbxassetid://75662704378840",
+["test-tube"] = "rbxassetid://98801015650164",
+["test-tubes"] = "rbxassetid://92555361447433",
+["text-align-center"] = "rbxassetid://84051028246390",
+["text-align-end"] = "rbxassetid://130041738343555",
+["text-align-justify"] = "rbxassetid://80279880143030",
+["text-align-start"] = "rbxassetid://134489585487649",
+["text-cursor-input"] = "rbxassetid://107551944047171",
+["text-cursor"] = "rbxassetid://115984654447300",
+["text-initial"] = "rbxassetid://129458097472087",
+["text-quote"] = "rbxassetid://139278366448736",
+["text-search"] = "rbxassetid://92345384671606",
+["text-select"] = "rbxassetid://117087320884956",
+["text-wrap"] = "rbxassetid://114804318314018",
+["theater"] = "rbxassetid://108558145549163",
+["thermometer-snowflake"] = "rbxassetid://121876188028425",
+["thermometer-sun"] = "rbxassetid://106693240074310",
+["thermometer"] = "rbxassetid://106546011492311",
+["thumbs-down"] = "rbxassetid://87794009914015",
+["thumbs-up"] = "rbxassetid://111137070767020",
+["ticket-check"] = "rbxassetid://105428777212507",
+["ticket-minus"] = "rbxassetid://78966299769328",
+["ticket-percent"] = "rbxassetid://80834774406405",
+["ticket-plus"] = "rbxassetid://110086734392189",
+["ticket-slash"] = "rbxassetid://89045681172265",
+["ticket-x"] = "rbxassetid://88674114109926",
+["ticket"] = "rbxassetid://126527071492145",
+["tickets-plane"] = "rbxassetid://100367018248695",
+["tickets"] = "rbxassetid://135268612687833",
+["timer-off"] = "rbxassetid://110916370767271",
+["timer-reset"] = "rbxassetid://110052125369932",
+["timer"] = "rbxassetid://85473888890506",
+["toggle-left"] = "rbxassetid://85887872573050",
+["toggle-right"] = "rbxassetid://90411952142550",
+["toilet"] = "rbxassetid://80930782432931",
+["tool-case"] = "rbxassetid://87533537832522",
+["tornado"] = "rbxassetid://88358291515768",
+["torus"] = "rbxassetid://70855707283051",
+["touchpad-off"] = "rbxassetid://78784008075456",
+["touchpad"] = "rbxassetid://74882354908014",
+["tower-control"] = "rbxassetid://95937619060532",
+["toy-brick"] = "rbxassetid://86293483924633",
+["tractor"] = "rbxassetid://103376704722051",
+["traffic-cone"] = "rbxassetid://74110220470369",
+["train-front-tunnel"] = "rbxassetid://105194827005114",
+["train-front"] = "rbxassetid://125237934215370",
+["train-track"] = "rbxassetid://77451032453723",
+["tram-front"] = "rbxassetid://93315182364998",
+["transgender"] = "rbxassetid://135530817673639",
+["trash-2"] = "rbxassetid://109843431391323",
+["trash"] = "rbxassetid://106723740584310",
+["tree-deciduous"] = "rbxassetid://123124389219004",
+["tree-palm"] = "rbxassetid://103846705893963",
+["tree-pine"] = "rbxassetid://124662547202594",
+["trees"] = "rbxassetid://121203841375919",
+["trello"] = "rbxassetid://130987241149527",
+["trending-down"] = "rbxassetid://139309232226438",
+["trending-up-down"] = "rbxassetid://85083293981691",
+["trending-up"] = "rbxassetid://81819858538839",
+["triangle-alert"] = "rbxassetid://125920361880643",
+["triangle-dashed"] = "rbxassetid://124324079103935",
+["triangle-right"] = "rbxassetid://116930791412791",
+["triangle"] = "rbxassetid://126330486745540",
+["trophy"] = "rbxassetid://131545003268773",
+["truck-electric"] = "rbxassetid://111873446387359",
+["truck"] = "rbxassetid://86662707764771",
+["turkish-lira"] = "rbxassetid://114589876174070",
+["turntable"] = "rbxassetid://129870346487856",
+["turtle"] = "rbxassetid://118295081560334",
+["tv-minimal-play"] = "rbxassetid://99201833426972",
+["tv-minimal"] = "rbxassetid://100382201729427",
+["tv"] = "rbxassetid://135687724791776",
+["twitch"] = "rbxassetid://71383308134888",
+["twitter"] = "rbxassetid://88791703276842",
+["type-outline"] = "rbxassetid://80108627791690",
+["type"] = "rbxassetid://133543553793564",
+["umbrella-off"] = "rbxassetid://72395143739955",
+["umbrella"] = "rbxassetid://127502210274589",
+["underline"] = "rbxassetid://123709229216544",
+["undo-2"] = "rbxassetid://113885292059932",
+["undo-dot"] = "rbxassetid://132055277744844",
+["undo"] = "rbxassetid://111258459077271",
+["unfold-horizontal"] = "rbxassetid://117128358526398",
+["unfold-vertical"] = "rbxassetid://116593025265499",
+["ungroup"] = "rbxassetid://106674800451003",
+["university"] = "rbxassetid://84652528263642",
+["unlink-2"] = "rbxassetid://128131898892572",
+["unlink"] = "rbxassetid://139835795227752",
+["unplug"] = "rbxassetid://90171381619874",
+["upload"] = "rbxassetid://138212042425501",
+["usb"] = "rbxassetid://117230058949613",
+["user-check"] = "rbxassetid://81775205032725",
+["user-cog"] = "rbxassetid://92795491530865",
+["user-lock"] = "rbxassetid://78892639693821",
+["user-minus"] = "rbxassetid://126976941957511",
+["user-pen"] = "rbxassetid://87445472574836",
+["user-plus"] = "rbxassetid://118514469915884",
+["user-round-check"] = "rbxassetid://118794737621941",
+["user-round-cog"] = "rbxassetid://78239503290053",
+["user-round-minus"] = "rbxassetid://98944176636447",
+["user-round-pen"] = "rbxassetid://108155244324878",
+["user-round-plus"] = "rbxassetid://113301899567470",
+["user-round-search"] = "rbxassetid://71565774381870",
+["user-round-x"] = "rbxassetid://122367980560930",
+["user-round"] = "rbxassetid://136485052187963",
+["user-search"] = "rbxassetid://101335649828115",
+["user-star"] = "rbxassetid://98777846316000",
+["user-x"] = "rbxassetid://139748155894754",
+["user"] = "rbxassetid://81589895647169",
+["users-round"] = "rbxassetid://103005444008339",
+["users"] = "rbxassetid://115398113982385",
+["utensils-crossed"] = "rbxassetid://109520762270383",
+["utensils"] = "rbxassetid://139952569804235",
+["utility-pole"] = "rbxassetid://101965541238242",
+["variable"] = "rbxassetid://104743088438151",
+["vault"] = "rbxassetid://108049164599845",
+["vector-square"] = "rbxassetid://86713728565344",
+["vegan"] = "rbxassetid://119489190688082",
+["venetian-mask"] = "rbxassetid://102636443033920",
+["venus-and-mars"] = "rbxassetid://120227752103771",
+["venus"] = "rbxassetid://82891342220859",
+["vibrate-off"] = "rbxassetid://113446447326246",
+["vibrate"] = "rbxassetid://108330910738733",
+["video-off"] = "rbxassetid://132239189859305",
+["video"] = "rbxassetid://107587444636945",
+["videotape"] = "rbxassetid://114816894323398",
+["view"] = "rbxassetid://118717253976805",
+["voicemail"] = "rbxassetid://134313454010227",
+["volleyball"] = "rbxassetid://83889351124153",
+["volume-1"] = "rbxassetid://98514588731639",
+["volume-2"] = "rbxassetid://89344380902620",
+["volume-off"] = "rbxassetid://103047478058767",
+["volume-x"] = "rbxassetid://139252359189540",
+["volume"] = "rbxassetid://103236289817396",
+["vote"] = "rbxassetid://89409762851246",
+["wallet-cards"] = "rbxassetid://129728715308337",
+["wallet-minimal"] = "rbxassetid://137800448816116",
+["wallet"] = "rbxassetid://132331555762628",
+["wallpaper"] = "rbxassetid://74682121235494",
+["wand-sparkles"] = "rbxassetid://82546429942392",
+["wand"] = "rbxassetid://114580617777835",
+["warehouse"] = "rbxassetid://78388887451080",
+["washing-machine"] = "rbxassetid://104194127573858",
+["watch"] = "rbxassetid://130544621618405",
+["waves-ladder"] = "rbxassetid://101808619355514",
+["waves"] = "rbxassetid://96340135183647",
+["waypoints"] = "rbxassetid://102450133666017",
+["webcam"] = "rbxassetid://104148487911129",
+["webhook-off"] = "rbxassetid://96370548093471",
+["webhook"] = "rbxassetid://112812457747322",
+["weight"] = "rbxassetid://103860559844854",
+["wheat-off"] = "rbxassetid://133294844612307",
+["wheat"] = "rbxassetid://85261952080359",
+["whole-word"] = "rbxassetid://90111083954485",
+["wifi-cog"] = "rbxassetid://110500263326209",
+["wifi-high"] = "rbxassetid://81954601342139",
+["wifi-low"] = "rbxassetid://138217335635913",
+["wifi-off"] = "rbxassetid://74113634330106",
+["wifi-pen"] = "rbxassetid://91290205064712",
+["wifi-sync"] = "rbxassetid://84043971055177",
+["wifi-zero"] = "rbxassetid://124286465246123",
+["wifi"] = "rbxassetid://104669375183960",
+["wind-arrow-down"] = "rbxassetid://127753987414870",
+["wind"] = "rbxassetid://114551690399915",
+["wine-off"] = "rbxassetid://108294164302317",
+["wine"] = "rbxassetid://115743721332829",
+["workflow"] = "rbxassetid://99186544029189",
+["worm"] = "rbxassetid://115752311548091",
+["wrench"] = "rbxassetid://112148279212860",
+["x"] = "rbxassetid://110786993356448",
+["youtube"] = "rbxassetid://123663668456341",
+["zap-off"] = "rbxassetid://81385483183652",
+["zap"] = "rbxassetid://130551565616516",
+["zoom-in"] = "rbxassetid://127956924984803",
+["zoom-out"] = "rbxassetid://108334162607319",
+    ["search"] = "rbxassetid://121018724060431",
+    ["home"] = "rbxassetid://98755624629571",
+    ["settings"] = "rbxassetid://80758916183665",
+    ["combat"] = "rbxassetid://124448418211665",
+    ["visuals"] = "rbxassetid://100033680381365",
+    ["list"] = "rbxassetid://113179976918783",
+    ["info"] = "rbxassetid://124560466474914",
+    ["check"] = "rbxassetid://93898873302694",
+    ["chevron"] = "rbxassetid://134243273101015",
+    ["resize_custom"] = "rbxassetid://122360365318466",
+    ["folder"] = "rbxassetid://109080612832751",
+    ["paint-bucket"] = "rbxassetid://124275586663284",
+    ["save"] = "rbxassetid://126116963775616",
+    ["trash"] = "rbxassetid://106723740584310"
+}
+
+local function RGBtoHex(color)
+    local r, g, b = math.floor(color.R*255), math.floor(color.G*255), math.floor(color.B*255)
+    return string.format("#%02X%02X%02X", r, g, b)
+end
+local function HexToRGB(hex)
+    hex = hex:gsub("#","")
+    local r = tonumber("0x"..hex:sub(1,2))
+    local g = tonumber("0x"..hex:sub(3,4))
+    local b = tonumber("0x"..hex:sub(5,6))
+    if r and g and b then return Color3.fromRGB(r,g,b) end
+    return nil
 end
 
-
--- screen gui 
-local uiScreen = Instance.new('ScreenGui') do 
-    uiScreen.OnTopOfCoreBlur = true
-    uiScreen.DisplayOrder = 9e9
-    uiScreen.ZIndexBehavior = 'Global'
-    
-    
-    local str = ''
-    for i = 1, 8 do
-        str = str .. utf8.char(math.random(97, 2500))
-    end
-    uiScreen.Name = str
-    str = nil 
-    
-    if (typeof(syn) == 'table' and typeof(syn.protect_gui) == 'function') then
-        --syn.protect_gui(uiScreen)
-    end
-    if (gethui) then
-        uiScreen.Parent = gethui()
-    else
-        uiScreen.Parent = game:GetService('CoreGui')
-    end
-    
-    local notifContainer = Instance.new('Frame') do 
-        notifContainer.Active = false 
-        notifContainer.BackgroundTransparency = 1
-        notifContainer.Name = '#notif-container'
-        notifContainer.Position = UDim2.new(1, -250, 0, -50)
-        notifContainer.Size = UDim2.new(0, 200, 1, 0)
-        notifContainer.ZIndex = 0
-        
-        notifContainer.Parent = uiScreen
-    end
+local function Tween(obj, props, time)
+    TweenService:Create(obj, TweenInfo.new(time or 0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), props):Play()
 end
 
--- tooltip
-local tooltip = {} do 
-    do
-        local instances = {}
-        
-        local main = Instance.new('Frame')
-        main.BackgroundColor3 = theme.Window2
-        main.BorderColor3 = theme.Inset2
-        main.BorderMode = 'Inset'
-        main.Name = '#main'
-        main.Size = UDim2.fromOffset(140, 60)
-        main.Visible = false
-        main.ZIndex = 3800
-        
-        main.Parent = uiScreen
-        
-        do 
-            local stroke = Instance.new('UIStroke') do 
-                stroke.ApplyStrokeMode = 'Border'
-                stroke.Color = theme.Stroke
-                stroke.LineJoinMode = 'Round'
-                stroke.Thickness = 1 
-                stroke.Name = '#stroke'
-                
-                stroke.Parent = main
-            end
-            
-            local shadow = Instance.new('ImageLabel') do 
-                shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-                shadow.BackgroundTransparency = 1
-                shadow.BorderSizePixel = 0 
-                shadow.Image = 'rbxassetid://99585695722091'
-                shadow.ImageColor3 = Color3.fromRGB(0, 0, 5)
-                shadow.Name = '#shadow'
-                shadow.Position = UDim2.fromScale(0.5, 0.5)
-                shadow.ScaleType = 'Slice'
-                shadow.Size = UDim2.new(1, 50, 1, 50)
-                shadow.SliceCenter = Rect.new(40, 40, 260, 260)
-                shadow.SliceScale = 1
-                shadow.ZIndex = 3799
-                
-                shadow.Parent = main
-            end
-            
-            local trim = Instance.new('Frame') do 
-                trim.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                trim.BackgroundTransparency = 0
-                trim.BorderSizePixel = 0 
-                trim.Name = '#trim'
-                trim.Position = UDim2.fromOffset(0, -2)
-                trim.Size = UDim2.new(1, 0, 0, 1)
-                trim.ZIndex = 3805
-                
-                trim.Parent = main
-                
-                local gradient = Instance.new('UIGradient') do 
-                    gradient.Color = ColorSequence.new(
-                        theme.Primary, 
-                        theme.Secondary
-                    )
-                    gradient.Enabled = true
-                    gradient.Name = '#gradient'
-                    gradient.Rotation = 0
-                    
-                    gradient.Parent = trim
-                end
-            end
-            
-            local titleBar = Instance.new('Frame') do 
-                titleBar.BackgroundColor3 = theme.Window3
-                titleBar.BackgroundTransparency = 0 
-                titleBar.BorderColor3 = theme.Inset3
-                titleBar.BorderSizePixel = 1
-                titleBar.BorderMode = 'Inset'
-                titleBar.Name = '#title-bar'
-                titleBar.Size = UDim2.new(1, 2, 0, 16)
-                titleBar.Position = UDim2.fromOffset(-1, 0)
-                titleBar.Visible = true
-                titleBar.ZIndex = 3801
-                
-                titleBar.Parent = main
-                
-                local stroke = Instance.new('UIStroke') do 
-                    stroke.ApplyStrokeMode = 'Border'
-                    stroke.Color = theme.Stroke
-                    stroke.LineJoinMode = 'Round'
-                    stroke.Thickness = 1 
-                    stroke.Name = '#stroke'
-                    
-                    stroke.Parent = titleBar
-                end
-                
-                local title = Instance.new('TextLabel') do 
-                    title.BackgroundTransparency = 1
-                    title.Font = 'SourceSans'
-                    title.Name = '#title'
-                    title.RichText = true
-                    title.Size = UDim2.fromScale(1, 1)
-                    title.Text = 'tooltip'
-                    title.TextColor3 = theme.TextPrimary
-                    title.TextSize = 14
-                    title.TextStrokeColor3 = theme.TextStroke
-                    title.TextStrokeTransparency = 0.8
-                    title.TextTransparency = 0
-                    title.TextWrapped = false
-                    title.TextXAlignment = 'Left'
-                    title.TextYAlignment = 'Center'
-                    title.Visible = true
-                    title.ZIndex = 3801
-                    
-                    title.Parent = titleBar
-                    
-                    local padding = Instance.new('UIPadding') do 
-                        padding.Name = '#padding'
-                        padding.PaddingLeft = UDim.new(0, 4)
-                        
-                        padding.Parent = title
-                    end
-                    
-                    instances.title = title 
-                end
-            end
-            
-            local menu = Instance.new('Frame') do 
-                menu.BackgroundColor3 = theme.Window2
-                menu.BorderColor3 = theme.Inset2
-                menu.BorderMode = 'Inset'
-                menu.BorderSizePixel = 1
-                menu.ClipsDescendants = true 
-                menu.Name = '#menu'
-                menu.Position = UDim2.fromOffset(-1, 17)
-                menu.Size = UDim2.new(1, 2, 1, -16)
-                menu.Visible = true
-                menu.ZIndex = 3801
-                 
-                menu.Parent = main
-                
-                local desc = Instance.new('TextLabel') do 
-                    desc.BackgroundTransparency = 1
-                    desc.Font = 'SourceSans'
-                    desc.Name = '#desc'
-                    desc.RichText = true
-                    desc.Size = UDim2.fromScale(1, 1)
-                    desc.Text = 'tooltip description'
-                    desc.TextColor3 = theme.TextPrimary
-                    desc.TextSize = 14
-                    desc.TextStrokeColor3 = theme.TextStroke
-                    desc.TextStrokeTransparency = 0.8
-                    desc.TextTransparency = 0
-                    desc.TextWrapped = true
-                    desc.TextXAlignment = 'Left'
-                    desc.TextYAlignment = 'Top'
-                    desc.Visible = true
-                    desc.ZIndex = 3801
-                    
-                    desc.Parent = menu
-                    
-                    local padding = Instance.new('UIPadding') do 
-                        padding.Name = '#padding'
-                        padding.PaddingLeft = UDim.new(0, 4)
-                        padding.PaddingTop = UDim.new(0, 2)
-                        
-                        padding.Parent = desc
-                    end
-                    
-                    instances.desc = desc 
-                end
-            end
-        end
-        
-        
-        instances.main = main
-        tooltip.instances = instances
+local FloatLocked = false
+
+local function MakeDraggable(object, dragObject)
+    local dragging, dragInput, dragStart, startPos
+    local function Update(input)
+        local delta = input.Position - dragStart
+        Tween(object, {Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)}, 0.05)
     end
-    
-    tooltip.handle = nil 
-    tooltip.showing = false
-    tooltip.update = nil
+    dragObject.InputBegan:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and not FloatLocked then
+            dragging = true dragStart = input.Position startPos = object.Position
+            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
+        end
+    end)
+    dragObject.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end end)
+    RunService.RenderStepped:Connect(function() if dragging and dragInput then Update(dragInput) end end)
 end
 
--- hint 
-local hint = {} do 
-    do
-        local instances = {}
-        
-        local main = Instance.new('Frame')
-        main.BackgroundColor3 = theme.Window2
-        main.BorderColor3 = theme.Inset2
-        main.BorderMode = 'Inset'
-        main.Name = '#main'
-        main.Size = UDim2.fromOffset(140, 84)
-        main.Visible = false
-        main.ZIndex = 3900
-        
-        main.Parent = uiScreen
-        
-        do 
-            local stroke = Instance.new('UIStroke') do 
-                stroke.ApplyStrokeMode = 'Border'
-                stroke.Color = theme.Stroke
-                stroke.LineJoinMode = 'Round'
-                stroke.Thickness = 1 
-                stroke.Name = '#stroke'
-                
-                stroke.Parent = main
-            end
-            
-            local shadow = Instance.new('ImageLabel') do 
-                shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-                shadow.BackgroundTransparency = 1
-                shadow.BorderSizePixel = 0 
-                shadow.Image = 'rbxassetid://7331400934'
-                shadow.ImageColor3 = Color3.fromRGB(0, 0, 5)
-                shadow.Name = '#shadow'
-                shadow.Position = UDim2.fromScale(0.5, 0.5)
-                shadow.ScaleType = 'Slice'
-                shadow.Size = UDim2.new(1, 50, 1, 50)
-                shadow.SliceCenter = Rect.new(40, 40, 260, 260)
-                shadow.SliceScale = 1
-                shadow.ZIndex = 3899
-                
-                shadow.Parent = main
-            end
-            
-            local trim = Instance.new('Frame') do 
-                trim.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                trim.BackgroundTransparency = 0
-                trim.BorderSizePixel = 0 
-                trim.Name = '#trim'
-                trim.Position = UDim2.fromOffset(0, -2)
-                trim.Size = UDim2.new(1, 0, 0, 1)
-                trim.ZIndex = 3905
-                
-                trim.Parent = main
-                
-                local gradient = Instance.new('UIGradient') do 
-                    gradient.Color = ColorSequence.new(
-                        theme.Primary, 
-                        theme.Secondary
-                    )
-                    gradient.Enabled = true
-                    gradient.Name = '#gradient'
-                    gradient.Rotation = 0
-                    
-                    gradient.Parent = trim
-                end
-            end
-            
-            local menu = Instance.new('Frame') do 
-                menu.BackgroundColor3 = theme.Window2
-                menu.BorderColor3 = theme.Inset2
-                menu.BorderMode = 'Inset'
-                menu.BorderSizePixel = 1
-                menu.ClipsDescendants = true 
-                menu.Name = '#menu'
-                menu.Position = UDim2.fromOffset(0, 0)
-                menu.Size = UDim2.fromScale(1, 1)
-                menu.Visible = true
-                menu.ZIndex = 3901
-                 
-                menu.Parent = main
-                
-                do
-                    local selectionFrame = Instance.new('Frame') do 
-                        selectionFrame.BackgroundColor3 = theme.Button2
-                        selectionFrame.BorderSizePixel = 0
-                        selectionFrame.Name = '#select'
-                        selectionFrame.Size = UDim2.new(1, 0, 0, 16)
-                        selectionFrame.Visible = true
-                        selectionFrame.ZIndex = 3902
-                        
-                        selectionFrame.Parent = menu
-                        
-                        instances.optionHighlight = selectionFrame
-                    end
-                    
-                    local hintContainer = Instance.new('ScrollingFrame') do 
-                        hintContainer.AutomaticCanvasSize = 'Y'
-                        hintContainer.BackgroundTransparency = 1
-                        hintContainer.BorderSizePixel = 0
-                        hintContainer.Name = '#container'
-                        hintContainer.ScrollBarImageTransparency = 1
-                        hintContainer.ScrollingEnabled = false 
-                        hintContainer.Size = UDim2.fromScale(1, 1)
-                        hintContainer.Visible = true
-                        hintContainer.ZIndex = 3902
-                        
-                        hintContainer.Parent = menu
-                        
-                        do
-                            local layout = Instance.new('UIListLayout') do 
-                                layout.FillDirection = 'Vertical'
-                                layout.HorizontalAlignment = 'Left'
-                                layout.SortOrder = 'Name'
-                                layout.VerticalAlignment = 'Top'
-                                
-                                layout.Parent = hintContainer
-                            end
-                            
-                            local hintOption = Instance.new('TextLabel') do 
-                                hintOption.BackgroundTransparency = 1
-                                --hintOption.Font = 'SourceSansItalic'
-                                hintOption.Name = '#hint'
-                                hintOption.RichText = true
-                                hintOption.Size = UDim2.new(1, 0, 0, 16)
-                                hintOption.Text = 'no suggestions'
-                                hintOption.TextColor3 = theme.TextPrimary
-                                hintOption.TextSize = 14
-                                hintOption.TextStrokeColor3 = theme.TextStroke
-                                hintOption.TextStrokeTransparency = 0.8
-                                hintOption.TextWrapped = false
-                                hintOption.TextXAlignment = 'Left'
-                                hintOption.TextYAlignment = 'Center'
-                                hintOption.Visible = false
-                                hintOption.ZIndex = 3902
-                                
-                                hintOption.Parent = hintContainer
-                                
-                                local padding = Instance.new('UIPadding') do 
-                                    padding.Name = '#padding'
-                                    padding.PaddingLeft = UDim.new(0, 4)
-                                    padding.PaddingBottom = UDim.new(0, 2)
-                                    
-                                    padding.Parent = hintOption
-                                end
-                                
-                                instances.hintTemplate = hintOption
-                            end
-                        end
-                    end
-                end
-            end
+local function MakeResizable(frame, handle)
+    local resizing, startSize, startPos
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            resizing = true startSize = frame.AbsoluteSize startPos = input.Position
+            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then resizing = false end end)
         end
-        
-        
-        instances.main = main
-        hint.instances = instances
-    end
-    
-    hint.selection = 1
-    hint.handle = nil 
-    hint.hintCount = 0
-    hint.showing = false
-    hint.updateCn = nil
-    hint.inputCn = nil
-    hint.previousHint = ''
-    hint.hints = {}
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - startPos
+            frame.Size = UDim2.new(0, math.max(500, startSize.X + delta.X), 0, math.max(350, startSize.Y + delta.Y))
+        end
+    end)
 end
 
+local Library = {Flags = {}, Elements = {}, Icons = Icons}
+local ScreenGui, NotifyList
 
-local defaultWinPos = UDim2.fromScale(0.6, 0.6)
+function Library:Notification(title, text, duration)
+    if not NotifyList then return end
+    local F = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Element") F.Size=UDim2.new(1,0,0,60) F.Parent=NotifyList
+    Instance.new("UICorner", F).CornerRadius=UDim.new(0,6)
+    local B = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Text") B.Size=UDim2.new(0,4,1,-16) B.Position=UDim2.new(0,6,0,8) F.ClipsDescendants=true B.Parent=F
+    Instance.new("UICorner", B).CornerRadius=UDim.new(0,2)
+    local G = RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2") G.Rotation=90 G.Parent=B
+    local T = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "Text") T.Text=title T.Size=UDim2.new(1,-20,0,20) T.Position=UDim2.new(0,18,0,8) T.BackgroundTransparency=1 T.FontFace=FontBold T.TextSize=15 T.TextXAlignment=Enum.TextXAlignment.Left T.Parent=F
+    local D = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") D.Text=text D.Size=UDim2.new(1,-20,0,20) D.Position=UDim2.new(0,18,0,28) D.BackgroundTransparency=1 D.FontFace=FontMain D.TextSize=13 D.TextXAlignment=Enum.TextXAlignment.Left D.TextWrapped=true D.Parent=F
+    Tween(F,{Position=UDim2.new(0,0,0,0)}) task.delay(duration or 3, function() Tween(F,{Position=UDim2.new(1.2,0,0,0)}) task.wait(0.4) F:Destroy() end)
+end
 
-local ui = {}
-
--- classes
-local elemClasses = {} 
-do 
-    -- GLOBAL
-    do 
-        local baseElement = {} do 
-            baseElement.__index = baseElement
-            baseElement.bindToEvent = function(self, event, callback) 
-                self.binds[event] = callback
-                
-                return self
-            end
-            baseElement.fireEvent = function(self, event, ...) 
-                local t = self.binds[event]
-                if (t) then task.spawn(t, ...) end
-                
-                return self
-            end
-            
-            baseElement.name = '' 
-            baseElement.tooltip = nil
-            baseElement.setTooltip = function(self, tooltip) 
-                self.tooltip = tostring(tooltip)
-                return self
-            end
-            baseElement.showTooltip = function(self) 
-                if (self.tooltip) then 
-                    tooltip.showing = true
-                    tooltip.handle = self
-                    local desc, title, main = tooltip.instances.desc, tooltip.instances.title, tooltip.instances.main
-                    
-                    title.Text = self.name
-                    main.Size = UDim2.fromOffset(140, 20)
-                    desc.Text = self.tooltip 
-                    
-                    local c = 0
-                    while (true) do 
-                        c += 1 
-                        main.Size += UDim2.fromOffset(0, 20)
-                        if (c > 30) then
-                            desc.Text = 'stop fucking spamming the tooltip jesus christ'
-                            main.Size = UDim2.fromOffset(140, 60)
-                            break
-                        end
-                        local _ = desc.TextFits -- for some fucking reason this is needed or else tooltips won't resize properly
-                        if (desc.TextFits == true) then break end 
-                    end
-                    
-                    main.Visible = true
-                    
-                    tooltip.update = renderService.RenderStepped:Connect(function() 
-                        local mpos = inputService:GetMouseLocation()
-                        main.Position = UDim2.fromOffset(mpos.X,mpos.Y)
-                    end)
-                end
-                return self
-            end
-            baseElement.hideTooltip = function(self) 
-                if (tooltip.handle == self) then 
-                    tooltip.showing = false
-                    tooltip.handle = nil
-                    tooltip.update:Disconnect()
-                    
-                    tooltip.instances.main.Visible = false
-                end
-                return self
-            end
-        end
-        elemClasses.baseElement = baseElement
+function Library:GetConfigs()
+    local files = listfiles(ConfigFolder)
+    local names = {}
+    for _, file in ipairs(files) do
+        local name = file:gsub(ConfigFolder .. "\\", ""):gsub(ConfigFolder .. "/", ""):gsub(".json", "")
+        table.insert(names, name)
     end
-    -- WINDOW
-    do
-        -- init window class
-        local window = {} do 
-            window.__index = window
-            setmetatable(window, elemClasses.baseElement)
-            
-            window.class = 'window'
-            
-            
-            window.minimized = false -- is minimized
-            window.size = UDim2.fromOffset(450, 350) -- current win size
-            window.icon = nil--'rbxassetid://9651932657'
-            window.minFocused = false
-            
-            local instances = {} do 
-                local mainFrame = Instance.new('Frame') do 
-                    mainFrame.BackgroundColor3 = theme.Window2
-                    mainFrame.BackgroundTransparency = 0
-                    mainFrame.BorderSizePixel = 0
-                    mainFrame.Name = '#main_frame'
-                    mainFrame.Position = UDim2.fromScale(0.6, 0.6)
-                    mainFrame.Size = UDim2.fromOffset(500, 350)
-                    mainFrame.Visible = true
-                    mainFrame.ZIndex = 5 
-                    
-                    --mainFrame.Parent = uiScreen
-                end
-                
-                local scale = Instance.new('UIScale') do 
-                    scale.Scale = 1 
-                    scale.Name = '#scale'
-                    scale.Parent = mainFrame
-                end
-                
-                local backgroundFrame = Instance.new('Frame') do 
-                    
-                    backgroundFrame.BackgroundTransparency = 0 
-                    backgroundFrame.BackgroundColor3 = theme.Window2
-                    backgroundFrame.BorderSizePixel = 0 
-                    backgroundFrame.Name = '#background'
-                    backgroundFrame.Position = UDim2.fromOffset(0, 0)
-                    backgroundFrame.Size = UDim2.fromScale(1, 1)
-                    backgroundFrame.Visible = true 
-                    backgroundFrame.ZIndex = 4
-                    backgroundFrame.Parent = mainFrame
-                end
-                local stroke = Instance.new('UIStroke') do 
-                    stroke.ApplyStrokeMode = 'Border'
-                    stroke.Color = theme.Stroke
-                    stroke.LineJoinMode = 'Round'
-                    stroke.Thickness = 1 
-                    stroke.Name = '#stroke'
-                    
-                    stroke.Parent = mainFrame
-                end
-                local shadow = Instance.new('ImageLabel') do 
-                    shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-                    shadow.BackgroundTransparency = 1
-                    shadow.BorderSizePixel = 0 
-                    shadow.Image = 'rbxassetid://7331400934'
-                    shadow.ImageColor3 = Color3.fromRGB(0, 0, 5)
-                    shadow.Name = '#shadow'
-                    shadow.Position = UDim2.fromScale(0.5, 0.5)
-                    shadow.ScaleType = 'Slice'
-                    shadow.Size = UDim2.new(1, 50, 1, 50)
-                    shadow.SliceCenter = Rect.new(40, 40, 260, 260)
-                    shadow.SliceScale = 1
-                    shadow.ZIndex = 4
-                    
-                    shadow.Parent = mainFrame
-                end
-                -- the shitty line at the top
-                local trimLine = Instance.new('Frame') do 
-                    trimLine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                    trimLine.BackgroundTransparency = 0
-                    trimLine.BorderSizePixel = 0 
-                    trimLine.Name = '#trim'
-                    trimLine.Position = UDim2.fromOffset(0, -1)
-                    trimLine.Size = UDim2.new(1, 0, 0, 1)
-                    trimLine.ZIndex = 64
-                    
-                    
-                    trimLine.Parent = mainFrame
-                    
-                    local gradient = Instance.new('UIGradient') do 
-                        gradient.Color = ColorSequence.new(
-                            theme.Primary, 
-                            theme.Secondary
-                        )
-                        gradient.Enabled = true
-                        gradient.Name = '#gradient'
-                        gradient.Rotation = 0
-                        
-                        gradient.Parent = trimLine
-                    end
-                end
-                -- title bar
-                local titleBar = Instance.new('Frame') do 
-                    titleBar.Active = true
-                    titleBar.BackgroundColor3 = theme.Window1
-                    titleBar.BackgroundTransparency = 0
-                    titleBar.BorderColor3 = theme.Inset1
-                    titleBar.BorderMode = 'Inset'
-                    titleBar.BorderSizePixel = 1
-                    titleBar.ClipsDescendants = true
-                    titleBar.Name = '#title-bar'
-                    titleBar.Selectable = true
-                    titleBar.Size = UDim2.new(1, 0, 0, 26)
-                    titleBar.ZIndex = 50
-                    
-                    titleBar.Parent = mainFrame 
-                    
-                    local stroke = Instance.new('UIStroke') do 
-                        stroke.ApplyStrokeMode = 'Border'
-                        stroke.Color = theme.Stroke
-                        stroke.LineJoinMode = 'Round'
-                        stroke.Thickness = 1 
-                        stroke.Name = '#stroke'
-                        
-                        stroke.Parent = titleBar
-                    end
-                    
-                    local fade = Instance.new('Frame') do 
-                        fade.BackgroundColor3 = theme.Window1
-                        fade.BackgroundTransparency = 1
-                        fade.BorderColor3 = theme.Inset1
-                        fade.BorderMode = 'Inset'
-                        fade.BorderSizePixel = 1
-                        fade.Name = '#fade'
-                        fade.Size = UDim2.new(1, 4, 1, 4)
-                        fade.Position = UDim2.fromOffset(-2, -2)
-                        fade.Visible = false
-                        fade.ZIndex = 60
-                        
-                        fade.Parent = titleBar
-                    end
-                    
-                    local buttonClose = Instance.new('TextButton') do 
-                        buttonClose.AnchorPoint = Vector2.new(1, 0)
-                        buttonClose.AutoButtonColor = false
-                        buttonClose.BackgroundColor3 = theme.Button1
-                        buttonClose.BorderSizePixel = 0
-                        buttonClose.Name = '#button-close'
-                        buttonClose.Position = UDim2.new(1, -3, 0, 2)
-                        buttonClose.Size = UDim2.fromOffset(20, 20)
-                        buttonClose.Visible = true
-                        buttonClose.ZIndex = 52 
-                        buttonClose.Text = ''
-                        
-                        buttonClose.Parent = titleBar
-                        
-                        local round = Instance.new('UICorner') do 
-                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                            round.Name = '#round'
-                            
-                            round.Parent = buttonClose
-                        end
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = buttonClose
-                        end
-                        
-                        local icon = Instance.new('ImageLabel') do 
-                            icon.Active = false
-                            icon.BackgroundTransparency = 1
-                            icon.BorderSizePixel = 0
-                            icon.Image = 'rbxassetid://9801460300'
-                            icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                            icon.Name = '#icon'
-                            icon.Position = UDim2.fromOffset(0, 0)
-                            icon.Size = UDim2.fromScale(1, 1)
-                            icon.Visible = true
-                            icon.ZIndex = 52 
-                            
-                            icon.Parent = buttonClose
-                            
-                            local gradient = Instance.new('UIGradient') do 
-                                gradient.Color = ColorSequence.new(
-                                    theme.ControlGradient1, 
-                                    theme.ControlGradient2
-                                )
-                                gradient.Rotation = 90
-                                gradient.Enabled = true
-                                gradient.Name = '#gradient'
-                                
-                                gradient.Parent = icon
-                            end
-                        end
-                    end
-                    
-                    local buttonMin = Instance.new('TextButton') do 
-                        buttonMin.AnchorPoint = Vector2.new(1, 0)
-                        buttonMin.AutoButtonColor = false
-                        buttonMin.BackgroundColor3 = theme.Button1
-                        buttonMin.BorderSizePixel = 0
-                        buttonMin.Name = '#button-min'
-                        buttonMin.Position = UDim2.new(1, -27, 0, 2)
-                        buttonMin.Size = UDim2.fromOffset(20, 20)
-                        buttonMin.Visible = true
-                        buttonMin.ZIndex = 52 
-                        buttonMin.Text = ''
-                        
-                        buttonMin.Parent = titleBar
-                        
-                        local round = Instance.new('UICorner') do 
-                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                            round.Name = '#round'
-                            
-                            round.Parent = buttonMin
-                        end
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = buttonMin
-                        end
-                        
-                        local icon = Instance.new('ImageLabel') do 
-                            icon.Active = false
-                            icon.BackgroundTransparency = 1
-                            icon.BorderSizePixel = 0
-                            icon.Image = 'rbxassetid://9801458532'
-                            icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                            icon.Name = '#icon'
-                            icon.Position = UDim2.fromOffset(0, 0)
-                            icon.Size = UDim2.fromScale(1, 1)
-                            icon.Visible = true
-                            icon.ZIndex = 52 
-                            
-                            icon.Parent = buttonMin
-                            
-                            local gradient = Instance.new('UIGradient') do 
-                                gradient.Color = ColorSequence.new(
-                                    theme.ControlGradient1, 
-                                    theme.ControlGradient2
-                                )
-                                gradient.Rotation = 90
-                                gradient.Enabled = true
-                                gradient.Name = '#gradient'
-                                
-                                gradient.Parent = icon
-                            end
-                        end
-                    end
-                    
-                    local icon = Instance.new('ImageLabel') do 
-                        icon.BackgroundTransparency = 1
-                        icon.BorderSizePixel = 0
-                        icon.Image = 'rbxassetid://10152328589'
-                        icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                        icon.ImageTransparency = 0
-                        icon.Name = '#icon'
-                        icon.Position = UDim2.fromOffset(2, 1)
-                        icon.Size = UDim2.fromOffset(22, 22)
-                        icon.Visible = true
-                        icon.ZIndex = 51
-                        
-                        icon.Parent = titleBar
-                    end
-                    
-                    local title = Instance.new('TextLabel') do 
-                        title.BackgroundTransparency = 1
-                        title.BorderSizePixel = 0
-                        title.Font = 'RobotoCondensed'
-                        title.Name = '#title'
-                        title.Position = UDim2.fromOffset(24, 0)
-                        title.RichText = true
-                        title.Size = UDim2.new(1, -74, 1, 0)
-                        title.Text = 'j'
-                        title.TextColor3 = theme.TextPrimary
-                        title.TextScaled = false
-                        title.TextSize = 17
-                        title.TextStrokeColor3 = theme.TextStroke
-                        title.TextStrokeTransparency = 0.8 -- tstroke 
-                        title.TextTransparency = 0
-                        title.TextXAlignment = 'Left'
-                        title.TextYAlignment = 'Center'
-                        title.Visible = true
-                        title.ZIndex = 52 
-                        
-                        title.Parent = titleBar
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.PaddingLeft = UDim.new(0, 4)
-                            padding.Name = '#padding'
-                            
-                            padding.Parent = title
-                        end
-                    end
-                end
-                -- page region
-                local pageRegion = Instance.new('Frame') do 
-                    pageRegion.BackgroundColor3 = theme.Window2
-                    pageRegion.BackgroundTransparency = 0
-                    pageRegion.BorderColor3 = theme.Inset2
-                    pageRegion.BorderMode = 'Inset'
-                    pageRegion.BorderSizePixel = 1
-                    pageRegion.ClipsDescendants = true 
-                    pageRegion.Name = '#page-region'
-                    --pageRegion.Position = UDim2.new(0.25, 1, 0, 27)
-                    --pageRegion.Size = UDim2.new(0.75, -1, 1, -27)
-                    pageRegion.Position = UDim2.new(0, 126, 0, 27)
-                    pageRegion.Size = UDim2.new(1, -126, 1, -27)
-                    pageRegion.Visible = true
-                    pageRegion.ZIndex = 30
-                    
-                    pageRegion.Parent = mainFrame
-                    --[[
-                    local shadowLeft = Instance.new('Frame') do 
-                        shadowLeft.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-                        shadowLeft.BackgroundTransparency = 0
-                        shadowLeft.BorderSizePixel = 0
-                        shadowLeft.Name = '#shadow-left'
-                        shadowLeft.Position = UDim2.fromOffset(1, 0)
-                        shadowLeft.Size = UDim2.new(0, 5, 1, 0)
-                        shadowLeft.Visible = true
-                        shadowLeft.ZIndex = 48
-                        
-                        shadowLeft.Parent = pageRegion
-                        
-                        local gradient = Instance.new('UIGradient') do 
-                            gradient.Name = '#gradient'
-                            gradient.Transparency = NumberSequence.new({
-                                NumberSequenceKeypoint.new(0, 0.75), 
-                                NumberSequenceKeypoint.new(1, 1)
-                            })
-                            gradient.Parent = shadowLeft
-                        end
-                    end
-                    
-                    local shadowTop = Instance.new('Frame') do 
-                        shadowTop.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-                        shadowTop.BackgroundTransparency = 0
-                        shadowTop.BorderSizePixel = 0
-                        shadowTop.Name = '#shadow-top'
-                        shadowTop.Position = UDim2.fromOffset(1, 0)
-                        shadowTop.Size = UDim2.new(0, 5, 1, 0)
-                        shadowTop.Visible = true
-                        shadowTop.ZIndex = 48
-                        
-                        shadowTop.Parent = pageRegion
-                        
-                        local gradient = Instance.new('UIGradient') do 
-                            gradient.Name = '#gradient'
-                            gradient.Transparency = NumberSequence.new({
-                                NumberSequenceKeypoint.new(0, 0.75), 
-                                NumberSequenceKeypoint.new(1, 1)
-                            })
-                            gradient.Rotation = 90
-                            
-                            gradient.Parent = shadowTop
-                        end
-                    end]]
-                end
-                
-                -- sidebar
-                local sideBar = Instance.new('Frame') do 
-                    sideBar.BackgroundColor3 = theme.Window3
-                    sideBar.BackgroundTransparency = 0 
-                    sideBar.BorderColor3 = theme.Inset3
-                    sideBar.BorderMode = 'Inset'
-                    sideBar.BorderSizePixel = 1
-                    sideBar.Name = '#sidebar'
-                    sideBar.Position = UDim2.fromOffset(0, 27)
-                    --sideBar.Size = UDim2.new(0.25, 0, 1, -27)
-                    sideBar.Size = UDim2.new(0, 125, 1, -27)
-                    sideBar.Visible = true
-                    sideBar.ZIndex = 50
-                    
-                    sideBar.Parent = mainFrame
-                    
-                    local stroke = Instance.new('UIStroke') do 
-                        stroke.ApplyStrokeMode = 'Border'
-                        stroke.Color = theme.Stroke
-                        stroke.LineJoinMode = 'Round'
-                        stroke.Name = '#stroke'
-                        stroke.Thickness = 1 
-                        
-                        stroke.Parent = sideBar
-                    end
+    return names
+end
 
-                    
-                    local menu = Instance.new('ScrollingFrame') do 
-                        menu.AutomaticCanvasSize = 'Y'
-                        menu.BackgroundTransparency = 1
-                        menu.BorderSizePixel = 0
-                        menu.BottomImage = 'rbxassetid://9416839567'
-                        menu.CanvasSize = UDim2.fromOffset(0, 0)
-                        menu.MidImage = 'rbxassetid://9416839567'
-                        menu.Name = '#menu'
-                        menu.Position = UDim2.fromOffset(1, 1)
-                        menu.ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255)
-                        menu.ScrollBarImageTransparency = 0.9
-                        menu.ScrollBarThickness = 1
-                        menu.ScrollingDirection = 'Y'
-                        menu.ScrollingEnabled = true
-                        menu.Size = UDim2.new(1, -2, 1, -2)
-                        menu.TopImage = 'rbxassetid://9416839567'
-                        menu.Visible = true
-                        menu.ZIndex = 51
-                        
-                        menu.Parent = sideBar
-                        
-                        local layout = Instance.new('UIListLayout') do 
-                            layout.FillDirection = 'Vertical'
-                            layout.HorizontalAlignment = 'Center'
-                            layout.Name = '#layout'
-                            layout.Padding = UDim.new(0, 6)
-                            layout.SortOrder = 'LayoutOrder'
-                            layout.VerticalAlignment = 'Top'
-                            
-                            layout.Parent = menu
-                        end
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.Name = '#padding'
-                            padding.PaddingTop = UDim.new(0, 5)
-                            
-                            padding.Parent = menu
-                        end
-                    end
-                end
-                
-                -- resize handle
-                local resizeHandle = Instance.new('ImageLabel') do 
-                    resizeHandle.BackgroundTransparency = 1
-                    resizeHandle.Image = 'rbxassetid://9995727737'
-                    resizeHandle.ImageColor3 = theme.Primary
-                    resizeHandle.Name = '#resize-handle'
-                    resizeHandle.Position = UDim2.new(1, -10, 1, -10)
-                    resizeHandle.Size = UDim2.fromOffset(10, 10)
-                    resizeHandle.ZIndex = 34
-                    
-                    resizeHandle.Parent = mainFrame
-                end
-                
-                instances.mainFrame = mainFrame
-            end
-            window.instances = instances 
-            window.signals = {
-                buttonClose = {
-                    MouseEnter = function(self) 
-                        tween(self, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        tween(self['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(self) 
-                        tween(self, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        tween(self['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(_, self) 
-                        self:destroy()
-                    end
-                },
-                buttonMin = {
-                    MouseEnter = function(self, w) 
-                        w.minFocused = true
-                        
-                        if (w.minimized) then
-                            tween(self, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(self, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        end
-                        tween(self['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(self, w) 
-                        w.minFocused = false
-                        
-                        if (w.minimized) then
-                            tween(self, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(self, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(self['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(_, self) 
-                        self:minimize()
-                    end
-                }
-            }
-            
-            
-            
-            window.destroy = function(self) 
-                
-                if (ui.autoDisableToggles) then 
-                    for _, menu in ipairs(self.menus) do 
-                        for _, section in ipairs(menu.sections) do 
-                            for _, control in ipairs(section.controls) do 
-                                if (control.class == 'picker') then
-                                    if (control.chromaCon) then 
-                                        control.chromaCon:Disconnect()
-                                    end
-                                    local pwin = control.pickerWindow
-                                    if (pwin) then
-                                        if (pwin.chromaCon) then 
-                                            pwin.chromaCon:Disconnect()
-                                        end
-                                        pwin:bindToEvent('close',nil)
-                                        pwin:destroy()
-                                    end
-                                elseif (control.class == 'toggle') then 
-                                    if (control.toggled) then
-                                        control:disable()
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-                local mainFrame = self.instances.mainFrame
-                task.spawn(function()
-                    --tween(mainFrame, {Position = UDim2.new(0, mainFrame.AbsolutePosition.X, 1, mainFrame.AbsoluteSize.Y)}, 1, 1)
-                    local animCon
-                    
-                    task.spawn(function() 
-                        
-                        
-                        local backgroundTransparency = {}
-                        local scrollBarImageTransparency = {}
-                        local imageTransparency = {}
-                        local transparency = {}
-                        local textTransparency = {}
-                        
-                        local s = {
-                            Frame = {backgroundTransparency}, 
-                            ImageButton = {backgroundTransparency, imageTransparency},
-                            ImageLabel = {backgroundTransparency, imageTransparency},
-                            TextButton = {backgroundTransparency, textTransparency},
-                            TextLabel = {backgroundTransparency, textTransparency},
-                            TextBox = {backgroundTransparency, textTransparency},
-                            ScrollingFrame = {backgroundTransparency, scrollBarImageTransparency},
-                            UIStroke = {transparency},
-                        }
-                        local d = mainFrame:GetDescendants()
-                        table.insert(d, mainFrame)
-                        
-                        for i, v in ipairs(d) do 
-                            local a = s[v.ClassName]
-                            if (a) then
-                                for i = 1, #a do 
-                                    table.insert(a[i], v)
-                                end
-                            end
-                        end
-                        
-                        for i,v in ipairs(transparency) do
-                            v.Transparency = 1
-                        end
-                        for i,v in ipairs(scrollBarImageTransparency) do 
-                            v.ScrollBarImageTransparency = 1 
-                        end
-                        
-                        transparency = nil
-                        scrollBarImageTransparency = nil
-                        animCon = renderService.RenderStepped:Connect(function(dt) 
-                            dt *= 8
-                            for i= 1, #backgroundTransparency do 
-                                backgroundTransparency[i].BackgroundTransparency += dt
-                            end
-                            for i= 1, #imageTransparency do 
-                                imageTransparency[i].ImageTransparency += dt
-                            end
-                            for i= 1, #textTransparency do 
-                                textTransparency[i].TextTransparency += dt
-                            end
-                        end)
-                    end)
-                    tween(mainFrame['#scale'], {Scale = 0.6}, 0.5, 1).Completed:Wait()--{Size = UDim2.fromOffset(mainFrame.AbsoluteSize.X, 0)}, 0.5, 1).Completed:Wait()
-                    animCon:Disconnect()
-                    mainFrame:Destroy()
-                end)
-                
-                table.remove(ui.windows, table.find(ui.windows, self))
-                if (#ui.windows == 0) then
-                    wait(0.3)
-                    ui.destroy(true) 
-                end
-                
-                self:fireEvent('destroyInternal')
-                return self 
-            end
-            window.setTitle = function(self, title) 
-                self.instances.title.Text = tostring(title)
-                return self 
-            end
-            window.setIcon = function(self, newIcon) 
-                self.instances.mainFrame['#title-bar']['#icon'].Image = newIcon
-                return self
-            end
-            window.setPosition = function(self, newPosition)
-                -- type coercion :money
-                if (typeof(newPosition) == 'Vector2') then
-                    newPosition = UDim2.fromOffset(newPosition.X, newPosition.Y)
-                elseif (typeof(newPosition) ~= 'UDim2') then
-                    return error('expected type UDim2 or Vector2', 2)
-                end
-                self.instances.mainFrame.Position = newPosition
-                return self 
-                
-            end
-            window.setSize = function(self, size)
-                -- type coercion :money
-                if (typeof(size) == 'Vector2') then
-                    size = UDim2.fromOffset(size.X, size.Y)
-                elseif (typeof(size) ~= 'UDim2') then
-                    return error('expected type UDim2 or Vector2', 2)
-                end
-                self.size = size
-                self.instances.mainFrame.Size = size
-                return self 
-            end
-            
-            window.getPosition = function(self) 
-                return self.instances.mainFrame.Position
-            end
-            window.getSize = function(self, targetSize) 
-                return targetSize and self.size or self.instances.mainFrame.Size
-            end
-            
-            window.new = function(self, resize) 
-                -- inherit some functions and stuff
-                local new = setmetatable({}, self)
-                new.menus = {}
-                new.binds = {}
-                table.insert(ui.windows, new)
-                
-                local instances = {}
-                -- copy the main gui 
-                instances.mainFrame = self.instances.mainFrame:Clone()
-                
-                
-                -- scuffed
-                --[[
-                local idx = #ui.windows * 200
-                for i,v in ipairs(instances.mainFrame:GetDescendants()) do 
-                    if (v:IsA('GuiObject')) then
-                        v.ZIndex += idx
-                    end
-                end]]
-                
-                local titleBar = instances.mainFrame['#title-bar']
-                
-                instances.buttonClose = titleBar['#button-close']
-                instances.buttonMin = titleBar['#button-min']
-                instances.titleBar = titleBar
-                instances.title = titleBar['#title']
-                instances.gradient = instances.mainFrame['#trim']['#gradient']
-                instances.sideBar = instances.mainFrame['#sidebar']
-                instances.tabMenu = instances.sideBar['#menu']
-                instances.pageRegion = instances.mainFrame['#page-region']
-                instances.resizeHandle = instances.mainFrame['#resize-handle']
-                
-                -- setup signals
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                -- dragging
-                do 
-                    local dCon
-                    local aCon
-                    local mainFrame = instances.mainFrame
-                    local targetPos
-                    
-                    titleBar.InputBegan:Connect(function(io) 
-                        if (io.UserInputType.Value == 0) then
-                            local rootPos = mainFrame.AbsolutePosition
-                            local startPos = io.Position
-                            
-                            startPos = Vector2.new(startPos.X, startPos.Y)
-                            
-                            targetPos = UDim2.fromOffset(rootPos.X, rootPos.Y)
-                            aCon = renderService.RenderStepped:Connect(function(dt) 
-                                mainFrame.Position = mainFrame.Position:lerp(targetPos, 1 - animSpeed^dt)-- 1 - 1e-12^dt)
-                            end)
-                            
-                            dCon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Value == 4) then
-                                    local curPos = io.Position
-                                    curPos = Vector2.new(curPos.X, curPos.Y) 
-                                    
-                                    local dest = rootPos + (curPos - startPos)
-                                    targetPos = UDim2.fromOffset(dest.X, dest.Y)
-                                end
-                            end)
-                            
-                        end
-                    end)
-                    titleBar.InputEnded:Connect(function(io)
-                        if (io.UserInputType.Value == 0) then
-                            dCon:Disconnect()
-                            aCon:Disconnect()
-                            
-                            tween(mainFrame, {Position = targetPos}, 0.2, 1)
-                        end
-                    end)
-                end
-                -- resizing
-                if (resize) then
-                    local dCon
-                    local aCon
-                    local mainFrame = instances.mainFrame
-                    local resizeHandle = instances.resizeHandle
-                    
-                    local targetSize
-                    
-                    resizeHandle.InputBegan:Connect(function(io) 
-                        if (io.UserInputType.Value == 0 and not new.minimized) then
-                            local rootSize = mainFrame.AbsoluteSize
-                            local startPos = io.Position
-                            
-                            startPos = Vector2.new(startPos.X, startPos.Y)
-                            
-                            targetSize = UDim2.fromOffset(rootSize.X, rootSize.Y)
-                            aCon = renderService.RenderStepped:Connect(function(dt) 
-                                mainFrame.Size = mainFrame.Size:lerp(targetSize, 1 - animSpeed^dt)-- 1 - 1e-12^dt)
-                                new.size = mainFrame.Size
-                            end)
-                            
-                            dCon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Value == 4) then
-                                    local curPos = io.Position
-                                    curPos = Vector2.new(curPos.X, curPos.Y) 
-                                    
-                                    local dest = rootSize + (curPos - startPos)
-                                    targetSize = UDim2.fromOffset(math.clamp(dest.X, 400, 800), math.clamp(dest.Y, 300, 600))
-                                end
-                            end)
-                            
-                        end
-                    end)
-                    resizeHandle.InputEnded:Connect(function(io)
-                        if (io.UserInputType.Value == 0 and not new.minimized) then
-                            dCon:Disconnect()
-                            aCon:Disconnect()
-                            
-                            tween(mainFrame, {Size = targetSize}, 0.2, 1)
-                            new.size = targetSize
-                        end
-                    end)
-                else
-                    instances.resizeHandle.Visible = false
-                end
-                -- finalize stuff
-                instances.mainFrame.Parent = uiScreen
-                new.instances = instances
-                return new
-            end
-            window.minimize = function(self) 
-                local newState = not self.minimized
-                local mf = self.instances.mainFrame
-                local bmin = mf['#title-bar']['#button-min']
-                local bminIcon = bmin['#icon']
-                
-                
-                if (newState) then
-                    tween(mf, {Size = UDim2.fromOffset(self.size.X.Offset, 26)}, 0.3, 1)
-                    bminIcon.Image = 'rbxassetid://9642646619'
-                    
-                    tween(bminIcon, {
-                        Rotation = 45,
-                        ImageColor3 = theme.Primary
-                    }, 0.3, 1)
-                    if (self.minFocused) then
-                        tween(bmin, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                    else
-                        tween(bmin, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                    end
-                    
-                    mf['#page-region'].Visible = false
-                    mf['#sidebar'].Visible = false
-                else
-                    tween(mf, {Size = self.size}, 0.3, 1)
-                    bminIcon.Image = 'rbxassetid://9642680675'
-                    tween(bminIcon, {
-                        Rotation = 0,
-                        ImageColor3 = Color3.fromRGB(255, 255, 255)
-                    }, 0.3, 1)
-                    
-                    if (self.minFocused) then
-                        tween(bmin, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                    else
-                        tween(bmin, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                    end
-                    
-                    mf['#page-region'].Visible = true
-                    mf['#sidebar'].Visible = true
-                end
-                self.minimized = newState
-            end            
-            
+function Library:SaveConfig(name)
+    if not name or name == "" then Library:Notification("Config", "Invalid Config Name", 3) return end
+    local data = {}
+    for flag, value in pairs(Library.Flags) do
+        if typeof(value) == "Color3" then
+            data[flag] = {Type = "Color3", R = value.R, G = value.G, B = value.B}
+        elseif typeof(value) == "EnumItem" then
+            data[flag] = {Type = "Enum", Name = tostring(value)}
+        elseif type(value) == "table" and value.Color and value.Transparency then
+            data[flag] = {Type = "CP", R = value.Color.R, G = value.Color.G, B = value.Color.B, A = value.Transparency}
+        else
+            data[flag] = value
         end
-        -- add the window class
-        elemClasses.window = window
     end
-    -- PICKER WINDOW
-    do 
-        local function polarToCart(r, theta) 
-            return r * math.cos(theta), r * math.sin(theta)
-        end
-        
-        local function cartToPolar(x, y) 
-            return math.sqrt((x^2) + (y^2)), math.atan2(y, x)
-        end
-        
-        local pickerWindow = {} do 
-            pickerWindow.__index = pickerWindow
-            setmetatable(pickerWindow, elemClasses.baseElement)
-            
-            pickerWindow.class = 'pickerWindow'
-            
-            pickerWindow.minimized = false -- is minimized
-            pickerWindow.minFocused = false
-            
-            
-            pickerWindow.hue = 0
-            pickerWindow.sat = 0
-            pickerWindow.val = 1
-            
-            pickerWindow.red = 255
-            pickerWindow.green = 255
-            pickerWindow.blue = 255
-            
-            pickerWindow.color = Color3.fromHSV(0, 0, 1)
-            
-            pickerWindow.chromaEnabled = false
-            pickerWindow.chromaFocused = false
-            
-            pickerWindow.pickerMoving = false
-            
-            pickerWindow.toggleChroma = function(self) 
-                local newState = not self.chromaEnabled
-                local chromaButton = self.instances.chromaButton
-                
-                if (newState) then
-                    
+    writefile(ConfigFolder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+    Library:Notification("Config", "Saved config: " .. name, 3)
+end
 
-                    if (self.chromaFocused) then
-                        tween(chromaButton, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                    else
-                        tween(chromaButton, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                    end
-                    tween(chromaButton['#icon'], {Rotation = 360}, 0.5, 1)
-                    tween(self.instances.speedSlider, {Position = UDim2.new(0, 4, 1, -24)}, 0.5, 1)
-                    
-                    chromaButton['#icon'].Image = 'rbxassetid://9840988620'
-                    self:fireEvent('chroma', true)
-                    
-                else
-                    if (self.chromaFocused) then
-                        tween(chromaButton, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                    else
-                        tween(chromaButton, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                    end
-                    tween(chromaButton['#icon'], {Rotation = 0}, 0.5, 1)
-                    tween(self.instances.speedSlider, {Position = UDim2.new(0, -44, 1, -24)}, 0.5, 1)
-                    chromaButton['#icon'].Image = 'rbxassetid://9841673199'
-                    
-                    self:fireEvent('chroma', false)
-                end
-                
-                
-                self.chromaEnabled = newState 
-                return newState
-            end
-            
-            pickerWindow.displayRGB = function(self) 
-                local r, g, b = self.red, self.green, self.blue
-                self.color = Color3.fromRGB(r, g, b)
-                
-                local hue, sat, val = self.color:ToHSV()
-                
-                self.hue = hue
-                self.sat = sat
-                self.val = val
-                
-                local radius = sat / 2
-                local theta = (hue * (math.pi * 2)) - (math.pi * 2)
-                
-                local x, y = radius * math.cos(theta), radius * math.sin(theta)
-                
-                self.instances.valSlider['#slider-container'].BackgroundColor3 = Color3.fromHSV(hue, sat, 1)
-                
-                tween(self.instances.valCursor, {Position = UDim2.fromScale(val, 0)}, 0.3, 1)
-                tween(self.instances.pickerCursor, {Position = UDim2.fromScale(x+0.5, y+0.5)}, 0.3, 1)
-                
-                self:fireEvent('newColor', self.color, {hue, sat, val})
-            end
-            
-            pickerWindow.displayHSV = function(self, moveCursor) 
-                local hue, sat, val = self.hue, self.sat, self.val
-                self.color = Color3.fromHSV(hue, sat, val)
-                local r, g, b = self.color.R * 255, self.color.G * 255, self.color.B * 255
-                
-                self.red = r
-                self.green = g
-                self.blue = b
-                
-                
-                local instances = self.instances 
-                
-                instances.valSlider['#slider-container'].BackgroundColor3 = Color3.fromHSV(hue, sat, 1)
-                tween(instances.redFill, {Size = UDim2.fromScale(r/255, 1)}, 0.3, 1)
-                tween(instances.greenFill, {Size = UDim2.fromScale(g/255, 1)}, 0.3, 1)
-                tween(instances.blueFill, {Size = UDim2.fromScale(b/255, 1)}, 0.3, 1)
-                
-                instances.redSlider['#val'].Text = math.floor(r)
-                instances.greenSlider['#val'].Text = math.floor(g)
-                instances.blueSlider['#val'].Text = math.floor(b)
-                
-                if (moveCursor) then
-                    local radius = sat / 2
-                    local theta = (hue * (math.pi * 2)) - (math.pi * 2)
-                    
-                    local x, y = radius * math.cos(theta), radius * math.sin(theta)
-                                        
-                    tween(instances.valCursor, {Position = UDim2.fromScale(val, 0)}, 0.3, 1)
-                    tween(instances.pickerCursor, {Position = UDim2.fromScale(x+0.5, y+0.5)}, 0.3, 1)
-                end
-                
-                self:fireEvent('newColor', self.color, {hue, sat, val})
-            end
-            
-            
-            
-            
-            local instances = {} do 
-                local main = Instance.new('Frame') do 
-                    main.BackgroundColor3 = theme.Window2
-                    main.BackgroundTransparency = 0
-                    main.BorderSizePixel = 0
-                    main.Name = '#main_frame'
-                    main.Size = UDim2.fromOffset(300, 300)
-                    main.Visible = true
-                    main.ZIndex = 100
-                end
-                
-                local scale = Instance.new('UIScale') do 
-                    scale.Scale = 1 
-                    scale.Name = '#scale'
-                    scale.Parent = main
-                end
-                
-                local backgroundFrame = Instance.new('Frame') do 
-                    backgroundFrame.BackgroundTransparency = 0 
-                    backgroundFrame.BackgroundColor3 = theme.Window2
-                    backgroundFrame.BorderSizePixel = 0 
-                    backgroundFrame.Name = '#background'
-                    backgroundFrame.Size = UDim2.fromScale(1, 1)
-                    backgroundFrame.Visible = true 
-                    backgroundFrame.ZIndex = 99
-                    
-                    backgroundFrame.Parent = trim
-                end
-                local stroke = Instance.new('UIStroke') do 
-                    stroke.ApplyStrokeMode = 'Border'
-                    stroke.Color = theme.Stroke
-                    stroke.LineJoinMode = 'Round'
-                    stroke.Thickness = 1 
-                    stroke.Name = '#stroke'
-                    
-                    stroke.Parent = main
-                end
-                local shadow = Instance.new('ImageLabel') do 
-                    shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-                    shadow.BackgroundTransparency = 1
-                    shadow.BorderSizePixel = 0 
-                    shadow.Image = 'rbxassetid://7331400934'
-                    shadow.ImageColor3 = Color3.fromRGB(0, 0, 5)
-                    shadow.Name = '#shadow'
-                    shadow.Position = UDim2.fromScale(0.5, 0.5)
-                    shadow.ScaleType = 'Slice'
-                    shadow.Size = UDim2.new(1, 50, 1, 50)
-                    shadow.SliceCenter = Rect.new(40, 40, 260, 260)
-                    shadow.SliceScale = 1
-                    shadow.ZIndex = 98
-                    
-                    shadow.Parent = main
-                end
-
-                local trim = Instance.new('Frame') do 
-                    trim.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                    trim.BackgroundTransparency = 0
-                    trim.BorderSizePixel = 0 
-                    trim.Name = '#trim'
-                    trim.Position = UDim2.fromOffset(0, -1)
-                    trim.Size = UDim2.new(1, 0, 0, 1)
-                    trim.ZIndex = 111
-                    
-                    trim.Parent = main
-                    
-                    local gradient = Instance.new('UIGradient') do 
-                        gradient.Color = ColorSequence.new(
-                            theme.Primary, 
-                            theme.Secondary
-                        )
-                        gradient.Enabled = true
-                        gradient.Name = '#gradient'
-                        gradient.Rotation = 0
-                        
-                        gradient.Parent = trim
-                    end
-                end
-
-                local titleBar = Instance.new('Frame') do 
-                    titleBar.Active = true
-                    titleBar.BackgroundColor3 = theme.Window1
-                    titleBar.BackgroundTransparency = 0
-                    titleBar.BorderColor3 = theme.Inset1
-                    titleBar.BorderMode = 'Inset'
-                    titleBar.BorderSizePixel = 1
-                    titleBar.ClipsDescendants = true
-                    titleBar.Name = '#title-bar'
-                    titleBar.Selectable = true
-                    titleBar.Size = UDim2.new(1, 0, 0, 26)
-                    titleBar.ZIndex = 101
-                    
-                    titleBar.Parent = main 
-                    
-                    local stroke = Instance.new('UIStroke') do 
-                        stroke.ApplyStrokeMode = 'Border'
-                        stroke.Color = theme.Stroke
-                        stroke.LineJoinMode = 'Round'
-                        stroke.Thickness = 1 
-                        stroke.Name = '#stroke'
-                        
-                        stroke.Parent = titleBar
-                    end
-                    
-                    local fade = Instance.new('Frame') do 
-                        fade.BackgroundColor3 = theme.Window1
-                        fade.BackgroundTransparency = 1
-                        fade.BorderColor3 = theme.Inset1
-                        fade.BorderMode = 'Inset'
-                        fade.BorderSizePixel = 1
-                        fade.Name = '#fade'
-                        fade.Size = UDim2.new(1, 4, 1, 4)
-                        fade.Position = UDim2.fromOffset(-2, -2)
-                        fade.Visible = false
-                        fade.ZIndex = 110
-                        
-                        fade.Parent = titleBar
-                    end
-                    
-                    local buttonClose = Instance.new('TextButton') do 
-                        buttonClose.AnchorPoint = Vector2.new(1, 0)
-                        buttonClose.AutoButtonColor = false
-                        buttonClose.BackgroundColor3 = theme.Button1
-                        buttonClose.BorderSizePixel = 0
-                        buttonClose.Name = '#button-close'
-                        buttonClose.Position = UDim2.new(1, -3, 0, 2)
-                        buttonClose.Size = UDim2.fromOffset(20, 20)
-                        buttonClose.Visible = true
-                        buttonClose.ZIndex = 102 
-                        buttonClose.Text = ''
-                        
-                        buttonClose.Parent = titleBar
-                        
-                        local round = Instance.new('UICorner') do 
-                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                            round.Name = '#round'
-                            
-                            round.Parent = buttonClose
-                        end
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = buttonClose
-                        end
-                        
-                        local icon = Instance.new('ImageLabel') do 
-                            icon.Active = false
-                            icon.BackgroundTransparency = 1
-                            icon.BorderSizePixel = 0
-                            icon.Image = 'rbxassetid://9801460300'
-                            icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                            icon.Name = '#icon'
-                            icon.Position = UDim2.fromOffset(0, 0)
-                            icon.Size = UDim2.fromScale(1, 1)
-                            icon.Visible = true
-                            icon.ZIndex = 102
-                            
-                            icon.Parent = buttonClose
-                            
-                            local gradient = Instance.new('UIGradient') do 
-                                gradient.Color = ColorSequence.new(
-                                    theme.ControlGradient1,
-                                    theme.ControlGradient2
-                                )
-                                gradient.Rotation = 90
-                                gradient.Enabled = true
-                                gradient.Name = '#gradient'
-                                
-                                gradient.Parent = icon
-                            end
-                        end
-                    end
-                    
-                    local buttonMin = Instance.new('TextButton') do 
-                        buttonMin.AnchorPoint = Vector2.new(1, 0)
-                        buttonMin.AutoButtonColor = false
-                        buttonMin.BackgroundColor3 = theme.Button1
-                        buttonMin.BorderSizePixel = 0
-                        buttonMin.Name = '#button-min'
-                        buttonMin.Position = UDim2.new(1, -27, 0, 2)
-                        buttonMin.Size = UDim2.fromOffset(20, 20)
-                        buttonMin.Visible = true
-                        buttonMin.ZIndex = 102 
-                        buttonMin.Text = ''
-                        
-                        buttonMin.Parent = titleBar
-                        
-                        local round = Instance.new('UICorner') do 
-                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                            round.Name = '#round'
-                            
-                            round.Parent = buttonMin
-                        end
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = buttonMin
-                        end
-                        
-                        local icon = Instance.new('ImageLabel') do 
-                            icon.Active = false
-                            icon.BackgroundTransparency = 1
-                            icon.BorderSizePixel = 0
-                            icon.Image = 'rbxassetid://9801458532'
-                            icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                            icon.Name = '#icon'
-                            icon.Position = UDim2.fromOffset(0, 0)
-                            icon.Size = UDim2.fromScale(1, 1)
-                            icon.Visible = true
-                            icon.ZIndex = 102 
-                            
-                            icon.Parent = buttonMin
-                            
-                            local gradient = Instance.new('UIGradient') do 
-                                gradient.Color = ColorSequence.new(
-                                    theme.ControlGradient1,
-                                    theme.ControlGradient2
-                                )
-                                gradient.Rotation = 90
-                                gradient.Enabled = true
-                                gradient.Name = '#gradient'
-                                
-                                gradient.Parent = icon
-                            end
-                        end
-                    end
-                    
-                    local icon = Instance.new('ImageLabel') do 
-                        icon.BackgroundTransparency = 1
-                        icon.BorderSizePixel = 0
-                        icon.Image = 'rbxassetid://9658988382'
-                        icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                        icon.ImageTransparency = 0
-                        icon.Name = '#icon'
-                        icon.Position = UDim2.fromOffset(2, 2)
-                        icon.Size = UDim2.fromOffset(22, 22)
-                        icon.Visible = true
-                        icon.ZIndex = 103
-                        
-                        icon.Parent = titleBar
-                    end
-                    
-                    local title = Instance.new('TextLabel') do 
-                        title.BackgroundTransparency = 1
-                        title.BorderSizePixel = 0
-                        title.Font = 'RobotoCondensed'
-                        title.Name = '#title'
-                        title.Position = UDim2.fromOffset(24, 0)
-                        title.RichText = true
-                        title.Size = UDim2.new(1, -74, 1, 0)
-                        title.Text = 'color picker'
-                        title.TextColor3 = theme.TextPrimary
-                        title.TextScaled = false
-                        title.TextSize = 17
-                        title.TextStrokeColor3 = theme.TextStroke
-                        title.TextStrokeTransparency = 0.8 -- tstroke 
-                        title.TextTransparency = 0
-                        title.TextXAlignment = 'Left'
-                        title.TextYAlignment = 'Center'
-                        title.Visible = true
-                        title.ZIndex = 102 
-                        
-                        title.Parent = titleBar
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.PaddingLeft = UDim.new(0, 4)
-                            padding.Name = '#padding'
-                            
-                            padding.Parent = title
-                        end
-                    end
-                end
-
-                local region = Instance.new('Frame') do 
-                    region.BackgroundColor3 = theme.Window2
-                    region.BackgroundTransparency = 0
-                    region.BorderColor3 = theme.Inset2
-                    region.BorderMode = 'Inset'
-                    region.BorderSizePixel = 1
-                    region.ClipsDescendants = true 
-                    region.Name = '#region'
-                    region.Position = UDim2.fromOffset(0, 27)
-                    region.Size = UDim2.new(1, 0, 1, -27)
-                    region.Visible = true
-                    region.ZIndex = 102
-                    
-                    region.Parent = main
-                    
-                    local pickerRegion = Instance.new('Frame') do 
-                        pickerRegion.BackgroundColor3 = theme.Window2
-                        pickerRegion.BackgroundTransparency = 0
-                        pickerRegion.BorderColor3 = theme.Inset2
-                        pickerRegion.BorderMode = 'Inset'
-                        pickerRegion.BorderSizePixel = 1 
-                        pickerRegion.ClipsDescendants = true
-                        pickerRegion.Name = '#region-picker'
-                        pickerRegion.Position = UDim2.fromOffset(2, 2)
-                        pickerRegion.Size = UDim2.new(1, -4, 0.75, -4)
-                        pickerRegion.Visible = true 
-                        pickerRegion.ZIndex = 102
-                        
-                        pickerRegion.Parent = region 
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = pickerRegion
-                        end
-                        
-                        local picker = Instance.new('ImageLabel') do 
-                            picker.AnchorPoint = Vector2.new(0.5, 0.5)
-                            picker.BackgroundTransparency = 1
-                            picker.Image = 'rbxassetid://9801454501'
-                            picker.Name = '#picker'
-                            picker.Position = UDim2.fromScale(0.5, 0.5)
-                            picker.Size = UDim2.fromScale(0.7, 0.7)
-                            picker.SizeConstraint = 'RelativeYY'
-                            picker.Visible = true
-                            picker.ZIndex = 104
-                            
-                            picker.Parent = pickerRegion
-                        
-                            local cursorInner = Instance.new('Frame') do 
-                                cursorInner.AnchorPoint = Vector2.new(0.5, 0.5)
-                                cursorInner.BackgroundTransparency = 1
-                                cursorInner.Name = '#cursor-inner'
-                                cursorInner.Position = UDim2.fromScale(0.5, 0.5)
-                                cursorInner.Size = UDim2.fromOffset(8, 8)
-                                cursorInner.Visible = true
-                                cursorInner.ZIndex = 106 
-                                
-                                cursorInner.Parent = picker 
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(1, 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = cursorInner
-                                end
-                                
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = Color3.fromRGB(255, 255, 255)
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 1
-                                    
-                                    stroke.Parent = cursorInner
-                                end
-                                
-                                local cursorOuter = Instance.new('Frame') do 
-                                    cursorOuter.BackgroundTransparency = 1
-                                    cursorOuter.Name = '#cursor-outer'
-                                    cursorOuter.Position = UDim2.fromOffset(-1, -1)
-                                    cursorOuter.Size = UDim2.fromOffset(10, 10)
-                                    cursorOuter.Visible = true
-                                    cursorOuter.ZIndex = 106 
-                                    
-                                    cursorOuter.Parent = cursorInner 
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(1, 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = cursorOuter
-                                    end
-                                    
-                                    local stroke = Instance.new('UIStroke') do 
-                                        stroke.ApplyStrokeMode = 'Border'
-                                        stroke.Color = Color3.fromRGB(0, 0, 5)
-                                        stroke.LineJoinMode = 'Round'
-                                        stroke.Name = '#stroke'
-                                        stroke.Thickness = 1
-                                        
-                                        stroke.Parent = cursorOuter
-                                    end
-                                end
-                            end
-                            
-                            local outline = Instance.new('Frame') do 
-                                outline.BackgroundColor3 = theme.Stroke
-                                outline.BorderSizePixel = 0
-                                outline.Name = '#outline'
-                                outline.Position = UDim2.fromOffset(1,1)
-                                outline.Size = UDim2.new(1, -2, 1, -2)
-                                outline.SizeConstraint = 'RelativeYY'
-                                outline.Visible = true
-                                outline.ZIndex = 103
-                                
-                                outline.Parent = picker
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(1, 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = outline
-                                end
-                                
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = theme.Stroke
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 2 
-                                    
-                                    stroke.Parent = outline
-                                end
-                            end
-                        end
-                        
-                        local valueSlider = Instance.new('Frame') do 
-                            valueSlider.AnchorPoint = Vector2.new(0.5, 1)
-                            valueSlider.BackgroundTransparency = 1
-                            valueSlider.Name = '#value-slider'
-                            valueSlider.Position = UDim2.fromScale(0.5, 1)
-                            valueSlider.Size = UDim2.new(0.8, 0, 0, 24)
-                            valueSlider.ZIndex = 103
-                            valueSlider.Visible = true
-                            
-                            valueSlider.Parent = pickerRegion
-                            
-                            local sliderContainer = Instance.new('Frame') do 
-                                sliderContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                                sliderContainer.Position = UDim2.fromOffset(3, 6)
-                                sliderContainer.Size = UDim2.new(1, -6, 0, 12)
-                                sliderContainer.Visible = true
-                                sliderContainer.ZIndex = 103
-                                sliderContainer.Name = '#slider-container'
-                                
-                                sliderContainer.Parent = valueSlider
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = sliderContainer
-                                end
-                                
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = theme.Stroke
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 1 
-                                    
-                                    stroke.Parent = sliderContainer
-                                end
-                                
-                                local valueGradient = Instance.new('Frame') do 
-                                    valueGradient.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                                    valueGradient.BackgroundTransparency = 0
-                                    valueGradient.Name = '#value-gradient'
-                                    valueGradient.Size = UDim2.fromScale(1, 1)
-                                    valueGradient.Visible = true
-                                    valueGradient.ZIndex = 104 
-                                    
-                                    valueGradient.Parent = sliderContainer
-                                    
-                                    local gradient = Instance.new('UIGradient') do 
-                                        gradient.Color = ColorSequence.new(
-                                            Color3.fromRGB(0, 0, 0)
-                                        )
-                                        gradient.Enabled = true
-                                        gradient.Name = '#gradient'
-                                        gradient.Rotation = 180
-                                        gradient.Transparency = NumberSequence.new({
-                                            NumberSequenceKeypoint.new(0, 1), 
-                                            NumberSequenceKeypoint.new(1, 0)
-                                        })
-                                        
-                                        gradient.Parent = valueGradient
-                                    end
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = valueGradient
-                                    end
-                                    
-                                    local stroke = Instance.new('UIStroke') do 
-                                        stroke.ApplyStrokeMode = 'Border'
-                                        stroke.Color = theme.Stroke
-                                        stroke.LineJoinMode = 'Round'
-                                        stroke.Name = '#stroke'
-                                        stroke.Thickness = 1 
-                                        
-                                        stroke.Parent = valueGradient
-                                    end
-                                end
-                                
-                                local cursorInner = Instance.new('Frame') do 
-                                    cursorInner.AnchorPoint = Vector2.new(0.5, 0)
-                                    cursorInner.BackgroundTransparency = 1
-                                    cursorInner.Name = '#cursor-inner'
-                                    cursorInner.Position = UDim2.fromScale(1, 0)
-                                    cursorInner.Size = UDim2.fromOffset(4, 12)
-                                    cursorInner.Visible = true
-                                    cursorInner.ZIndex = 104 
-                                    
-                                    cursorInner.Parent = sliderContainer 
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = cursorInner
-                                    end
-                                    
-                                    local stroke = Instance.new('UIStroke') do 
-                                        stroke.ApplyStrokeMode = 'Border'
-                                        stroke.Color = Color3.fromRGB(255, 255, 255)
-                                        stroke.LineJoinMode = 'Round'
-                                        stroke.Name = '#stroke'
-                                        stroke.Thickness = 1
-                                        
-                                        stroke.Parent = cursorInner
-                                    end
-                                    
-                                    local cursorOuter = Instance.new('Frame') do 
-                                        cursorOuter.AnchorPoint = Vector2.new(0.5, 0.5)
-                                        cursorOuter.BackgroundTransparency = 1
-                                        cursorOuter.Name = '#cursor-outer'
-                                        cursorOuter.Position = UDim2.fromScale(0.5, 0.5)
-                                        cursorOuter.Size = UDim2.new(1, 2, 1, 2)
-                                        cursorOuter.Visible = true
-                                        cursorOuter.ZIndex = 104 
-                                        
-                                        cursorOuter.Parent = cursorInner 
-                                        
-                                        local round = Instance.new('UICorner') do 
-                                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                            round.Name = '#round'
-                                            
-                                            round.Parent = cursorOuter
-                                        end
-                                        
-                                        local stroke = Instance.new('UIStroke') do 
-                                            stroke.ApplyStrokeMode = 'Border'
-                                            stroke.Color = Color3.fromRGB(0, 0, 5)
-                                            stroke.LineJoinMode = 'Round'
-                                            stroke.Name = '#stroke'
-                                            stroke.Thickness = 1
-                                            
-                                            stroke.Parent = cursorOuter
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                        
-                        local speedSlider = Instance.new('Frame') do 
-                            speedSlider.AnchorPoint = Vector2.new(0, 1)
-                            speedSlider.BackgroundTransparency = 1
-                            speedSlider.Name = '#speed-slider'
-                            speedSlider.Position = UDim2.new(0, -40, 1, -24)
-                            speedSlider.Size = UDim2.new(0, 24, 1, -26)
-                            speedSlider.ZIndex = 103
-                            speedSlider.Visible = true
-                            
-                            speedSlider.Parent = pickerRegion
-                            
-                            local sliderContainer = Instance.new('Frame') do 
-                                sliderContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                                sliderContainer.Position = UDim2.fromOffset(6, 3)
-                                sliderContainer.Size = UDim2.new(0, 12, 1, -6)
-                                sliderContainer.Visible = true
-                                sliderContainer.ZIndex = 103
-                                sliderContainer.Name = '#slider-container'
-                                
-                                sliderContainer.Parent = speedSlider
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = sliderContainer
-                                end
-                                
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = theme.Stroke
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 1 
-                                    
-                                    stroke.Parent = sliderContainer
-                                end
-                                
-                                local speedGradient = Instance.new('Frame') do 
-                                    speedGradient.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                                    speedGradient.BackgroundTransparency = 0
-                                    speedGradient.Name = '#speed-gradient'
-                                    speedGradient.Size = UDim2.fromScale(1, 1)
-                                    speedGradient.Visible = true
-                                    speedGradient.ZIndex = 104 
-                                    
-                                    speedGradient.Parent = sliderContainer
-                                    
-                                    local gradient = Instance.new('UIGradient') do 
-                                        gradient.Color = ColorSequence.new(
-                                            Color3.fromRGB(0, 0, 0)
-                                        )
-                                        gradient.Enabled = true
-                                        gradient.Name = '#gradient'
-                                        gradient.Rotation = 90
-                                        gradient.Transparency = NumberSequence.new({
-                                            NumberSequenceKeypoint.new(0, 1), 
-                                            NumberSequenceKeypoint.new(1, 0)
-                                        })
-                                        
-                                        gradient.Parent = speedGradient
-                                    end
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = speedGradient
-                                    end
-                                
-                                    local stroke = Instance.new('UIStroke') do 
-                                        stroke.ApplyStrokeMode = 'Border'
-                                        stroke.Color = theme.Stroke
-                                        stroke.LineJoinMode = 'Round'
-                                        stroke.Name = '#stroke'
-                                        stroke.Thickness = 1 
-                                        
-                                        stroke.Parent = speedGradient
-                                    end
-                                end
-                                
-                                local cursorInner = Instance.new('Frame') do 
-                                    cursorInner.AnchorPoint = Vector2.new(0, 0.5)
-                                    cursorInner.BackgroundTransparency = 1
-                                    cursorInner.Name = '#cursor-inner'
-                                    cursorInner.Position = UDim2.fromScale(0, 0)
-                                    cursorInner.Size = UDim2.fromOffset(12, 4)
-                                    cursorInner.Visible = true
-                                    cursorInner.ZIndex = 104 
-                                    
-                                    cursorInner.Parent = sliderContainer 
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = cursorInner
-                                    end
-                                    
-                                    local stroke = Instance.new('UIStroke') do 
-                                        stroke.ApplyStrokeMode = 'Border'
-                                        stroke.Color = Color3.fromRGB(255, 255, 255)
-                                        stroke.LineJoinMode = 'Round'
-                                        stroke.Name = '#stroke'
-                                        stroke.Thickness = 1
-                                        
-                                        stroke.Parent = cursorInner
-                                    end
-                                    
-                                    local cursorOuter = Instance.new('Frame') do 
-                                        cursorOuter.AnchorPoint = Vector2.new(0.5, 0.5)
-                                        cursorOuter.BackgroundTransparency = 1
-                                        cursorOuter.Name = '#cursor-outer'
-                                        cursorOuter.Position = UDim2.fromScale(0.5, 0.5)
-                                        cursorOuter.Size = UDim2.new(1, 2, 1, 2)
-                                        cursorOuter.Visible = true
-                                        cursorOuter.ZIndex = 104 
-                                        
-                                        cursorOuter.Parent = cursorInner 
-                                        
-                                        local round = Instance.new('UICorner') do 
-                                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                            round.Name = '#round'
-                                            
-                                            round.Parent = cursorOuter
-                                        end
-                                        
-                                        local stroke = Instance.new('UIStroke') do 
-                                            stroke.ApplyStrokeMode = 'Border'
-                                            stroke.Color = Color3.fromRGB(0, 0, 5)
-                                            stroke.LineJoinMode = 'Round'
-                                            stroke.Name = '#stroke'
-                                            stroke.Thickness = 1
-                                            
-                                            stroke.Parent = cursorOuter
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                        
-                        
-                        local chroma = Instance.new('TextButton') do 
-                            chroma.Active = true
-                            chroma.AnchorPoint = Vector2.new(0, 1)
-                            chroma.AutoButtonColor = false
-                            chroma.BackgroundColor3 = theme.Button1
-                            chroma.Name = '#chroma'
-                            chroma.Position = UDim2.new(0, 8, 1, -4)
-                            chroma.Size = UDim2.fromOffset(16, 16)
-                            chroma.Text = ''
-                            chroma.Visible = true
-                            chroma.ZIndex = 103
-                            
-                            chroma.Parent = pickerRegion
-                            
-                            local round = Instance.new('UICorner') do 
-                                round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                round.Name = '#round'
-                                
-                                round.Parent = chroma
-                            end
-                        
-                            local stroke = Instance.new('UIStroke') do 
-                                stroke.ApplyStrokeMode = 'Border'
-                                stroke.Color = theme.Stroke
-                                stroke.LineJoinMode = 'Round'
-                                stroke.Name = '#stroke'
-                                stroke.Thickness = 1 
-                                
-                                stroke.Parent = chroma
-                            end
-                            
-                            local icon = Instance.new('ImageLabel') do 
-                                icon.Active = false
-                                icon.BackgroundTransparency = 1
-                                icon.BorderSizePixel = 0
-                                icon.Image = 'rbxassetid://9841673199'--'rbxassetid://9840988620'
-                                icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                                icon.Name = '#icon'
-                                icon.Position = UDim2.fromOffset(0, 0)
-                                icon.Rotation = 0
-                                icon.Size = UDim2.fromScale(1, 1)
-                                icon.Visible = true
-                                icon.ZIndex = 103 
-                                
-                                icon.Parent = chroma
-                            end
-                        end
-                    end
-                    
-                    local inputRegion = Instance.new('Frame') do 
-                        inputRegion.BackgroundColor3 = theme.Window2
-                        inputRegion.BackgroundTransparency = 0
-                        inputRegion.BorderColor3 = theme.Inset2
-                        inputRegion.BorderMode = 'Inset'
-                        inputRegion.BorderSizePixel = 1 
-                        inputRegion.ClipsDescendants = true
-                        inputRegion.Name = '#region-input'
-                        inputRegion.Position = UDim2.new(0, 2, 0.75, 2)
-                        inputRegion.Size = UDim2.new(1, -4, 0.25, -4)
-                        inputRegion.Visible = true 
-                        inputRegion.ZIndex = 102
-                        
-                        inputRegion.Parent = region 
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = inputRegion
-                        end
-                        
-                        
-                        local redSlider = Instance.new('Frame') do 
-                            redSlider.BackgroundTransparency = 1
-                            redSlider.Name = '#red-slider'
-                            redSlider.Position = UDim2.fromOffset(0, -1)
-                            redSlider.Size = UDim2.new(1, 0, 0, 24)
-                            redSlider.ZIndex = 103
-                            redSlider.Visible = true
-                            
-                            redSlider.Parent = inputRegion
-                            
-                            local sliderContainer = Instance.new('Frame') do 
-                                sliderContainer.BackgroundColor3 = theme.Button1
-                                sliderContainer.Position = UDim2.fromOffset(3, 6)
-                                sliderContainer.Size = UDim2.new(1, -6, 0, 12)
-                                sliderContainer.Visible = true
-                                sliderContainer.ZIndex = 103
-                                sliderContainer.Name = '#slider-container'
-                                
-                                sliderContainer.Parent = redSlider
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = sliderContainer
-                                end
-                                
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = theme.Stroke
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 1 
-                                    
-                                    stroke.Parent = sliderContainer
-                                end
-                                local sliderFill = Instance.new('Frame') do 
-                                    sliderFill.Active = false
-                                    sliderFill.BackgroundColor3 = theme.Primary
-                                    sliderFill.BackgroundTransparency = 0.6
-                                    sliderFill.BorderSizePixel = 0
-                                    sliderFill.Name = '#slider-fill'
-                                    sliderFill.Size = UDim2.fromScale(1, 1)
-                                    sliderFill.Visible = true
-                                    sliderFill.ZIndex = 104
-                                    
-                                    sliderFill.Parent = sliderContainer
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = sliderFill
-                                    end
-                                    
-                                    local gradient = Instance.new('UIGradient') do 
-                                        gradient.Color = ColorSequence.new(
-                                            theme.ControlGradient1,
-                                            theme.ControlGradient2
-                                        )
-                                        gradient.Rotation = 90
-                                        gradient.Enabled = true
-                                        gradient.Name = '#gradient'
-                                        
-                                        gradient.Parent = sliderFill
-                                    end
-                                end
-                                
-                                local inputBox = Instance.new('TextBox') do 
-                                    inputBox.Active = true 
-                                    inputBox.BackgroundColor3 = theme.Window1
-                                    inputBox.BackgroundTransparency = 0.1
-                                    inputBox.ClearTextOnFocus = true
-                                    inputBox.ClipsDescendants = true
-                                    inputBox.Font = 'SourceSans'
-                                    inputBox.Name = '#input-box'
-                                    inputBox.PlaceholderColor3 = theme.TextDim
-                                    inputBox.PlaceholderText = 'enter value'
-                                    inputBox.Size = UDim2.fromScale(1, 1)
-                                    inputBox.Text = 'enter value'
-                                    inputBox.TextColor3 = theme.TextPrimary
-                                    inputBox.TextSize = 14
-                                    inputBox.TextStrokeColor3 = theme.TextStroke
-                                    inputBox.TextStrokeTransparency = 0.8
-                                    inputBox.TextWrapped = true
-                                    inputBox.TextXAlignment = 'Center'
-                                    inputBox.TextYAlignment = 'Center'
-                                    inputBox.Visible = false
-                                    inputBox.ZIndex = 105
-                                    
-                                    inputBox.Parent = sliderContainer
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = inputBox
-                                    end
-                                
-                                    local stroke = Instance.new('UIStroke') do 
-                                        stroke.ApplyStrokeMode = 'Border'
-                                        stroke.Color = theme.Stroke
-                                        stroke.LineJoinMode = 'Round'
-                                        stroke.Name = '#stroke'
-                                        stroke.Thickness = 1 
-                                        
-                                        stroke.Parent = inputBox
-                                    end
-                                    
-                                    local padding = Instance.new('UIPadding') do 
-                                        padding.PaddingLeft = UDim.new(0, 4)
-                                        padding.Name = '#padding'
-                                        
-                                        padding.Parent = inputBox
-                                    end
-                                end
-                            end
-                            
-                            local title = Instance.new('TextLabel') do 
-                                title.BackgroundTransparency = 1
-                                title.Font = 'SourceSans'
-                                title.Name = '#title'
-                                title.Size = UDim2.new(1, 0, 1, -1)
-                                title.Text = 'red'
-                                title.TextColor3 = theme.TextPrimary
-                                title.TextSize = 14
-                                title.TextStrokeColor3 = theme.TextStroke
-                                title.TextStrokeTransparency = 0.8
-                                title.TextTransparency = 0
-                                title.TextWrapped = false
-                                title.TextXAlignment = 'Left'
-                                title.TextYAlignment = 'Center'
-                                title.Visible = true
-                                title.ZIndex = 104
-                                
-                                title.Parent = redSlider
-                                
-                                local padding = Instance.new('UIPadding') do 
-                                    padding.PaddingLeft = UDim.new(0, 6)
-                                    
-                                    padding.Parent = title
-                                end
-                            end
-                            
-                            local val = Instance.new('TextLabel') do 
-                                val.BackgroundTransparency = 1
-                                val.Font = 'SourceSans'
-                                val.Name = '#val'
-                                val.Size = UDim2.new(1, 0, 1, -1)
-                                val.Text = '255'
-                                val.TextColor3 = theme.TextPrimary
-                                val.TextSize = 14
-                                val.TextStrokeColor3 = theme.TextStroke
-                                val.TextStrokeTransparency = 0.8
-                                val.TextTransparency = 0
-                                val.TextWrapped = false
-                                val.TextXAlignment = 'Right'
-                                val.TextYAlignment = 'Center'
-                                val.Visible = true
-                                val.ZIndex = 104
-                                
-                                val.Parent = redSlider
-                                
-                                local padding = Instance.new('UIPadding') do 
-                                    padding.PaddingRight = UDim.new(0, 6)
-                                    
-                                    padding.Parent = val
-                                end
-                            end
-                        end
-
-                        local greenSlider = Instance.new('Frame') do 
-                            greenSlider.BackgroundTransparency = 1
-                            greenSlider.Name = '#green-slider'
-                            greenSlider.Position = UDim2.fromOffset(0, 19)
-                            greenSlider.Size = UDim2.new(1, 0, 0, 24)
-                            greenSlider.ZIndex = 103
-                            greenSlider.Visible = true
-                            
-                            greenSlider.Parent = inputRegion
-                            
-                            local sliderContainer = Instance.new('Frame') do 
-                                sliderContainer.BackgroundColor3 = theme.Button1
-                                sliderContainer.Position = UDim2.fromOffset(3, 6)
-                                sliderContainer.Size = UDim2.new(1, -6, 0, 12)
-                                sliderContainer.Visible = true
-                                sliderContainer.ZIndex = 103
-                                sliderContainer.Name = '#slider-container'
-                                
-                                sliderContainer.Parent = greenSlider
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = sliderContainer
-                                end
-                            
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = theme.Stroke
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 1 
-                                    
-                                    stroke.Parent = sliderContainer
-                                end
-                                
-                                local sliderFill = Instance.new('Frame') do 
-                                    sliderFill.Active = false
-                                    sliderFill.BackgroundColor3 = theme.Primary
-                                    sliderFill.BackgroundTransparency = 0.6
-                                    sliderFill.BorderSizePixel = 0
-                                    sliderFill.Name = '#slider-fill'
-                                    sliderFill.Size = UDim2.fromScale(1, 1)
-                                    sliderFill.Visible = true
-                                    sliderFill.ZIndex = 104
-                                    
-                                    sliderFill.Parent = sliderContainer
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = sliderFill
-                                    end
-                                    
-                                    local gradient = Instance.new('UIGradient') do 
-                                        gradient.Color = ColorSequence.new(
-                                            theme.ControlGradient1,
-                                            theme.ControlGradient2
-                                        )
-                                        gradient.Rotation = 90
-                                        gradient.Enabled = true
-                                        gradient.Name = '#gradient'
-                                        
-                                        gradient.Parent = sliderFill
-                                    end
-                                end
-                                
-
-                                local inputBox = Instance.new('TextBox') do 
-                                    inputBox.Active = true 
-                                    inputBox.BackgroundColor3 = theme.Window1
-                                    inputBox.BackgroundTransparency = 0.1
-                                    inputBox.ClearTextOnFocus = true
-                                    inputBox.ClipsDescendants = true
-                                    inputBox.Font = 'SourceSans'
-                                    inputBox.Name = '#input-box'
-                                    inputBox.PlaceholderColor3 = theme.TextDim
-                                    inputBox.PlaceholderText = 'enter value'
-                                    inputBox.Size = UDim2.fromScale(1, 1)
-                                    inputBox.Text = 'enter value'
-                                    inputBox.TextColor3 = theme.TextPrimary
-                                    inputBox.TextSize = 14
-                                    inputBox.TextStrokeColor3 = theme.TextStroke
-                                    inputBox.TextStrokeTransparency = 0.8
-                                    inputBox.TextWrapped = true
-                                    inputBox.TextXAlignment = 'Center'
-                                    inputBox.TextYAlignment = 'Center'
-                                    inputBox.Visible = false
-                                    inputBox.ZIndex = 105
-                                    
-                                    inputBox.Parent = sliderContainer
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = inputBox
-                                    end
-                                    
-                                    local stroke = Instance.new('UIStroke') do 
-                                        stroke.ApplyStrokeMode = 'Border'
-                                        stroke.Color = theme.Stroke
-                                        stroke.LineJoinMode = 'Round'
-                                        stroke.Name = '#stroke'
-                                        stroke.Thickness = 1 
-                                        
-                                        stroke.Parent = inputBox
-                                    end
-                                end
-                            end
-                            
-                            local title = Instance.new('TextLabel') do 
-                                title.BackgroundTransparency = 1
-                                title.Font = 'SourceSans'
-                                title.Name = '#title'
-                                title.Size = UDim2.new(1, 0, 1, -1)
-                                title.Text = 'green'
-                                title.TextColor3 = theme.TextPrimary
-                                title.TextSize = 14
-                                title.TextStrokeColor3 = theme.TextStroke
-                                title.TextStrokeTransparency = 0.8
-                                title.TextTransparency = 0
-                                title.TextWrapped = false
-                                title.TextXAlignment = 'Left'
-                                title.TextYAlignment = 'Center'
-                                title.Visible = true
-                                title.ZIndex = 104
-                                
-                                title.Parent = greenSlider
-                                
-                                local padding = Instance.new('UIPadding') do 
-                                    padding.PaddingLeft = UDim.new(0, 6)
-                                    
-                                    padding.Parent = title
-                                end
-                            end
-                            
-                            local val = Instance.new('TextLabel') do 
-                                val.BackgroundTransparency = 1
-                                val.Font = 'SourceSans'
-                                val.Name = '#val'
-                                val.Size = UDim2.new(1, 0, 1, -1)
-                                val.Text = '255'
-                                val.TextColor3 = theme.TextPrimary
-                                val.TextSize = 14
-                                val.TextStrokeColor3 = theme.TextStroke
-                                val.TextStrokeTransparency = 0.8
-                                val.TextTransparency = 0
-                                val.TextWrapped = false
-                                val.TextXAlignment = 'Right'
-                                val.TextYAlignment = 'Center'
-                                val.Visible = true
-                                val.ZIndex = 104
-                                
-                                val.Parent = greenSlider
-                                
-                                local padding = Instance.new('UIPadding') do 
-                                    padding.PaddingRight = UDim.new(0, 6)
-                                    
-                                    padding.Parent = val
-                                end
-                            end
-                        end
-                        
-                        local blueSlider = Instance.new('Frame') do 
-                            blueSlider.BackgroundTransparency = 1
-                            blueSlider.Name = '#blue-slider'
-                            blueSlider.Position = UDim2.fromOffset(0, 39)
-                            blueSlider.Size = UDim2.new(1, 0, 0, 24)
-                            blueSlider.ZIndex = 103
-                            blueSlider.Visible = true
-                            
-                            blueSlider.Parent = inputRegion
-                            
-                            local sliderContainer = Instance.new('Frame') do 
-                                sliderContainer.BackgroundColor3 = theme.Button1
-                                sliderContainer.Position = UDim2.fromOffset(3, 6)
-                                sliderContainer.Size = UDim2.new(1, -6, 0, 12)
-                                sliderContainer.Visible = true
-                                sliderContainer.ZIndex = 103
-                                sliderContainer.Name = '#slider-container'
-                                
-                                sliderContainer.Parent = blueSlider
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = sliderContainer
-                                end
-                            
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = theme.Stroke
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 1 
-                                    
-                                    stroke.Parent = sliderContainer
-                                end
-                                
-                                local sliderFill = Instance.new('Frame') do 
-                                    sliderFill.Active = false
-                                    sliderFill.BackgroundColor3 = theme.Primary
-                                    sliderFill.BackgroundTransparency = 0.6
-                                    sliderFill.BorderSizePixel = 0
-                                    sliderFill.Name = '#slider-fill'
-                                    sliderFill.Size = UDim2.fromScale(1, 1)
-                                    sliderFill.Visible = true
-                                    sliderFill.ZIndex = 104
-                                    
-                                    sliderFill.Parent = sliderContainer
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = sliderFill
-                                    end
-                                    
-                                    local gradient = Instance.new('UIGradient') do 
-                                        gradient.Color = ColorSequence.new(
-                                            theme.ControlGradient1,
-                                            theme.ControlGradient2
-                                        )
-                                        gradient.Rotation = 90
-                                        gradient.Enabled = true
-                                        gradient.Name = '#gradient'
-                                        
-                                        gradient.Parent = sliderFill
-                                    end
-                                end
-                                
-
-                                local inputBox = Instance.new('TextBox') do 
-                                    inputBox.Active = true 
-                                    inputBox.BackgroundColor3 = theme.Window1
-                                    inputBox.BackgroundTransparency = 0.1
-                                    inputBox.ClearTextOnFocus = true
-                                    inputBox.ClipsDescendants = true
-                                    inputBox.Font = 'SourceSans'
-                                    inputBox.Name = '#input-box'
-                                    inputBox.PlaceholderColor3 = theme.TextDim
-                                    inputBox.PlaceholderText = 'enter value'
-                                    inputBox.Size = UDim2.fromScale(1, 1)
-                                    inputBox.Text = 'enter value'
-                                    inputBox.TextColor3 = theme.TextPrimary
-                                    inputBox.TextSize = 14
-                                    inputBox.TextStrokeColor3 = theme.TextStroke
-                                    inputBox.TextStrokeTransparency = 0.8
-                                    inputBox.TextWrapped = true
-                                    inputBox.TextXAlignment = 'Center'
-                                    inputBox.TextYAlignment = 'Center'
-                                    inputBox.Visible = false
-                                    inputBox.ZIndex = 105
-                                    
-                                    inputBox.Parent = sliderContainer
-                                    
-                                    local round = Instance.new('UICorner') do 
-                                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                        round.Name = '#round'
-                                        
-                                        round.Parent = inputBox
-                                    end
-                                    
-                                    local stroke = Instance.new('UIStroke') do 
-                                        stroke.ApplyStrokeMode = 'Border'
-                                        stroke.Color = theme.Stroke
-                                        stroke.LineJoinMode = 'Round'
-                                        stroke.Name = '#stroke'
-                                        stroke.Thickness = 1 
-                                        
-                                        stroke.Parent = inputBox
-                                    end
-                                end
-                            end
-                            
-                            local title = Instance.new('TextLabel') do 
-                                title.BackgroundTransparency = 1
-                                title.Font = 'SourceSans'
-                                title.Name = '#title'
-                                title.Size = UDim2.new(1, 0, 1, -1)
-                                title.Text = 'blue'
-                                title.TextColor3 = theme.TextPrimary
-                                title.TextSize = 14
-                                title.TextStrokeColor3 = theme.TextStroke
-                                title.TextStrokeTransparency = 0.8
-                                title.TextTransparency = 0
-                                title.TextWrapped = false
-                                title.TextXAlignment = 'Left'
-                                title.TextYAlignment = 'Center'
-                                title.Visible = true
-                                title.ZIndex = 104
-                                
-                                title.Parent = blueSlider
-                                
-                                local padding = Instance.new('UIPadding') do 
-                                    padding.PaddingLeft = UDim.new(0, 6)
-                                    
-                                    padding.Parent = title
-                                end
-                            end
-                            
-                            local val = Instance.new('TextLabel') do 
-                                val.BackgroundTransparency = 1
-                                val.Font = 'SourceSans'
-                                val.Name = '#val'
-                                val.Size = UDim2.new(1, 0, 1, -1)
-                                val.Text = '255'
-                                val.TextColor3 = theme.TextPrimary
-                                val.TextSize = 14
-                                val.TextStrokeColor3 = theme.TextStroke
-                                val.TextStrokeTransparency = 0.8
-                                val.TextTransparency = 0
-                                val.TextWrapped = false
-                                val.TextXAlignment = 'Right'
-                                val.TextYAlignment = 'Center'
-                                val.Visible = true
-                                val.ZIndex = 104
-                                
-                                val.Parent = blueSlider
-                                
-                                local padding = Instance.new('UIPadding') do 
-                                    padding.PaddingRight = UDim.new(0, 6)
-                                    
-                                    padding.Parent = val
-                                end
-                            end
-                        end
-                    end
-                end
-                
-                instances.main = main
-            end
-            pickerWindow.instances = instances 
-            pickerWindow.signals = {
-                buttonClose = {
-                    MouseEnter = function(inst, win) 
-                        tween(inst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        tween(inst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, win) 
-                        tween(inst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        tween(inst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(inst, win) 
-                        win:destroy()
-                    end
-                },
-                buttonMin = {
-                    MouseEnter = function(inst, win) 
-                        win.minFocused = true
-                        
-                        if (win.minimized) then
-                            tween(inst, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(inst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        end
-                        tween(inst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, win) 
-                        win.minFocused = false
-                        
-                        if (win.minimized) then
-                            tween(inst, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(inst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(inst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(_, self) 
-                        self:minimize()
-                    end
-                },
-                redSlider = {
-                    MouseEnter = function(inst, win) 
-                        local sliderCont = inst['#slider-container']
-                        tween(sliderCont, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        tween(sliderCont['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, win) 
-                        local sliderCont = inst['#slider-container']
-                        tween(sliderCont, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        tween(sliderCont['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end
-                },
-                greenSlider = {
-                    MouseEnter = function(inst, win) 
-                        local sliderCont = inst['#slider-container']
-                        tween(sliderCont, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        tween(sliderCont['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, win) 
-                        local sliderCont = inst['#slider-container']
-                        tween(sliderCont, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        tween(sliderCont['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end
-                },
-                blueSlider = {
-                    MouseEnter = function(inst, win) 
-                        local sliderCont = inst['#slider-container']
-                        tween(sliderCont, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        tween(sliderCont['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, win) 
-                        local sliderCont = inst['#slider-container']
-                        tween(sliderCont, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        tween(sliderCont['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end
-                },
-                chromaButton = {
-                    MouseEnter = function(inst, win) 
-                        win.chromaFocused = true
-                        if (win.chromaEnabled) then
-                            tween(inst, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(inst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        end
-                        tween(inst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, win) 
-                        win.chromaFocused = false
-                        
-                        if (win.chromaEnabled) then
-                            tween(inst, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(inst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(inst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(inst, win) 
-                        win:toggleChroma()
-                    end
-                }
-            }
-            --[[
-            if (self.focused) then
-                button.BackgroundColor3 = theme.Button4
-                tween(button, {BackgroundColor3 = theme.Button2}, 1, 1)
+function Library:LoadConfig(name)
+    if not name or name == "" or not isfile(ConfigFolder .. "/" .. name .. ".json") then Library:Notification("Config", "Config not found", 3) return end
+    local content = readfile(ConfigFolder .. "/" .. name .. ".json")
+    local success, data = pcall(HttpService.JSONDecode, HttpService, content)
+    if not success then Library:Notification("Config", "Decode Error", 3) return end
+    
+    for flag, value in pairs(data) do
+        if Library.Elements[flag] then
+            if type(value) == "table" and value.Type == "Color3" then
+                Library.Elements[flag].Set(Color3.new(value.R, value.G, value.B))
+            elseif type(value) == "table" and value.Type == "CP" then
+                Library.Elements[flag].Set({Color = Color3.new(value.R, value.G, value.B), Transparency = value.A})
             else
-                button.BackgroundColor3 = theme.Button3
-                tween(button, {BackgroundColor3 = theme.Button1}, 1, 1)
-            end]]
-            
-            pickerWindow.destroy = function(self) 
-                self:fireEvent('close')
-                
-                local main = self.instances.main
-                task.spawn(function()
-                    local animCon
-                    
-                    task.spawn(function() 
-                        local backgroundTransparency = {}
-                        local imageTransparency = {}
-                        local transparency = {}
-                        local textTransparency = {}
-                        
-                        local s = {
-                            Frame = {backgroundTransparency}, 
-                            ImageButton = {backgroundTransparency, imageTransparency},
-                            ImageLabel = {backgroundTransparency, imageTransparency},
-                            TextButton = {backgroundTransparency, textTransparency},
-                            TextLabel = {backgroundTransparency, textTransparency},
-                            UIStroke = {transparency},
-                        }
-                        local d = main:GetDescendants()
-                        table.insert(d, main)
-                        
-                        for i, v in ipairs(d) do 
-                            local a = s[v.ClassName]
-                            if (a) then
-                                for i = 1, #a do 
-                                    table.insert(a[i], v)
-                                end
-                            end
-                        end
-                        
-                        for i,v in ipairs(transparency) do
-                            v.Transparency = 1
-                        end
-                        
-                        transparency = nil
-                        scrollBarImageTransparency = nil
-                        animCon = renderService.RenderStepped:Connect(function(dt) 
-                            dt *= 8
-                            for i= 1, #backgroundTransparency do 
-                                backgroundTransparency[i].BackgroundTransparency += dt
-                            end
-                            for i= 1, #imageTransparency do 
-                                imageTransparency[i].ImageTransparency += dt
-                            end
-                            for i= 1, #textTransparency do 
-                                textTransparency[i].TextTransparency += dt
-                            end
-                        end)
-                    end)
-                    tween(main['#scale'], {Scale = 0.6}, 0.5, 1).Completed:Wait()--{Size = UDim2.fromOffset(mainFrame.AbsoluteSize.X, 0)}, 0.5, 1).Completed:Wait()
-                    animCon:Disconnect()
-                    main:Destroy()
-                end)
-
-                return self 
-            end
-            pickerWindow.setTitle = function(self, title) 
-                self.instances.title.Text = tostring(title)
-                return self 
-            end
-            pickerWindow.setPosition = function(self, newPosition)
-                -- type coercion :money
-                if (typeof(newPosition) == 'Vector2') then
-                    newPosition = UDim2.fromOffset(newPosition.X, newPosition.Y)
-                elseif (typeof(newPosition) ~= 'UDim2') then
-                    return error('expected type UDim2 or Vector2', 2)
-                end
-                self.instances.main.Position = newPosition
-                return self 
-            end
-            pickerWindow.new = function(self, resize) 
-                local new = setmetatable({}, self)
-                new.binds = {}
-                table.insert(ui.pickerWindows, new)
-                
-                local instances = {}
-
-                instances.main = self.instances.main:Clone()
-
-                local titleBar = instances.main['#title-bar']
-                instances.buttonClose = titleBar['#button-close']
-                instances.buttonMin = titleBar['#button-min']
-                instances.titleBar = titleBar
-                instances.title = titleBar['#title']
-                
-                instances.pickerRegion = instances.main['#region']['#region-picker']
-                instances.inputRegion = instances.main['#region']['#region-input']
-                
-                instances.colorPicker = instances.pickerRegion['#picker']
-                instances.pickerCursor = instances.colorPicker['#cursor-inner']
-                
-                
-                instances.valSlider = instances.pickerRegion['#value-slider']
-                instances.valCursor = instances.valSlider['#slider-container']['#cursor-inner']
-                
-                instances.speedSlider = instances.pickerRegion['#speed-slider']
-                instances.speedCursor = instances.speedSlider['#slider-container']['#cursor-inner']
-                
-                instances.redSlider = instances.inputRegion['#red-slider']
-                instances.greenSlider = instances.inputRegion['#green-slider']
-                instances.blueSlider = instances.inputRegion['#blue-slider']
-                
-                instances.redFill = instances.inputRegion['#red-slider']['#slider-container']['#slider-fill']
-                instances.greenFill = instances.inputRegion['#green-slider']['#slider-container']['#slider-fill']
-                instances.blueFill = instances.inputRegion['#blue-slider']['#slider-container']['#slider-fill']
-                
-                instances.chromaButton = instances.pickerRegion['#chroma']
-                
-                -- setup signals
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                -- dragging
-                do 
-                    local dCon
-                    local aCon
-                    local mainFrame = instances.main
-                    local targetPos
-                    
-                    titleBar.InputBegan:Connect(function(io) 
-                        if (io.UserInputType.Value == 0) then
-                            local rootPos = mainFrame.AbsolutePosition
-                            local startPos = io.Position
-                            
-                            startPos = Vector2.new(startPos.X, startPos.Y)
-                            
-                            targetPos = UDim2.fromOffset(rootPos.X, rootPos.Y)
-                            aCon = renderService.RenderStepped:Connect(function(dt) 
-                                mainFrame.Position = mainFrame.Position:lerp(targetPos, 1 - animSpeed^dt)-- 1 - 1e-12^dt)
-                            end)
-                            
-                            dCon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Value == 4) then
-                                    local curPos = io.Position
-                                    curPos = Vector2.new(curPos.X, curPos.Y) 
-                                    
-                                    local dest = rootPos + (curPos - startPos)
-                                    targetPos = UDim2.fromOffset(dest.X, dest.Y)
-                                end
-                            end)
-                            
-                        end
-                    end)
-                    titleBar.InputEnded:Connect(function(io)
-                        if (io.UserInputType.Value == 0) then
-                            dCon:Disconnect()
-                            aCon:Disconnect()
-                            
-                            tween(mainFrame, {Position = targetPos}, 0.2, 1)
-                        end
-                    end)
-                end
-                
-                -- red slider
-                do 
-                    local slider = instances.redSlider
-                    local container = slider['#slider-container']
-                    local fill = container['#slider-fill'] 
-                    local val = slider['#val']
-                    
-                    local inputbox = container['#input-box']
-                    
-                    local dcon
-                    local acon
-                    
-                    inputbox.FocusLost:Connect(function(enter, io) 
-                        local tx = inputbox.Text
-                        local n = tonumber(tx)
-                        if (n) then
-                            inputbox.Visible = false
-
-                            local fixed = math.clamp(n / 255, 0, 1)
-                            local rounded = math.floor((fixed) * 255) / 255
-                            
-                            local newVal = rounded * 255
-                            tween(fill, {Size = UDim2.fromScale(rounded, 1)}, 0.3, 1)
-                            
-                            val.Text = newVal
-                            new.red = newVal
-                            
-                            new:displayRGB()
-                        elseif (tx == '') then
-                            inputbox.Visible = false
-                        else
-                            inputbox.Text = 'not a valid number'
-                            wait(1)
-                            inputbox:CaptureFocus()
-                        end
-                    end)
-                    
-                    
-                    local targetSize
-                    container.InputBegan:Connect(function(io) 
-                        local inputName = io.UserInputType.Name
-                        if (inputName == 'MouseButton1') then
-                            local containerPos = container.AbsolutePosition
-                            local containerWidth = container.AbsoluteSize.X
-                            local startInput do 
-                                local position = io.Position
-                                startInput = Vector2.new(position.X, position.Y)
-                            end
-                            
-                            local rawValue = math.clamp((startInput - containerPos).X / containerWidth, 0, 1)
-                            local roundedValue = math.floor((rawValue) * 255) / 255
-                            local newValue = roundedValue * 255 
-                            targetSize = UDim2.fromScale(roundedValue, 1)
-                            
-                            val.Text = newValue
-                            new.red = newValue
-                            
-                            new:displayRGB()
-                            
-                            acon = renderService.RenderStepped:Connect(function(dt) 
-                                fill.Size = fill.Size:lerp(targetSize, 1 - 1e-12^dt)
-                            end)
-                            
-                            --fill.Size = UDim2.fromScale(rawValue, 1)
-                            dcon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Name == 'MouseMovement') then
-                                    local curInput do 
-                                        local position = io.Position
-                                        curInput = Vector2.new(position.X, position.Y)
-                                    end
-                                    
-                                    local rawValue = math.clamp((curInput - containerPos).X / containerWidth, 0, 1)
-                                    local roundedValue = math.floor((rawValue) * 255) / 255
-                                    local newValue = roundedValue * 255 
-                                    targetSize = UDim2.fromScale(roundedValue, 1)
-                                    
-                                    val.Text = newValue
-                                    new.red = newValue
-                                    
-                                    new:displayRGB()
-                                end
-                            end)
-                        elseif (inputName == 'MouseButton2') then
-                            inputbox.Visible = true
-                            inputbox:CaptureFocus()
-                        end
-                    end)
-                    
-                    container.InputEnded:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            dcon:Disconnect()
-                            acon:Disconnect()
-                            
-                            tween(fill, {Size = targetSize}, 0.2, 1)
-                        end
-                    end)
-                end
-                
-                -- green slider
-                do 
-                    local slider = instances.greenSlider
-                    local container = slider['#slider-container']
-                    local fill = container['#slider-fill'] 
-                    local val = slider['#val']
-                    
-                    local inputbox = container['#input-box']
-                    
-                    local dcon
-                    local acon
-                    
-                    inputbox.FocusLost:Connect(function(enter, io) 
-                        local tx = inputbox.Text
-                        local n = tonumber(tx)
-                        if (n) then
-                            inputbox.Visible = false
-
-                            local fixed = math.clamp(n / 255, 0, 1)
-                            local rounded = math.floor((fixed) * 255) / 255
-                            
-                            local newVal = rounded * 255
-                            tween(fill, {Size = UDim2.fromScale(rounded, 1)}, 0.3, 1)
-                            
-                            val.Text = newVal
-                            new.green = newVal
-                            
-                            new:displayRGB()
-                        elseif (tx == '') then
-                            inputbox.Visible = false
-                        else
-                            inputbox.Text = 'not a valid number'
-                            wait(1)
-                            inputbox:CaptureFocus()
-                        end
-                    end)
-                    
-                    local targetSize
-                    container.InputBegan:Connect(function(io) 
-                        local inputName = io.UserInputType.Name
-                        if (inputName == 'MouseButton1') then
-                            local containerPos = container.AbsolutePosition
-                            local containerWidth = container.AbsoluteSize.X
-                            local startInput do 
-                                local position = io.Position
-                                startInput = Vector2.new(position.X, position.Y)
-                            end
-                            
-                            local rawValue = math.clamp((startInput - containerPos).X / containerWidth, 0, 1)
-                            local roundedValue = math.floor((rawValue) * 255) / 255
-                            local newValue = roundedValue * 255 
-                            targetSize = UDim2.fromScale(roundedValue, 1)
-                            
-                            val.Text = newValue
-                            new.green = newValue
-                            
-                            new:displayRGB()
-                            
-                            acon = renderService.RenderStepped:Connect(function(dt) 
-                                fill.Size = fill.Size:lerp(targetSize, 1 - 1e-12^dt)
-                            end)
-                            
-                            --fill.Size = UDim2.fromScale(rawValue, 1)
-                            dcon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Name == 'MouseMovement') then
-                                    local curInput do 
-                                        local position = io.Position
-                                        curInput = Vector2.new(position.X, position.Y)
-                                    end
-                                    
-                                    local rawValue = math.clamp((curInput - containerPos).X / containerWidth, 0, 1)
-                                    local roundedValue = math.floor((rawValue) * 255) / 255
-                                    local newValue = roundedValue * 255 
-                                    targetSize = UDim2.fromScale(roundedValue, 1)
-                                    
-                                    val.Text = newValue
-                                    new.green = newValue
-                                    
-                                    new:displayRGB()
-                                end
-                            end)
-                        elseif (inputName == 'MouseButton2') then
-                            inputbox.Visible = true
-                            inputbox:CaptureFocus()
-                        end
-                    end)
-                    
-                    container.InputEnded:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            dcon:Disconnect()
-                            acon:Disconnect()
-                            
-                            tween(fill, {Size = targetSize}, 0.2, 1)
-                        end
-                    end)
-                end
-                
-                -- blue slider
-                do 
-                    local slider = instances.blueSlider
-                    local container = slider['#slider-container']
-                    local fill = container['#slider-fill'] 
-                    local val = slider['#val']
-                    
-                    local inputbox = container['#input-box']
-                    
-                    local dcon
-                    local acon
-                    
-                    inputbox.FocusLost:Connect(function(enter, io) 
-                        local tx = inputbox.Text
-                        local n = tonumber(tx)
-                        if (n) then
-                            inputbox.Visible = false
-
-                            local fixed = math.clamp(n / 255, 0, 1)
-                            local rounded = math.floor((fixed) * 255) / 255
-                            
-                            local newVal = rounded * 255
-                            tween(fill, {Size = UDim2.fromScale(rounded, 1)}, 0.3, 1)
-                            
-                            val.Text = newVal
-                            new.blue = newVal
-                            
-                            new:displayRGB()
-                        elseif (tx == '') then
-                            inputbox.Visible = false
-                        else
-                            inputbox.Text = 'not a valid number'
-                            wait(1)
-                            inputbox:CaptureFocus()
-                        end
-                    end)
-                    
-                    local targetSize
-                    container.InputBegan:Connect(function(io) 
-                        local inputName = io.UserInputType.Name
-                        if (inputName == 'MouseButton1') then
-                            local containerPos = container.AbsolutePosition
-                            local containerWidth = container.AbsoluteSize.X
-                            local startInput do 
-                                local position = io.Position
-                                startInput = Vector2.new(position.X, position.Y)
-                            end
-                            
-                            local rawValue = math.clamp((startInput - containerPos).X / containerWidth, 0, 1)
-                            local roundedValue = math.floor((rawValue) * 255) / 255
-                            local newValue = roundedValue * 255 
-                            targetSize = UDim2.fromScale(roundedValue, 1)
-                            
-                            val.Text = newValue
-                            new.blue = newValue
-                            
-                            new:displayRGB()
-                            
-                            acon = renderService.RenderStepped:Connect(function(dt) 
-                                fill.Size = fill.Size:lerp(targetSize, 1 - 1e-12^dt)
-                            end)
-                            
-                            --fill.Size = UDim2.fromScale(rawValue, 1)
-                            dcon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Name == 'MouseMovement') then
-                                    local curInput do 
-                                        local position = io.Position
-                                        curInput = Vector2.new(position.X, position.Y)
-                                    end
-                                    
-                                    local rawValue = math.clamp((curInput - containerPos).X / containerWidth, 0, 1)
-                                    local roundedValue = math.floor((rawValue) * 255) / 255
-                                    local newValue = roundedValue * 255 
-                                    targetSize = UDim2.fromScale(roundedValue, 1)
-                                    
-                                    val.Text = newValue
-                                    new.blue = newValue
-                                    
-                                    new:displayRGB()
-                                end
-                            end)
-                        elseif (inputName == 'MouseButton2') then
-                            inputbox.Visible = true
-                            inputbox:CaptureFocus()
-                        end
-                    end)
-                    
-                    container.InputEnded:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            dcon:Disconnect()
-                            acon:Disconnect()
-                            
-                            tween(fill, {Size = targetSize}, 0.2, 1)
-                        end
-                    end)
-                end
-                
-                -- value slider
-                do 
-                    local slider = instances.valSlider
-                    local container = slider['#slider-container']
-                    local cursor = container['#cursor-inner']
-                    local dcon
-                    local acon
-                    
-                    
-                    local targetPos
-                    container.InputBegan:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            local containerPos = container.AbsolutePosition
-                            local containerWidth = container.AbsoluteSize.X
-                            local startInput do 
-                                local position = io.Position
-                                startInput = Vector2.new(position.X, position.Y)
-                            end
-                            
-                            local rawValue = math.clamp((startInput - containerPos).X / containerWidth, 0, 1)
-                            targetPos = UDim2.fromScale(rawValue, 0)
-                            
-                            new.val = rawValue
-                            new:displayHSV()
-                            
-                            acon = renderService.RenderStepped:Connect(function(dt) 
-                                cursor.Position = cursor.Position:lerp(targetPos, 1 - 1e-12^dt)
-                            end)
-                            
-                            dcon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Name == 'MouseMovement') then
-                                    local curInput do 
-                                        local position = io.Position
-                                        curInput = Vector2.new(position.X, position.Y)
-                                    end
-                                    
-                                    local rawValue = math.clamp((curInput - containerPos).X / containerWidth, 0, 1)
-                                    targetPos = UDim2.fromScale(rawValue, 0)
-
-                                    new.val = rawValue
-                                    new:displayHSV()
-                                end
-                            end)
-                        end
-                    end)
-                    
-                    container.InputEnded:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            dcon:Disconnect()
-                            acon:Disconnect()
-                            
-                            
-                            tween(cursor, {Position = targetPos}, 0.2, 1)
-                        end
-                    end)
-                    
-                    container.MouseEnter:Connect(function() 
-                        tween(container['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                        tween(container['#value-gradient']['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                        tween(cursor['#stroke'], {Color = theme.Primary}, 0.2, 1)
-                    end)
-                    container.MouseLeave:Connect(function() 
-                        tween(container['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                        tween(container['#value-gradient']['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                        tween(cursor['#stroke'], {Color = Color3.fromRGB(255, 255, 255)}, 0.2, 1)
-                    end)
-                end
-                
-                -- speed slider 
-                do 
-                    local slider = instances.speedSlider
-                    local container = slider['#slider-container']
-                    local cursor = container['#cursor-inner']
-                    local dcon
-                    local acon
-                    
-                    
-                    local targetPos
-                    container.InputBegan:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            local containerPos = container.AbsolutePosition
-                            local containerHeight = container.AbsoluteSize.Y
-                            local startInput do 
-                                local position = io.Position
-                                startInput = Vector2.new(position.X, position.Y)
-                            end
-                            
-                            local rawValue = math.clamp((startInput - containerPos).Y / containerHeight, 0, 1)
-                            targetPos = UDim2.fromScale(0, rawValue)
-                            
-                            new.linkedPicker.chromaSpeed = 1 - rawValue
-                            
-                            acon = renderService.RenderStepped:Connect(function(dt) 
-                                cursor.Position = cursor.Position:lerp(targetPos, 1 - 1e-12^dt)
-                            end)
-                            
-                            dcon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Name == 'MouseMovement') then
-                                    local curInput do 
-                                        local position = io.Position
-                                        curInput = Vector2.new(position.X, position.Y)
-                                    end
-                                    
-                                    local rawValue = math.clamp((curInput - containerPos).Y / containerHeight, 0, 1)
-                                    targetPos = UDim2.fromScale(0, rawValue)
-
-                                    new.linkedPicker.chromaSpeed = 1 - rawValue
-                                end
-                            end)
-                        end
-                    end)
-                    
-                    container.InputEnded:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            dcon:Disconnect()
-                            acon:Disconnect()
-                            
-                            
-                            tween(cursor, {Position = targetPos}, 0.2, 1)
-                        end
-                    end)
-                    
-                    container.MouseEnter:Connect(function() 
-                        tween(container['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                        tween(container['#speed-gradient']['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                        tween(cursor['#stroke'], {Color = theme.Primary}, 0.2, 1)
-                    end)
-                    container.MouseLeave:Connect(function() 
-                        tween(container['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                        tween(container['#speed-gradient']['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                        tween(cursor['#stroke'], {Color = Color3.fromRGB(255, 255, 255)}, 0.2, 1)
-                    end)
-                end
-                
-                -- color picker
-                do 
-                    local picker = instances.colorPicker
-                    local cursor = instances.pickerCursor
-                    
-                    local center = Vector2.new(0.5, 0.5)
-                    
-                    local targetPos
-                    
-                    local oldRadius
-                    local oldTheta
-                    
-                    picker.InputBegan:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            new.pickerMoving = true
-                            local pickerPos = picker.AbsolutePosition
-                            local pickerWidth = picker.AbsoluteSize.X
-                            
-
-                            local curInput do 
-                                local position = io.Position
-                                curInput = Vector2.new(position.X, position.Y)
-                            end
-                            
-                            local x, y do 
-                                local fixedPos = curInput - pickerPos
-                                x, y = fixedPos.X / pickerWidth, fixedPos.Y / pickerWidth
-                            end
-                            
-                            local radius, theta = cartToPolar(x-0.5, y-0.5)
-                            local centerMag = (Vector2.new(x, y) - center).Magnitude
-                            
-                            if (centerMag > 0.5) then
-                                x,y = polarToCart(radius - (centerMag - 0.5), theta)
-                                x += 0.5
-                                y += 0.5
-                                
-                                centerMag = (Vector2.new(x, y) - center).Magnitude
-                            end
-                            
-                            targetPos = UDim2.fromScale(x, y)
-                            
-                            new.hue  = ((theta/math.pi + 2) / 2) % 1
-                            new.sat = math.clamp(centerMag*2, 0, 1)
-                            
-                            new:displayHSV()
-                            
-                            if (acon) then acon:Disconnect() end
-                            acon = renderService.RenderStepped:Connect(function(dt) 
-                                cursor.Position = cursor.Position:lerp(targetPos, 1 - 1e-12^dt)
-                            end)
-                            
-                            if (dcon) then dcon:Disconnect() end
-                            dcon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Name == 'MouseMovement') then
-                                    
-                                    
-                                    do 
-                                        local curInput do 
-                                            local position = io.Position
-                                            curInput = Vector2.new(position.X, position.Y)
-                                        end
-                                        
-                                        local x, y do 
-                                            local fixedPos = curInput - pickerPos
-                                            x, y = fixedPos.X / pickerWidth, fixedPos.Y / pickerWidth
-                                        end
-                                        
-                                        local radius, theta = cartToPolar(x-0.5, y-0.5)
-                                        local centerMag = (Vector2.new(x, y) - center).Magnitude
-                                        
-                                        if (centerMag > 0.5) then
-                                            x,y = polarToCart(radius - (centerMag - 0.5), theta)
-                                            x += 0.5
-                                            y += 0.5
-                                            
-                                            centerMag = (Vector2.new(x, y) - center).Magnitude
-                                        end
-                                        
-                                        targetPos = UDim2.fromScale(x, y)
-                                        
-                                        new.hue  = ((theta/math.pi + 2) / 2) % 1
-                                        new.sat = math.clamp(centerMag*2, 0, 1)
-                                        
-                                        new:displayHSV()
-                                    end
-                                end
-                            end)
-                        end
-                    end)
-                    
-                    picker.InputEnded:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            new.pickerMoving = false
-                            dcon:Disconnect()
-                            acon:Disconnect()
-                            
-                            tween(cursor, {Position = targetPos}, 0.2, 1)
-                        end
-                    end)
-                end
-
-                -- finalize stuff
-                instances.main.Parent = uiScreen
-                new.instances = instances
-                return new
-            end
-            pickerWindow.minimize = function(self) 
-                
-                local newState = not self.minimized
-                local mf = self.instances.main
-                local bmin = mf['#title-bar']['#button-min']
-                local bminIcon = bmin['#icon']
-                
-                
-                if (newState) then
-                    tween(mf, {Size = UDim2.fromOffset(300, 26)}, 0.3, 1)
-                    bminIcon.Image = 'rbxassetid://9642646619'
-                    
-                    tween(bminIcon, {
-                        Rotation = 45,
-                        ImageColor3 = theme.Primary
-                    }, 0.3, 1)
-                    if (self.minFocused) then
-                        tween(bmin, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                    else
-                        tween(bmin, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                    end
-                    
-                    mf['#region'].Visible = false
-                else
-                    tween(mf, {Size = UDim2.fromOffset(300, 300)}, 0.3, 1)
-                    bminIcon.Image = 'rbxassetid://9642680675'
-                    tween(bminIcon, {
-                        Rotation = 0,
-                        ImageColor3 = Color3.fromRGB(255, 255, 255)
-                    }, 0.3, 1)
-                    
-                    if (self.minFocused) then
-                        tween(bmin, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                    else
-                        tween(bmin, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                    end
-                    
-                    mf['#region'].Visible = true
-                end
-                self.minimized = newState
+                Library.Elements[flag].Set(value)
             end
         end
-        -- add the window class
-        elemClasses.pickerWindow = pickerWindow
     end
-    -- MENU
-    do 
-        -- init menu class
-        local menu = {} do 
-            menu.__index = menu
-            setmetatable(menu, elemClasses.baseElement)
-            
-            menu.class = 'menu'
-            
-            menu.selectorFocused = false
-            menu.selected = false
-            
-            local instances = {} do 
-                local menuFrame = Instance.new('ScrollingFrame') do 
-                    menuFrame.AutomaticCanvasSize = 'Y'
-                    menuFrame.BackgroundTransparency = 1
-                    menuFrame.BorderSizePixel = 0 
-                    menuFrame.BottomImage = 'rbxassetid://9416839567'
-                    menuFrame.MidImage = 'rbxassetid://9416839567'
-                    menuFrame.Name = '#menuFrame'
-                    menuFrame.Position = UDim2.fromOffset(1, 1)
-                    menuFrame.ScrollBarImageTransparency = 0.9
-                    menuFrame.ScrollBarThickness = 1 
-                    menuFrame.ScrollingDirection = 'Y'
-                    menuFrame.ScrollingEnabled = true
-                    menuFrame.Size = UDim2.new(1, -2, 1, -2)
-                    menuFrame.TopImage = 'rbxassetid://9416839567'
-                    menuFrame.Visible = true
-                    menuFrame.ZIndex = 30
-                    
-                    instances.menuFrame = menuFrame
-                    
-                    local leftRegion = Instance.new('Frame') do 
-                        leftRegion.AutomaticSize = 'Y'
-                        leftRegion.BackgroundTransparency = 1 
-                        leftRegion.BorderSizePixel = 0
-                        leftRegion.Name = '#left-region'
-                        leftRegion.Size = UDim2.fromScale(0.5, 0)
-                        leftRegion.Visible = true
-                        leftRegion.ZIndex = 31
-                        
-                        leftRegion.Parent = menuFrame
-                        
-                        local layout = Instance.new('UIListLayout') do 
-                            layout.Name = '#layout'
-                            layout.Padding = UDim.new(0, 4)
-                            layout.FillDirection = 'Vertical'
-                            layout.HorizontalAlignment = 'Center'
-                            layout.VerticalAlignment = 'Top'
-                            
-                            layout.Parent = leftRegion
-                        end
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.PaddingLeft = UDim.new(0, 1)
-                            padding.PaddingTop = UDim.new(0, 3)
-                            padding.PaddingBottom = UDim.new(0, 3)
-                            
-                            padding.Parent = leftRegion
-                        end
-                    end
-                    
-                    local rightRegion = Instance.new('Frame') do 
-                        rightRegion.BackgroundTransparency = 1 
-                        rightRegion.BorderSizePixel = 0
-                        rightRegion.Name = '#right-region'
-                        rightRegion.Size = UDim2.fromScale(0.5, 1)
-                        rightRegion.Position = UDim2.fromScale(0.5, 0)
-                        rightRegion.Visible = true
-                        rightRegion.ZIndex = 31
-                        
-                        rightRegion.Parent = menuFrame
-                        
-                        local layout = Instance.new('UIListLayout') do 
-                            layout.Name = '#layout'
-                            layout.Padding = UDim.new(0, 4)
-                            layout.FillDirection = 'Vertical'
-                            layout.HorizontalAlignment = 'Center'
-                            layout.VerticalAlignment = 'Top'
-                            
-                            layout.Parent = rightRegion
-                        end
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.PaddingRight = UDim.new(0, 1)
-                            padding.PaddingTop = UDim.new(0, 3)
-                            padding.PaddingBottom = UDim.new(0, 3)
-                            
-                            padding.Parent = rightRegion
-                        end
-                    end
+    Library:Notification("Config", "Loaded config: " .. name, 3)
+end
 
-                end
-                
-                local pageSelector = Instance.new('TextButton') do 
-                    pageSelector.AutoButtonColor = false
-                    pageSelector.BackgroundColor3 = theme.Button1
-                    pageSelector.BackgroundTransparency = 0
-                    pageSelector.Font = 'SourceSans'
-                    pageSelector.Name = '#page-selector'
-                    pageSelector.Size = UDim2.new(1, -8, 0, 20)
-                    pageSelector.Text = ''
-                    pageSelector.TextColor3 = theme.TextPrimary
-                    pageSelector.TextSize = 17
-                    pageSelector.TextStrokeColor3 = theme.TextStroke
-                    pageSelector.TextStrokeTransparency = 0.8
-                    pageSelector.TextXAlignment = 'Center'
-                    pageSelector.TextYAlignment = 'Center'
-                    pageSelector.Visible = true
-                    pageSelector.ZIndex = 52 
-                    
-                    instances.pageSelector = pageSelector
-                    
-                    local round = Instance.new('UICorner') do 
-                        round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                        round.Name = '#round'
-                        
-                        round.Parent = pageSelector
-                    end
-                    
-                    local stroke = Instance.new('UIStroke') do 
-                        stroke.ApplyStrokeMode = 'Border'
-                        stroke.Color = theme.Stroke
-                        stroke.LineJoinMode = 'Round'
-                        stroke.Name = '#stroke'
-                        stroke.Thickness = 1 
-                        
-                        stroke.Parent = pageSelector
-                    end
-                end
+function Library:DeleteConfig(name)
+    if not name or name == "" or not isfile(ConfigFolder .. "/" .. name .. ".json") then return end
+    delfile(ConfigFolder .. "/" .. name .. ".json")
+    Library:Notification("Config", "Deleted config: " .. name, 3)
+end
+
+function Library:Window(title, iconId, footerText, useTooltips)
+    if CoreGui:FindFirstChild("EternalV36") then CoreGui.EternalV36:Destroy() end
+    ScreenGui = Instance.new("ScreenGui") ScreenGui.Name="EternalV36"
+    ScreenGui.Parent = gethui and gethui() or CoreGui
+
+    local UIMainKeybind = Enum.KeyCode.RightControl
+
+    NotifyList = Instance.new("Frame") NotifyList.Size=UDim2.new(0,250,1,-40) NotifyList.Position=UDim2.new(1,-260,0,20) NotifyList.BackgroundTransparency=1 NotifyList.Parent=ScreenGui
+    local NIL = Instance.new("UIListLayout") NIL.Padding=UDim.new(0,10) NIL.VerticalAlignment=Enum.VerticalAlignment.Bottom NIL.HorizontalAlignment=Enum.HorizontalAlignment.Right NIL.Parent=NotifyList
+    
+    -- // MAIN FRAME //
+    -- ВАЖНО: BackgroundColor3 должен быть белым, чтобы градиент был виден
+    local Main = Instance.new("Frame") 
+    Main.BackgroundColor3 = Color3.new(1, 1, 1) 
+    Main.Size=UDim2.new(0,480,0,360) 
+    Main.AnchorPoint=Vector2.new(0.5,0.5) 
+    Main.Position=UDim2.new(0.5,0,0.5,0) 
+    Main.Parent=ScreenGui
+    
+    local UIScale = Instance.new("UIScale") UIScale.Scale=0 UIScale.Parent=Main Tween(UIScale,{Scale=1},0.4)
+    Instance.new("UICorner", Main).CornerRadius=UDim.new(0,8)
+    
+    -- // ОБВОДКА (Stroke) //
+    local MainStroke = Instance.new("UIStroke") MainStroke.Thickness = 2.5 MainStroke.Transparency = 0 MainStroke.Parent = Main
+    local StrokeGrad = RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2") StrokeGrad.Rotation = 45 StrokeGrad.Parent = MainStroke
+
+    -- // АНИМИРОВАННЫЙ ФОН (Gradient) //
+    local BgGradient = Instance.new("UIGradient")
+    BgGradient.Parent = Main
+    
+    -- Скрипт анимации фона
+    RunService.RenderStepped:Connect(function()
+        if not Main.Parent then return end
+        local t = tick()
+        
+        -- Плавное покачивание угла градиента
+        BgGradient.Rotation = 45 + math.sin(t * 0.5) * 15
+        
+        -- Обновляем цвета динамически из темы (чтобы при смене темы фон менялся)
+        -- Перелив от цвета Фона к цвету Сайдбара (создает приятный эффект глубины)
+        BgGradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Theme.Background),
+            ColorSequenceKeypoint.new(1, Theme.Sidebar)
+        }
+    end)
+
+    MakeDraggable(Main, Main)
+    
+    local ResizeHandle = Instance.new("ImageButton") ResizeHandle.Size = UDim2.new(0, 20, 0, 20) ResizeHandle.Position = UDim2.new(1, -2, 1, -2) ResizeHandle.AnchorPoint = Vector2.new(1, 1) ResizeHandle.BackgroundTransparency = 1 ResizeHandle.Image = Icons["resize_custom"] or "rbxassetid://122360365318466"
+    RegisterTheme(ResizeHandle, "ImageColor3", "TextDim") ResizeHandle.Parent = Main
+    MakeResizable(Main, ResizeHandle)
+
+    local VersionLabel = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim")
+    VersionLabel.Name = "FooterInfo"
+    VersionLabel.Text = footerText or "Eternal V36" 
+    VersionLabel.Size = UDim2.new(1, 0, 0, 20)
+    VersionLabel.AnchorPoint = Vector2.new(0.5, 1) 
+    VersionLabel.Position = UDim2.new(0.5, 0, 1, -2) 
+    VersionLabel.BackgroundTransparency = 1
+    VersionLabel.FontFace = FontMain
+    VersionLabel.TextSize = 12
+    VersionLabel.ZIndex = 10 
+    VersionLabel.Parent = Main
+
+    -- // TOOLTIP SYSTEM
+    local TabTooltip = Instance.new("Frame")
+    local TooltipText = Instance.new("TextLabel")
+    
+    if useTooltips then
+        TabTooltip.Name = "TabTooltip"
+        TabTooltip.Size = UDim2.new(0, 0, 0, 24)
+        TabTooltip.AutomaticSize = Enum.AutomaticSize.X
+        TabTooltip.BackgroundColor3 = Theme.Background
+        TabTooltip.BorderColor3 = Theme.Accent1
+        TabTooltip.BorderSizePixel = 1
+        TabTooltip.ZIndex = 100
+        TabTooltip.Visible = false
+        TabTooltip.Parent = ScreenGui 
+
+        TooltipText.Size = UDim2.new(0, 0, 1, 0)
+        TooltipText.AutomaticSize = Enum.AutomaticSize.X
+        TooltipText.BackgroundTransparency = 1
+        TooltipText.TextColor3 = Theme.Text
+        TooltipText.FontFace = FontMain
+        TooltipText.TextSize = 12
+        TooltipText.Text = ""
+        TooltipText.Parent = TabTooltip
+        local TPad = Instance.new("UIPadding") TPad.PaddingLeft=UDim.new(0,5) TPad.PaddingRight=UDim.new(0,5) TPad.Parent=TabTooltip
+        
+        RunService.RenderStepped:Connect(function()
+            if TabTooltip.Visible then
+                local Mouse = UserInputService:GetMouseLocation()
+                TabTooltip.Position = UDim2.new(0, Mouse.X + 15, 0, Mouse.Y + 5)
             end
-            menu.instances = instances 
-            
-            menu.select = function(self) 
-                for i, m in ipairs(self.window.menus) do 
-                    tween(m.instances.menuFrame, {Position = UDim2.new(0, 1, m.id - self.id, 1)}, 0.5, 1)
-                    if (m ~= self) then 
-                        
-                        m:deselect()
-                    end
-                end
-                
-                self.selected = true
-                if (self.selectorFocused) then
-                    tween(self.instances.pageSelector, {
-                        BackgroundColor3 = theme.Button4,
-                        TextColor3 = theme.Primary
-                    }, 0.2, 1)
-                else
-                    tween(self.instances.pageSelector, {
-                        BackgroundColor3 = theme.Button3,
-                        TextColor3 = theme.Primary
-                    }, 0.2, 1)
-                end
-                
-            end
-            -- add 10 for hover
-            -- add 30 for selection
-            -- additions compound
-            
-            menu.deselect = function(self) 
-                self.selected = false
-                if (self.selectorFocused) then
-                    tween(self.instances.pageSelector, {
-                        BackgroundColor3 = theme.Button2,
-                        TextColor3 = theme.TextPrimary
-                    }, 0.2, 1)
-                else
-                    tween(self.instances.pageSelector, {
-                        BackgroundColor3 = theme.Button1,
-                        TextColor3 = theme.TextPrimary
-                    }, 0.2, 1)
-                end
-            end
-            
-            menu.signals = {
-                pageSelector = {
-                    MouseEnter = function(inst, self) 
-                        self.selectorFocused = true
-                        
-                        local pageSelector = self.instances.pageSelector
-                        
-                        if (self.selected) then
-                            tween(pageSelector, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(pageSelector, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        end
-                        tween(pageSelector['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, self) 
-                        self.selectorFocused = false 
-                        
-                        local pageSelector = self.instances.pageSelector
-                        
-                        if (self.selected) then
-                            tween(pageSelector, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(pageSelector, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(pageSelector['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end
-                }
-            }
-            
-            menu.new = function(self) 
-                -- inherit some functions and stuff
-                local new = setmetatable({}, self)
-                new.sections = {}
-                new.binds = {}
-                
-                local instances = {}
-                -- copy the main gui 
-                instances.menuFrame = self.instances.menuFrame:Clone()
-                instances.leftRegion = instances.menuFrame['#left-region']
-                instances.rightRegion = instances.menuFrame['#right-region']
-                
-                instances.pageSelector = self.instances.pageSelector:Clone()
-                
-                -- setup signals
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                -- finalize stuff
-                new.instances = instances
-                return new
-            end
-            
-            elemClasses.window.addMenu = function(self, settings) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected table for settings', 2) 
-                end
-                
-                local s_text = settings.text or 'nil'
-                
-                local menu = menu:new()
-                menu.window = self
-                menu.name = s_text
-                table.insert(self.menus, menu)
-                
-                
-                menu.id = #self.menus
-                if (menu.id == 1) then
-                    menu:select()
-                end
-                
-                local menuTab = menu.instances.pageSelector
-                local menuFrame = menu.instances.menuFrame
-                
-                menuTab.MouseButton1Click:Connect(function() 
-                    menu:select()
-                end)
-                menuTab.Text = s_text
-                menuFrame.Position = UDim2.new(0, 1, menu.id - 1, 1)
-                
-                
-                menuTab.Parent = self.instances.tabMenu
-                menuFrame.Parent = self.instances.pageRegion
-                
-                return menu
-            end
-            
-        end
-        -- add the menu class
-        elemClasses.menu = menu
+        end)
     end
-    -- SECTION
-    do 
-        local section = {} do 
-            section.__index = section 
-            setmetatable(section, elemClasses.baseElement)
-            
-            section.class = 'section'
-            
-            section.minimized = false
-            section.minFocused = false
-            
-            local instances = {} do 
-                local sectionFrame = Instance.new('Frame')
-                sectionFrame.BackgroundColor3 = theme.Window2
-                sectionFrame.BorderColor3 = theme.Inset2
-                sectionFrame.BorderMode = 'Inset'
-                sectionFrame.BorderSizePixel = 0
-                sectionFrame.Name = '#section'
-                sectionFrame.AutomaticSize = 'Y'
-                sectionFrame.Size = UDim2.new(1, -4, 0, 16)
-                sectionFrame.Visible = true
-                sectionFrame.ZIndex = 32
-                
-                instances.sectionFrame = sectionFrame
-                
-                local stroke = Instance.new('UIStroke') do 
-                    stroke.ApplyStrokeMode = 'Border'
-                    stroke.Color = theme.Stroke
-                    stroke.LineJoinMode = 'Round'
-                    stroke.Name = '#stroke'
-                    stroke.Thickness = 1 
-                    
-                    stroke.Parent = sectionFrame
-                end
-                
-                local menu = Instance.new('Frame') do 
-                    menu.AutomaticSize = 'Y'
-                    menu.BackgroundColor3 = theme.Window2
-                    menu.BorderColor3 = theme.Inset2
-                    menu.BorderMode = 'Inset'
-                    menu.BorderSizePixel = 1
-                    menu.Name = '#menu'
-                    menu.Visible = true
-                    menu.ZIndex = 33
-                    menu.Position = UDim2.fromOffset(0, 17)
-                    menu.Size = UDim2.fromScale(1, 0)
-                    
-                    menu.Parent = sectionFrame
-                                        
-                    local layout = Instance.new('UIListLayout') do 
-                        layout.FillDirection = 'Vertical'
-                        layout.HorizontalAlignment = 'Center'
-                        layout.Padding = UDim.new(0, 4)
-                        layout.VerticalAlignment = 'Top'
-                        
-                        layout.Parent = menu
-                    end
-                    
-                    local padding = Instance.new('UIPadding') do 
-                        padding.PaddingTop = UDim.new(0, 3)
-                        padding.PaddingBottom = UDim.new(0, 3)
-                        
-                        padding.Parent = menu 
-                    end
-                end
-                
-                local titleBar = Instance.new('Frame') do 
-                    titleBar.BackgroundColor3 = theme.Window3
-                    titleBar.BorderColor3 = theme.Inset3
-                    titleBar.BorderMode = 'Inset'
-                    titleBar.BorderSizePixel = 1
-                    titleBar.Name = '#title-bar'
-                    titleBar.Size = UDim2.new(1, 0, 0, 16)
-                    titleBar.Visible = true
-                    titleBar.ZIndex = 33
-                    
-                    titleBar.Parent = sectionFrame
-                    
-                    local stroke = Instance.new('UIStroke') do 
-                        stroke.ApplyStrokeMode = 'Border'
-                        stroke.Color = theme.Stroke
-                        stroke.LineJoinMode = 'Round'
-                        stroke.Name = '#stroke'
-                        stroke.Thickness = 1 
-                        
-                        stroke.Parent = titleBar
-                    end
-                    local minimize = Instance.new('TextButton') do 
-                        minimize.Active = true
-                        minimize.AnchorPoint = Vector2.new(1, 0)
-                        minimize.AutoButtonColor = false
-                        minimize.BackgroundColor3 = theme.Button1
-                        minimize.BackgroundTransparency = 0
-                        minimize.BorderSizePixel = 0
-                        minimize.Name = '#min'
-                        minimize.Position = UDim2.new(1, -1, 0, 1)
-                        minimize.Size = UDim2.fromOffset(12, 12)
-                        minimize.Text = ''
-                        minimize.Visible = true
-                        minimize.ZIndex = 35
-                        
-                        minimize.Parent = titleBar
-                        
-                        local round = Instance.new('UICorner') do 
-                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                            round.Name = '#round'
-                            
-                            round.Parent = minimize
-                        end
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = minimize
-                        end
-                        
-                        local icon = Instance.new('ImageLabel') do 
-                            icon.Active = false
-                            icon.BackgroundTransparency = 1
-                            icon.BorderSizePixel = 0
-                            icon.Rotation = 180
-                            icon.Image = 'rbxassetid://9801471573'
-                            icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                            icon.Name = '#icon'
-                            icon.Position = UDim2.fromOffset(0, 0)
-                            icon.Size = UDim2.fromScale(1, 1)
-                            icon.Visible = true
-                            icon.ZIndex = 36 
-                            
-                            icon.Parent = minimize
-                            
-                            local gradient = Instance.new('UIGradient') do 
-                                gradient.Color = ColorSequence.new(
-                                    theme.ControlGradient1,
-                                    theme.ControlGradient2
-                                )
-                                gradient.Rotation = 90
-                                gradient.Enabled = true
-                                gradient.Name = '#gradient'
-                                
-                                gradient.Parent = icon
-                            end
-                        end
-                        
-                    end
-                    instances.minimizeButton = minimize
-                    
-                    local title = Instance.new('TextLabel') do 
-                        title.BackgroundTransparency = 1
-                        title.Font = 'SourceSans'
-                        title.Name = '#title'
-                        title.RichText = true
-                        title.Size = UDim2.fromScale(1, 1)
-                        title.Text = 'section'
-                        title.TextColor3 = theme.TextPrimary
-                        title.TextSize = 14
-                        title.TextStrokeColor3 = theme.TextStroke
-                        title.TextStrokeTransparency = 0.8
-                        title.TextTransparency = 0
-                        title.TextWrapped = false
-                        title.TextXAlignment = 'Left'
-                        title.TextYAlignment = 'Center'
-                        title.Visible = true
-                        title.ZIndex = 35
-                        
-                        title.Parent = titleBar
-                        instances.title = title 
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.Name = '#padding'
-                            padding.PaddingLeft = UDim.new(0, 4)
-                            
-                            padding.Parent = title
-                        end
-                    end
-                    
-                    local trim = Instance.new('Frame') do 
-                        trim.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                        trim.BackgroundTransparency = 0
-                        trim.BorderSizePixel = 0 
-                        trim.Name = '#trim'
-                        trim.Position = UDim2.fromOffset(-1, -2)
-                        trim.Size = UDim2.new(1, 2, 0, 1)
-                        trim.ZIndex = 33
-                        
-                        trim.Parent = titleBar
-                        
-                        local gradient = Instance.new('UIGradient') do 
-                            gradient.Color = ColorSequence.new(
-                                theme.Primary, 
-                                theme.Secondary
-                            )
-                            gradient.Enabled = true
-                            gradient.Name = '#gradient'
-                            gradient.Rotation = 0
-                            
-                            gradient.Parent = trim
-                        end
-                    end
-                end
+
+    -- // SIDEBAR
+    local SidebarWidth = 110
+    local Sidebar = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Sidebar") Sidebar.Size=UDim2.new(0,SidebarWidth,1,0) Sidebar.Parent=Main
+    Instance.new("UICorner", Sidebar).CornerRadius=UDim.new(0,8)
+    
+    local SidebarLine = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Element") SidebarLine.Size = UDim2.new(0, 1, 1, 0) SidebarLine.Position = UDim2.new(1, 0, 0, 0) SidebarLine.BorderSizePixel = 0 SidebarLine.Parent = Sidebar
+    
+    local Logo = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "Text") Logo.Text = "E" Logo.Size = UDim2.new(1, 0, 0, 60) Logo.BackgroundTransparency = 1 Logo.FontFace = FontBold Logo.TextSize = 32 Logo.Parent = Sidebar
+
+    if iconId and iconId ~= "" then
+        Logo.TextTransparency = 1 
+        local LogoIcon = Instance.new("ImageLabel") LogoIcon.Size = UDim2.new(0, 40, 0, 40) LogoIcon.Position = UDim2.new(0.5, -20, 0, 10) LogoIcon.BackgroundTransparency = 1
+        local iconImage = Icons[iconId] or iconId LogoIcon.Image = iconImage LogoIcon.Parent = Sidebar
+        RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2").Parent = LogoIcon
+    else
+        RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2").Parent = Logo
+    end
+    
+    local TabScroll = Instance.new("ScrollingFrame") TabScroll.Size = UDim2.new(1, 0, 1, -100) TabScroll.Position = UDim2.new(0, 0, 0, 80) TabScroll.BackgroundTransparency = 1 
+    TabScroll.ScrollBarThickness = 0 TabScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y TabScroll.CanvasSize = UDim2.new(0, 0, 0, 0) TabScroll.Parent = Sidebar
+    local TL = Instance.new("UIListLayout") TL.HorizontalAlignment = Enum.HorizontalAlignment.Center TL.Padding = UDim.new(0, 5) TL.SortOrder = Enum.SortOrder.LayoutOrder TL.Parent = TabScroll
+    
+    -- // Content Area
+    local Content = Instance.new("Frame") Content.Size=UDim2.new(1,-SidebarWidth,1,0) Content.Position=UDim2.new(0,SidebarWidth,0,0) Content.BackgroundTransparency=1 Content.ClipsDescendants=true Content.Parent=Main
+    
+    local MenuTitle = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "Text") MenuTitle.Text = title or "Eternal Menu" MenuTitle.Size = UDim2.new(1, -40, 0, 50) MenuTitle.Position = UDim2.new(0, 25, 0, 0) MenuTitle.BackgroundTransparency = 1 MenuTitle.FontFace = FontBold MenuTitle.TextSize = 22 MenuTitle.TextXAlignment = Enum.TextXAlignment.Left MenuTitle.ZIndex = 5 MenuTitle.Parent = Content
+    RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2").Parent = MenuTitle
+
+    UserInputService.InputBegan:Connect(function(input, gpe)
+        if not gpe and input.KeyCode == UIMainKeybind then
+            Main.Visible = not Main.Visible
+            if Main.Visible then Tween(UIScale, {Scale = 1}) else Tween(UIScale, {Scale = 0}) end
+        end
+    end)
+
+    -- // FLOAT FRAME
+    local FloatFrame = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Sidebar") FloatFrame.Size = UDim2.new(0, 110, 0, 45) FloatFrame.Position = UDim2.new(0, 20, 1, -80) FloatFrame.Parent = ScreenGui
+    Instance.new("UICorner", FloatFrame).CornerRadius = UDim.new(0, 8)
+    local FloatStroke = Instance.new("UIStroke") FloatStroke.Thickness = 2 FloatStroke.Parent = FloatFrame RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2").Parent = FloatStroke
+    local DragHandle = Instance.new("TextButton") DragHandle.Size = UDim2.new(1,0,1,0) DragHandle.BackgroundTransparency = 1 DragHandle.Text = "" DragHandle.ZIndex = 1 DragHandle.Parent = FloatFrame
+    local OpenBtn = RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Element") OpenBtn.Size = UDim2.new(0, 65, 1, -10) OpenBtn.Position = UDim2.new(0, 5, 0, 5) OpenBtn.Text = "Close" RegisterTheme(OpenBtn, "TextColor3", "Text") OpenBtn.FontFace = FontBold OpenBtn.TextSize = 13 OpenBtn.ZIndex = 2 OpenBtn.Parent = FloatFrame
+    Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(0, 6) RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2").Parent = OpenBtn
+    local LockBtn = RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Background") LockBtn.Size = UDim2.new(0, 30, 1, -10) LockBtn.Position = UDim2.new(1, -35, 0, 5) LockBtn.Text = "🔓" RegisterTheme(LockBtn, "TextColor3", "TextDim") LockBtn.FontFace = FontMain LockBtn.TextSize = 14 LockBtn.ZIndex = 2 LockBtn.Parent = FloatFrame
+    Instance.new("UICorner", LockBtn).CornerRadius = UDim.new(0, 6)
+    
+    MakeDraggable(FloatFrame, DragHandle)
+    local menuOpen = true
+    OpenBtn.MouseButton1Click:Connect(function() menuOpen = not menuOpen if menuOpen then Main.Visible = true Tween(UIScale, {Scale = 1}) OpenBtn.Text = "Close" else Tween(UIScale, {Scale = 0}) task.wait(0.2) Main.Visible = false OpenBtn.Text = "Open" end end)
+    LockBtn.MouseButton1Click:Connect(function() FloatLocked = not FloatLocked LockBtn.Text = FloatLocked and "🔒" or "🔓" Tween(LockBtn, {BackgroundColor3 = FloatLocked and Theme.Accent1 or Theme.Background}) end)
+
+    local SidebarSortIndex = 0
+    local FirstTab = true
+    local WinObj = {}
+
+    function WinObj:TabSection(text)
+        SidebarSortIndex = SidebarSortIndex + 1
+        local SecLabel = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim")
+        SecLabel.Text = text
+        SecLabel.Size = UDim2.new(1, -20, 0, 20)
+        SecLabel.BackgroundTransparency = 1
+        SecLabel.FontFace = FontBold
+        SecLabel.TextSize = 11
+        SecLabel.TextXAlignment = Enum.TextXAlignment.Left
+        SecLabel.TextTransparency = 0.4
+        SecLabel.LayoutOrder = SidebarSortIndex
+        SecLabel.Parent = TabScroll
+        local Pad = Instance.new("UIPadding") Pad.PaddingLeft = UDim.new(0, 5) Pad.Parent = SecLabel
+    end
+    
+    function WinObj:Tab(name, icon, description)
+        SidebarSortIndex = SidebarSortIndex + 1
+        local TabBtn = Instance.new("TextButton") TabBtn.Size=UDim2.new(1, -10, 0, 35) TabBtn.BackgroundTransparency=1 TabBtn.Text="" TabBtn.LayoutOrder = SidebarSortIndex TabBtn.Parent=TabScroll
+        
+        local hasText = (name and name ~= "")
+        
+        local TabIcon = RegisterTheme(Instance.new("ImageLabel"), "ImageColor3", "TextDim") TabIcon.Size=UDim2.new(0,18,0,18) TabIcon.BackgroundTransparency=1 TabIcon.Parent=TabBtn
+        local RealIconId = Library.Icons[icon] or icon
+        local CleanId = tostring(RealIconId):gsub("rbxassetid://", "") TabIcon.Image = "rbxassetid://" .. CleanId
+        local TabLabel = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") TabLabel.Text = name or "" TabLabel.Size = UDim2.new(1, -35, 1, 0) TabLabel.Position = UDim2.new(0, 32, 0, 0) TabLabel.BackgroundTransparency = 1 TabLabel.FontFace = FontMain TabLabel.TextSize = 13 TabLabel.TextXAlignment = Enum.TextXAlignment.Left TabLabel.Parent = TabBtn
+
+        if hasText then TabIcon.Position = UDim2.new(0, 8, 0.5, -9) TabLabel.Visible = true else TabIcon.Position = UDim2.new(0.5, -9, 0.5, -9) TabLabel.Visible = false end
+
+        if useTooltips and description then
+            TabBtn.MouseEnter:Connect(function() TooltipText.Text = description TabTooltip.Visible = true end)
+            TabBtn.MouseLeave:Connect(function() TabTooltip.Visible = false end)
+        end
+
+        local TabFrame = Instance.new("Frame") TabFrame.Size = UDim2.new(1, 0, 1, -70) TabFrame.Position = UDim2.new(0, 0, 0, 50) TabFrame.BackgroundTransparency = 1 TabFrame.Visible = false TabFrame.Parent = Content
+        local TopBar = Instance.new("Frame") TopBar.Size=UDim2.new(1,0,0,50) TopBar.BackgroundTransparency=1 TopBar.Parent=TabFrame
+        local BtnHold = Instance.new("ScrollingFrame") BtnHold.Size = UDim2.new(1, 0, 1, 0) BtnHold.BackgroundTransparency = 1 BtnHold.Parent = TopBar BtnHold.ScrollBarThickness = 0 BtnHold.ScrollingDirection = Enum.ScrollingDirection.X BtnHold.AutomaticCanvasSize = Enum.AutomaticSize.X BtnHold.CanvasSize = UDim2.new(0, 0, 0, 0) BtnHold.ClipsDescendants = true
+        local THL = Instance.new("UIListLayout") THL.FillDirection = Enum.FillDirection.Horizontal THL.HorizontalAlignment = Enum.HorizontalAlignment.Left THL.VerticalAlignment = Enum.VerticalAlignment.Center THL.Padding = UDim.new(0, 10) THL.Parent = BtnHold
+        local TPad = Instance.new("UIPadding") TPad.PaddingLeft = UDim.new(0, 10) TPad.PaddingRight = UDim.new(0, 10) TPad.Parent = BtnHold
+        local ActiveLine = Instance.new("Frame") ActiveLine.Size=UDim2.new(0,0,0,3) ActiveLine.BackgroundColor3=Color3.new(1,1,1) ActiveLine.BorderSizePixel=0 ActiveLine.Parent=TopBar
+        RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2").Parent = ActiveLine
+        local PagesCont = Instance.new("Frame") PagesCont.Size=UDim2.new(1,-40,1,-60) PagesCont.Position=UDim2.new(0,20,0,55) PagesCont.BackgroundTransparency=1 PagesCont.ClipsDescendants=true PagesCont.Parent=TabFrame
+
+        TabBtn.MouseButton1Click:Connect(function()
+            for _,t in pairs(Content:GetChildren()) do if t:IsA("Frame") and t ~= MenuTitle then t.Visible=false end end
+            for _,b in pairs(TabScroll:GetChildren()) do if b:IsA("TextButton") then Tween(b.ImageLabel,{ImageColor3=Theme.TextDim}) Tween(b.TextLabel,{TextColor3=Theme.TextDim}) end end
+            TabFrame.Visible=true Tween(TabIcon,{ImageColor3=Theme.Accent2}) Tween(TabLabel,{TextColor3=Theme.Accent2})
+        end)
+
+        if FirstTab then FirstTab=false TabFrame.Visible=true TabIcon.ImageColor3=Theme.Accent2 TabLabel.TextColor3=Theme.Accent2 end
+
+        local TabObj = {}
+        local FirstPage = true
+        function TabObj:Page(name, pageIcon)
+            local PBtn = Instance.new("TextButton") PBtn.Text="" PBtn.AutomaticSize=Enum.AutomaticSize.X PBtn.Size=UDim2.new(0,0,1,0) PBtn.BackgroundTransparency=1 PBtn.Parent=BtnHold
+            local PBLayout = Instance.new("UIListLayout") PBLayout.FillDirection=Enum.FillDirection.Horizontal PBLayout.VerticalAlignment=Enum.VerticalAlignment.Center PBLayout.Padding=UDim.new(0,5) PBLayout.Parent=PBtn
+            local Pad = Instance.new("UIPadding") Pad.PaddingLeft=UDim.new(0,10) Pad.PaddingRight=UDim.new(0,10) Pad.Parent=PBtn
+            if pageIcon and Icons[pageIcon] then local PIco = RegisterTheme(Instance.new("ImageLabel"), "ImageColor3", "TextDim") PIco.Size=UDim2.new(0,18,0,18) PIco.BackgroundTransparency=1 PIco.Image=Icons[pageIcon] PIco.Parent=PBtn end
+            local PTxt = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") PTxt.Text=name PTxt.FontFace=FontMain PTxt.TextSize=16 PTxt.AutomaticSize=Enum.AutomaticSize.XY PTxt.BackgroundTransparency=1 PTxt.Parent=PBtn
+
+            local PCont = Instance.new("Frame") PCont.Size=UDim2.new(1,0,1,0) PCont.BackgroundTransparency=1 PCont.Visible=false PCont.Parent=PagesCont
+            local Left = Instance.new("ScrollingFrame") Left.Size=UDim2.new(0.49,0,1,0) Left.BackgroundTransparency=1 Left.ScrollBarThickness=0 Left.AutomaticCanvasSize = Enum.AutomaticSize.Y Left.CanvasSize=UDim2.new(0,0,0,0) Left.Parent=PCont
+            local Right = Instance.new("ScrollingFrame") Right.Size=UDim2.new(0.49,0,1,0) Right.Position=UDim2.new(0.51,0,0,0) Right.BackgroundTransparency=1 Right.ScrollBarThickness=0 Right.AutomaticCanvasSize = Enum.AutomaticSize.Y Right.CanvasSize=UDim2.new(0,0,0,0) Right.Parent=PCont
+            Instance.new("UIListLayout", Left).Padding=UDim.new(0,10) Instance.new("UIListLayout", Right).Padding=UDim.new(0,10)
+
+            local function Line(inst) if PBtn.Parent then local w = PBtn.AbsoluteSize.X local p = PBtn.AbsolutePosition.X - TopBar.AbsolutePosition.X if p < 0 or p + w > TopBar.AbsoluteSize.X then Tween(ActiveLine, {BackgroundTransparency = 1}, 0.1) else Tween(ActiveLine, {BackgroundTransparency = 0}, 0.1) end if inst then ActiveLine.Size=UDim2.new(0,w,0,3) ActiveLine.Position=UDim2.new(0,p,0,0) else Tween(ActiveLine,{Size=UDim2.new(0,w,0,3),Position=UDim2.new(0,p,0,0)}) end end end
+            BtnHold:GetPropertyChangedSignal("CanvasPosition"):Connect(function() if PCont.Visible then Line(true) end end)
+            PBtn.MouseButton1Click:Connect(function() for _,p in pairs(PagesCont:GetChildren()) do p.Visible=false end for _,b in pairs(BtnHold:GetChildren()) do if b:IsA("TextButton") then for _, c in pairs(b:GetChildren()) do if c:IsA("TextLabel") then Tween(c, {TextColor3 = Theme.TextDim}) end if c:IsA("ImageLabel") then Tween(c, {ImageColor3 = Theme.TextDim}) end end end end PCont.Visible=true for _, c in pairs(PBtn:GetChildren()) do if c:IsA("TextLabel") then Tween(c, {TextColor3 = Theme.Text}) end if c:IsA("ImageLabel") then Tween(c, {ImageColor3 = Theme.Text}) end end Line(false) end)
+            if FirstPage then FirstPage=false PCont.Visible=true for _, c in pairs(PBtn:GetChildren()) do if c:IsA("TextLabel") then c.TextColor3 = Theme.Text end if c:IsA("ImageLabel") then c.ImageColor3 = Theme.Text end end task.spawn(function() task.wait(0.1) Line(true) end) end
+            local function col(s) return s=="Right" and Right or Left end
+
+            local function AddInfoIcon(parent, text)
+                local I = RegisterTheme(Instance.new("ImageButton"), "ImageColor3", "TextDim") I.Name = "InfoIcon" I.Size = UDim2.new(0, 14, 0, 14) I.AnchorPoint = Vector2.new(0, 0) I.Position = UDim2.new(0, 5, 0, 2) I.BackgroundTransparency = 1 I.Image = Icons["info"] or "rbxassetid://124560466474914" I.ZIndex = 20 I.Parent = parent
+                I.MouseEnter:Connect(function() Tween(I, {ImageColor3 = Theme.Accent2}) end) I.MouseLeave:Connect(function() Tween(I, {ImageColor3 = Theme.TextDim}) end)
+                I.MouseButton1Click:Connect(function() Library:Notification("Info", text, 4) end)
             end
-            section.instances = instances 
-            
-            section.minimize = function(self) 
-                
-                local newState = not self.minimized
-                local mf = self.instances.sectionFrame
-                
-                local min = mf['#title-bar']['#min']
-                
-                if (newState) then
-                    tween(min['#icon'], {
-                        Rotation = 0
-                    }, 0.3, 1)
-                    mf['#menu'].Visible = false
-                    mf.AutomaticSize = 'None'
-                else
-                    tween(min['#icon'], {
-                        Rotation = 180
-                    }, 0.3, 1)
-                    
-                    tween(min, {
-                        BackgroundColor3 = self.minFocused and theme.Button2 or theme.Button1
-                    }, 0.2, 1)
-                    mf['#menu'].Visible = true
-                    mf.AutomaticSize = 'Y'
-                end
-                self.minimized = newState
+
+            local function CreateBase(parent, title, desc, baseH)
+                local hasDesc = (desc and desc ~= "")
+                local h = baseH 
+                local F = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Element") F.Size=UDim2.new(1,0,0,h) F.Parent=parent Instance.new("UICorner",F).CornerRadius=UDim.new(0,6)
+                local titleOffset = hasDesc and 25 or 10
+                local L = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "Text") L.Text=title L.Size=UDim2.new(1,-titleOffset-10,0,20) L.Position=UDim2.new(0,titleOffset,0, (baseH > 40) and 2 or 8) L.BackgroundTransparency=1 L.FontFace=FontMain L.TextSize=14 L.TextXAlignment=Enum.TextXAlignment.Left L.Parent=F
+                if hasDesc then AddInfoIcon(F, desc) end
+                return F
             end
+
+            local Generators = {}
             
-            section.signals = {
-                minimizeButton = {
-                    mouseButton1Click = function(instance, self)
-                        self:minimize()
-                    end,
-                    MouseEnter = function(instance, self) 
-                        self.minFocused = true
-                        
-                        if (self.minimized) then
-                            tween(instance, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(instance, {BackgroundColor3 = theme.Button2}, 0.2, 1)
+            function Generators.Label(parent, t)
+                local LC=Instance.new("Frame") LC.Size=UDim2.new(1,0,0,25) LC.BackgroundTransparency=1 LC.Parent=parent
+                local LT=RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") LT.Text=t LT.Size=UDim2.new(1,-10,1,0) LT.Position=UDim2.new(0,5,0,0) LT.BackgroundTransparency=1 LT.FontFace=FontBold LT.TextSize=13 LT.TextXAlignment=Enum.TextXAlignment.Left LT.TextYAlignment=Enum.TextYAlignment.Bottom LT.Parent=LC
+            end
+
+            function Generators.Button(parent, t, desc, cb)
+                 local B = CreateBase(parent, t, desc, 35) 
+                 local Btn = Instance.new("TextButton") Btn.Size=UDim2.new(1,0,1,0) Btn.BackgroundTransparency=1 Btn.Text="" Btn.Parent=B
+                 Btn.MouseEnter:Connect(function() Tween(B, {BackgroundColor3 = Theme.Sidebar}) end)
+                 Btn.MouseLeave:Connect(function() Tween(B, {BackgroundColor3 = Theme.Element}) end)
+                 Btn.MouseButton1Down:Connect(function() Tween(B, {Size = UDim2.new(0.98,0,0,33)}) end)
+                 Btn.MouseButton1Up:Connect(function() Tween(B, {Size = UDim2.new(1,0,0,35)}) pcall(cb) end)
+            end
+
+            function Generators.Keybind(parent, t, f, def, cb, desc)
+                Library.Flags[f] = def or Enum.KeyCode.E
+                local B = CreateBase(parent, t, desc, 35)
+                local BindBtn = RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Background") BindBtn.Size=UDim2.new(0,80,0,20) BindBtn.Position=UDim2.new(1,-90,0,8) BindBtn.Text="" BindBtn.Parent=B Instance.new("UICorner",BindBtn).CornerRadius=UDim.new(0,4)
+                local BindTxt = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") BindTxt.Text = tostring(def or "None"):gsub("Enum.KeyCode.","") BindTxt.Size=UDim2.new(1,0,1,0) BindTxt.BackgroundTransparency=1 BindTxt.FontFace=FontMain BindTxt.TextSize=12 BindTxt.Parent=BindBtn
+                local binding = false
+                BindBtn.MouseButton1Click:Connect(function()
+                    if binding then return end binding = true BindTxt.Text = "..."
+                    local connection; connection = UserInputService.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.Keyboard or input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2 or input.UserInputType == Enum.UserInputType.Touch then
+                            local key = (input.UserInputType == Enum.UserInputType.Keyboard) and input.KeyCode or input.UserInputType
+                            if key.Name == "Unknown" then return end
+                            if key == Enum.KeyCode.Escape then Library.Flags[f] = nil BindTxt.Text = "None" else Library.Flags[f] = key BindTxt.Text = key.Name end
+                            binding = false connection:Disconnect() pcall(cb, Library.Flags[f])
                         end
-                        tween(instance['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(instance, self) 
-                        self.minFocused = false 
-                        
-                        if (self.minimized) then
-                            tween(instance, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(instance, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(instance['#stroke'], {Color = theme.Stroke}, 0.2, 1)
+                    end)
+                end)
+                Library.Elements[f] = { Set = function(v) Library.Flags[f]=v BindTxt.Text=v and v.Name or "None" end }
+            end
+
+            function Generators.Checkbox(parent, t, f, d, desc, cb)
+                local st=false Library.Flags[f]=st
+                local B = CreateBase(parent, t, desc, 35)
+                local BoxOut=RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Background") BoxOut.Size=UDim2.new(0,20,0,20) BoxOut.Position=UDim2.new(1,-30,0,8) BoxOut.Parent=B Instance.new("UICorner",BoxOut).CornerRadius=UDim.new(0,4)
+                local CheckImg=RegisterTheme(Instance.new("ImageLabel"), "ImageColor3", "Text") CheckImg.Size=UDim2.new(0,14,0,14) CheckImg.Position=UDim2.new(0.5,-7,0.5,-7) CheckImg.BackgroundTransparency=1 CheckImg.Image=Icons["check"] CheckImg.ImageTransparency=1 CheckImg.Parent=BoxOut
+                local BoxGrad = RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2") BoxGrad.Parent = BoxOut BoxGrad.Enabled = false
+                local Click = Instance.new("TextButton") Click.Size=UDim2.new(1,0,1,0) Click.BackgroundTransparency=1 Click.Text="" Click.Parent=B
+                local function Set(b) st=b Library.Flags[f]=st Tween(CheckImg,{ImageTransparency=st and 0 or 1}) BoxGrad.Enabled = st Tween(BoxOut,{BackgroundColor3=st and Theme.Accent1 or Theme.Background}) pcall(cb, st) end 
+                Click.MouseButton1Click:Connect(function() Set(not st) end) 
+                if d then Set(true) end
+                Library.Elements[f]={Set=Set}
+            end
+
+            function Generators.Toggle(parent, t, f, d, desc, cb)
+                local st=false Library.Flags[f]=st
+                local B = CreateBase(parent, t, desc, 35)
+                local SwitchBg=RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Background") SwitchBg.Size=UDim2.new(0,32,0,18) SwitchBg.Position=UDim2.new(1,-42,0,9) SwitchBg.Parent=B Instance.new("UICorner",SwitchBg).CornerRadius=UDim.new(1,0)
+                local SwitchGrad = RegisterGradient(Instance.new("UIGradient"), "Accent1", "Accent2") SwitchGrad.Parent = SwitchBg SwitchGrad.Enabled = false
+                local Circle=RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "TextDim") Circle.Size=UDim2.new(0,14,0,14) Circle.Position=UDim2.new(0,2,0.5,-7) Circle.Parent=SwitchBg Instance.new("UICorner",Circle).CornerRadius=UDim.new(1,0)
+                local Click = Instance.new("TextButton") Click.Size=UDim2.new(1,0,1,0) Click.BackgroundTransparency=1 Click.Text="" Click.Parent=B
+                local function Set(b) st=b Library.Flags[f]=st SwitchGrad.Enabled = st Tween(Circle,{Position=UDim2.new(st and 1 or 0, st and -16 or 2, 0.5, -7), BackgroundColor3=st and Theme.Text or Theme.TextDim}) Tween(SwitchBg,{BackgroundColor3=st and Theme.Accent1 or Theme.Background}) pcall(cb, st) end 
+                Click.MouseButton1Click:Connect(function() Set(not st) end) 
+                if d then Set(true) end
+                Library.Elements[f]={Set=Set}
+            end
+
+            function Generators.Slider(parent, t, f, min, max, def, cb, desc)
+                local v=def or min Library.Flags[f]=v
+                local F = CreateBase(parent, t, desc, 50)
+                local V=RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") V.Text=tostring(v) V.Size=UDim2.new(0.3,-10,0,20) V.Position=UDim2.new(1,-10,0,5) V.AnchorPoint=Vector2.new(1,0) V.BackgroundTransparency=1 V.TextXAlignment=Enum.TextXAlignment.Right V.Parent=F
+                local B=RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Sidebar") B.Size=UDim2.new(1,-20,0,6) B.Position=UDim2.new(0,10,1,-15) B.Text="" B.Parent=F Instance.new("UICorner",B).CornerRadius=UDim.new(1,0)
+                local Fill=Instance.new("Frame") Fill.Size=UDim2.new((v-min)/(max-min),0,1,0) Fill.BackgroundColor3=Color3.new(1,1,1) Fill.Parent=B Instance.new("UICorner",Fill).CornerRadius=UDim.new(1,0)
+                local FG=Instance.new("UIGradient") RegisterGradient(FG, "Accent1", "Accent2") FG.Parent=Fill
+                
+                local isDragging = false
+                local function UpdateSlider(input)
+                    local pos = input.Position.X
+                    local percent = math.clamp((pos - B.AbsolutePosition.X) / B.AbsoluteSize.X, 0, 1)
+                    local newVal = math.floor(min + (max - min) * percent)
+                    if newVal ~= v then
+                        v = newVal
+                        Library.Flags[f] = v
+                        V.Text = tostring(v)
+                        Tween(Fill, {Size = UDim2.new(percent, 0, 1, 0)}, 0.05)
+                        pcall(cb, v)
                     end
-                }
-            }
-            
-            section.new = function(self) 
-                
-                local new = setmetatable({}, self)
-                new.controls = {}
-                new.binds = {}
-                
-                local instances = {}
-                -- copy the main gui 
-                instances.sectionFrame = self.instances.sectionFrame:Clone()
-                instances.title = instances.sectionFrame['#title-bar']['#title']
-                instances.minimizeButton = instances.sectionFrame['#title-bar']['#min']
-                instances.controlMenu = instances.sectionFrame['#menu']
-                
-                -- setup signals
-                
-                
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
+                end
+
+                B.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        isDragging = true
+                        UpdateSlider(input)
+                        local con; con = RunService.RenderStepped:Connect(function()
+                            if not isDragging then con:Disconnect() return end
+                            local mouseLoc = UserInputService:GetMouseLocation()
+                            UpdateSlider({Position = Vector3.new(mouseLoc.X, mouseLoc.Y, 0)})
                         end)
                     end
-                end
+                end)
                 
-                -- finalize stuff
-                new.instances = instances
-                return new
+                UserInputService.InputEnded:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        isDragging = false
+                    end
+                end)
+                
+                local startP = (def - min) / (max - min)
+                Fill.Size = UDim2.new(startP, 0, 1, 0)
+                Library.Elements[f]={Set=function(n) v=math.clamp(n,min,max) Library.Flags[f]=v V.Text=tostring(v) Tween(Fill,{Size=UDim2.new((v-min)/(max-min),0,1,0)},0.1) end}
             end
-            
-            elemClasses.menu.addSection = function(self, settings) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
+
+            function Generators.TextBox(parent, t, f, def, cb, desc)
+                 Library.Flags[f]=def or ""
+                 local C = CreateBase(parent, t, desc, 45)
+                 local B=RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Background") B.Size=UDim2.new(0.4,0,0,26) B.Position=UDim2.new(1,-10,0,5) B.AnchorPoint=Vector2.new(1,0) B.Parent=C Instance.new("UICorner",B).CornerRadius=UDim.new(0,4)
+                 local In=RegisterTheme(Instance.new("TextBox"), "TextColor3", "Text") In.Size=UDim2.new(1,-10,1,0) In.Position=UDim2.new(0,5,0,0) In.BackgroundTransparency=1 In.Text=def or "" In.PlaceholderText="..." In.TextXAlignment=Enum.TextXAlignment.Left In.Parent=B
+                 In.FocusLost:Connect(function() Library.Flags[f]=In.Text pcall(cb,In.Text) end)
+                 Library.Elements[f]={Set=function(v) In.Text=v Library.Flags[f]=v end}
+            end
+
+            function Generators.Dropdown(parent, t,f,items,cb,desc)
+                local sel=items[1] or "None" Library.Flags[f]=sel local exp=false
+                local Con = CreateBase(parent, t, desc, 40) Con.ClipsDescendants=true
+                local B=Instance.new("TextButton") B.Size=UDim2.new(1,0,0,40) B.BackgroundTransparency=1 B.Text="" B.Parent=Con
+                local S=RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") S.Text=sel S.Size=UDim2.new(0.5,-40,0,20) S.Position=UDim2.new(1,-30,0,10) S.AnchorPoint=Vector2.new(1,0) S.BackgroundTransparency=1 S.FontFace=FontMain S.TextSize=14 S.TextXAlignment=Enum.TextXAlignment.Right S.Parent=B
+                local I=RegisterTheme(Instance.new("ImageLabel"), "ImageColor3", "TextDim") I.Size=UDim2.new(0,16,0,16) I.Position=UDim2.new(1,-26,0,12) I.BackgroundTransparency=1 I.Image=Icons["chevron"] I.Parent=B
                 
-                local s_text = settings.text or 'nil'
-                local s_side = settings.side or 'auto'
-                local s_min do 
-                    if (settings.showMinButton == nil) then
-                        s_min = true
-                    else
-                        s_min = settings.showMinButton
+                local SearchBar = RegisterTheme(Instance.new("TextBox"), "BackgroundColor3", "Background") SearchBar.Size=UDim2.new(1,-10,0,25) SearchBar.Position=UDim2.new(0,5,0,45) RegisterTheme(SearchBar, "TextColor3", "Text") SearchBar.PlaceholderText="Search..." SearchBar.FontFace=FontMain SearchBar.TextSize=12 SearchBar.Parent=Con Instance.new("UICorner", SearchBar).CornerRadius=UDim.new(0,4)
+                
+                local List=Instance.new("ScrollingFrame") List.Size=UDim2.new(1,-10,1,-75) List.Position=UDim2.new(0,5,0,75) List.BackgroundTransparency=1 List.BorderSizePixel=0 List.ScrollBarThickness=2 List.AutomaticCanvasSize=Enum.AutomaticSize.Y List.CanvasSize=UDim2.new(0,0,0,0) List.Parent=Con List.Visible=false Instance.new("UIListLayout", List).Padding=UDim.new(0,2)
+                
+                local function Upd(filter)
+                    for _,v in pairs(List:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end 
+                    for _,v in pairs(items) do 
+                        if not filter or v:lower():find(filter:lower()) then
+                            local IB=RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Sidebar") IB.Size=UDim2.new(1,0,0,30) IB.Text="  "..v RegisterTheme(IB, "TextColor3", sel==v and "Accent2" or "TextDim") IB.FontFace=FontMain IB.TextSize=14 IB.TextXAlignment=Enum.TextXAlignment.Left IB.Parent=List Instance.new("UICorner",IB).CornerRadius=UDim.new(0,4) 
+                            if sel==v then local Bar = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Accent2") Bar.Size=UDim2.new(0,2,1,-10) Bar.Position=UDim2.new(0,0,0,5) Bar.Parent=IB end
+                            IB.MouseButton1Click:Connect(function() sel=v S.Text=v Library.Flags[f]=v exp=false Tween(Con,{Size=UDim2.new(1,0,0,Con:GetAttribute("H"))}) task.delay(0.2, function() if not exp then List.Visible=false end end) Upd() pcall(cb,v) end) 
+                        end
                     end 
                 end
                 
-                local section = section:new()
-                section.menu = self
+                SearchBar:GetPropertyChangedSignal("Text"):Connect(function() Upd(SearchBar.Text) end)
                 
-                table.insert(self.sections, section)
-                section.id = #self.sections
-                section.instances.title.Text = s_text
-                
-                
-                do
-                    local sectionFrame = section.instances.sectionFrame
-                    if (s_side == 'auto') then 
-                        if (section.id%2 == 0) then
-                            sectionFrame.Parent = self.instances.rightRegion
-                        else
-                            sectionFrame.Parent = self.instances.leftRegion
-                        end
-                    else
-                        sectionFrame.Parent = self.instances[(s_side == 'left' and 'leftRegion' or 'rightRegion')]
-                    end
-                    
-                    if (not s_min) then
-                        section.instances.minimizeButton.Visible = false
-                    end
-                end
-                return section
-            end
-        end
-        -- add class
-        elemClasses.section = section
-    end
-    -- TOGGLE
-    do 
-        
-        local toggle = {} do 
-            toggle.__index = toggle 
-            setmetatable(toggle, elemClasses.baseElement)
-            
-            toggle.class = 'toggle'
-            
-            do
-                local instances = {} do 
-                    local controlFrame = Instance.new('Frame')
-                    controlFrame.BackgroundTransparency = 1
-                    controlFrame.Name = '#control'
-                    controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                    controlFrame.Visible = true
-                    controlFrame.ZIndex = 34
-                    
-                    instances.controlFrame = controlFrame
-
-                    local backToggle = Instance.new('TextButton') do 
-                        backToggle.BackgroundTransparency = 1
-                        backToggle.Name = '#back-toggle'
-                        backToggle.Size = UDim2.fromScale(1, 1)
-                        backToggle.Text = ''
-                        backToggle.TextTransparency = 1
-                        backToggle.ZIndex = 34
-                        
-                        backToggle.Parent = controlFrame
-                        
-                        local label = Instance.new('TextLabel') do 
-                            label.BackgroundTransparency = 1
-                            label.Font = 'SourceSans'
-                            label.Name = '#label'
-                            label.RichText = true
-                            label.Size = UDim2.fromScale(1, 1)
-                            label.Text = 'toggle'
-                            label.TextColor3 = theme.TextPrimary
-                            label.TextSize = 14
-                            label.TextStrokeColor3 = theme.TextStroke
-                            label.TextStrokeTransparency = 0.8
-                            label.TextTransparency = 0
-                            label.TextWrapped = false
-                            label.TextXAlignment = 'Left'
-                            label.TextYAlignment = 'Center'
-                            label.Visible = true
-                            label.ZIndex = 35
-                            
-                            label.Parent = backToggle
-                            
-                            local padding = Instance.new('UIPadding') do 
-                                padding.Name = '#padding'
-                                padding.PaddingLeft = UDim.new(0, 6)
-                                
-                                padding.Parent = label
-                            end
-                        end
-                        
-                        local toggle = Instance.new('Frame') do 
-                            toggle.Active = true
-                            toggle.AnchorPoint = Vector2.new(1, 0)
-                            toggle.BackgroundColor3 = theme.Button1
-                            toggle.Name = '#toggle'
-                            toggle.Position = UDim2.new(1, -3, 0, 2)
-                            toggle.Size = UDim2.fromOffset(16, 16)
-                            toggle.Visible = true
-                            toggle.ZIndex = 35
-                            
-                            toggle.Parent = backToggle
-                            
-                            local round = Instance.new('UICorner') do 
-                                round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                round.Name = '#round'
-                                
-                                round.Parent = toggle
-                            end
-                            
-                            local stroke = Instance.new('UIStroke') do 
-                                stroke.ApplyStrokeMode = 'Border'
-                                stroke.Color = theme.Stroke
-                                stroke.LineJoinMode = 'Round'
-                                stroke.Name = '#stroke'
-                                stroke.Thickness = 1 
-                                
-                                stroke.Parent = toggle
-                            end
-                            
-                            local icon = Instance.new('ImageLabel') do 
-                                icon.Active = false
-                                icon.BackgroundTransparency = 1
-                                icon.BorderSizePixel = 0
-                                icon.Image = 'rbxassetid://9801456486'
-                                icon.ImageColor3 = theme.Secondary
-                                icon.Name = '#icon'
-                                icon.Position = UDim2.fromOffset(0, 0)
-                                icon.Rotation = 360
-                                icon.Size = UDim2.fromScale(1, 1)
-                                icon.Visible = true
-                                icon.ZIndex = 35 
-                                
-                                icon.Parent = toggle
-                                
-                                local gradient = Instance.new('UIGradient') do 
-                                    gradient.Color = ColorSequence.new(
-                                        theme.ControlGradient1,
-                                        theme.ControlGradient2
-                                    )
-                                    gradient.Enabled = true
-                                    gradient.Name = '#gradient'
-                                    gradient.Rotation = 90
-                                    
-                                    gradient.Parent = icon
-                                end
-                            end
-                        end
-                    end
-                end
-                toggle.instances = instances 
-            end
-            
-            toggle.toggled = false
-            toggle.focused = false
-            toggle.toggle = function(self) 
-                
-                local newState = not self.toggled
-                self.toggled = newState
-                local toggle = self.instances.toggle
-                local icon = toggle['#icon']
-                
-                
-                if (newState) then
-                    icon.Image = 'rbxassetid://9801457539'
-                    tween(icon, {
-                        Rotation = 0,
-                        ImageColor3 = theme.Primary
-                    }, 0.3, 1)
-
-                    
-                    if (self.focused) then
-                        tween(toggle, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                    else
-                        tween(toggle, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                    end
-                    
-                    self:fireEvent('onEnable')
-                else
-                    icon.Image = 'rbxassetid://9801456486'
-                    tween(icon, {
-                        Rotation = 360,
-                        ImageColor3 = theme.Secondary
-                    }, 0.3, 1)
-                    
-                    if (self.focused) then
-                        tween(toggle, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                    else
-                        tween(toggle, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                    end
-
-                    self:fireEvent('onDisable')
-                end
-                
-                
-                self:fireEvent('onToggle', newState)
-                return self
-            end
-            
-            toggle.__hotkeyFunc = toggle.toggle
-            
-            toggle.enable = function(self) 
-                self.toggled = true
-                
-                local toggle = self.instances.toggle
-                local icon = toggle['#icon']
-
-                icon.Image = 'rbxassetid://9801457539'
-                tween(icon, {
-                    Rotation = 0,
-                    ImageColor3 = theme.Primary
-                }, 0.3, 1)
-                
-                if (self.focused) then
-                    tween(toggle, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                    tween(toggle['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                else
-                    tween(toggle, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                    tween(toggle['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                end
-                
-                self:fireEvent('onEnable')
-                self:fireEvent('onToggle', true)
-                return self
-            end
-            
-            toggle.disable = function(self) 
-                self.toggled = false
-                
-                local toggle = self.instances.toggle
-                local icon = toggle['#icon']
-                
-                icon.Image = 'rbxassetid://9801456486'
-                tween(icon, {
-                    Rotation = 360,
-                    ImageColor3 = theme.Secondary
-                }, 0.3, 1)
-                
-                
-                
-                if (self.focused) then
-                    tween(toggle, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                    tween(toggle['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                else
-                    tween(toggle, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                    tween(toggle['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                end
-                
-                self:fireEvent('onDisable')
-                self:fireEvent('onToggle', false)
-                return self
-            end
-            
-            toggle.reset = function(self) 
-                self:toggle()
-                self:toggle()
-            end
-            
-            toggle.signals = {
-                backToggle = {
-                    MouseEnter = function(inst, toggle) 
-                        toggle.focused = true
-                        toggle:showTooltip()
-                        
-                        local togInst = toggle.instances.toggle
-                        
-                        if (toggle.toggled) then
-                            tween(togInst, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(togInst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        end
-                        tween(togInst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, toggle) 
-                        toggle.focused = false
-                        toggle:hideTooltip()
-                        
-                        
-                        local togInst = toggle.instances.toggle
-                        if (toggle.toggled) then
-                            tween(togInst, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(togInst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(togInst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(inst, toggle) 
-                        toggle:toggle()
-                    end
-                }
-            }
-            --toggle.signals.backToggle = toggle.signals.toggle
-            
-            toggle.new = function(self) 
-                local new = setmetatable({}, self)
-                new.binds = {}
-                
-                local instances = {}
-                instances.controlFrame = self.instances.controlFrame:Clone()
-                instances.backToggle = instances.controlFrame['#back-toggle']
-                instances.label = instances.backToggle['#label']
-                instances.toggle = instances.backToggle['#toggle']
-                
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                new.instances = instances
-                return new
-            end
-            
-            toggle.getState = function(self) return self.toggled end
-            toggle.isEnabled = toggle.getState
-            toggle.getValue = toggle.getState
-            
-            elemClasses.section.addToggle = function(self, settings, callback) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
-                
-                local s_title = settings.text or 'nil'
-                local s_state = settings.state or false
-                
-                local toggle = toggle:new()
-                toggle.section = self 
-                toggle.name = s_title
-                table.insert(self.controls, toggle)
-                
-                toggle.instances.label.Text = s_title
-                if (s_state) then 
-                    toggle:enable()
-                end
-                toggle.instances.controlFrame.Parent = self.instances.controlMenu
-                
-                if (typeof(callback) == 'function') then
-                    toggle:bindToEvent('onToggle', callback) 
-                end
-                return toggle
-            end
-        end
-        -- add class
-        elemClasses.toggle = toggle
-    end
-    -- BUTTONS
-    do
-        -- SMALL BUTTON
-        do 
-            
-            local buttonSmall = {} do 
-                buttonSmall.__index = buttonSmall 
-                setmetatable(buttonSmall, elemClasses.baseElement)
-                
-                buttonSmall.class = 'buttonSmall'
-                
-                do
-                    local instances = {} do 
-                        local controlFrame = Instance.new('Frame')
-                        controlFrame.BackgroundTransparency = 1
-                        controlFrame.Name = '#control'
-                        controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                        controlFrame.Visible = true
-                        controlFrame.ZIndex = 34
-                        
-                        instances.controlFrame = controlFrame
-
-                        local clickSensor = Instance.new('TextButton') do 
-                            clickSensor.BackgroundTransparency = 1
-                            clickSensor.Name = '#click-sensor'
-                            clickSensor.Size = UDim2.fromScale(1, 1)
-                            clickSensor.Text = ''
-                            clickSensor.TextTransparency = 1
-                            clickSensor.ZIndex = 34
-                            
-                            clickSensor.Parent = controlFrame
-                            
-                            local label = Instance.new('TextLabel') do 
-                                label.BackgroundTransparency = 1
-                                label.Font = 'SourceSans'
-                                label.Name = '#label'
-                                label.RichText = true
-                                label.Size = UDim2.fromScale(1, 1)
-                                label.Text = 'button'
-                                label.TextColor3 = theme.TextPrimary
-                                label.TextSize = 14
-                                label.TextStrokeColor3 = theme.TextStroke
-                                label.TextStrokeTransparency = 0.8
-                                label.TextTransparency = 0
-                                label.TextWrapped = false
-                                label.TextXAlignment = 'Left'
-                                label.TextYAlignment = 'Center'
-                                label.Visible = true
-                                label.ZIndex = 35
-                                
-                                label.Parent = clickSensor
-                                
-                                local padding = Instance.new('UIPadding') do 
-                                    padding.Name = '#padding'
-                                    padding.PaddingLeft = UDim.new(0, 6)
-                                    
-                                    padding.Parent = label
-                                end
-                            end
-                            
-                            local button = Instance.new('Frame') do 
-                                button.Active = true
-                                button.AnchorPoint = Vector2.new(1, 0)
-                                button.BackgroundColor3 = theme.Button1
-                                button.Name = '#button'
-                                button.Position = UDim2.new(1, -3, 0, 2)
-                                button.Size = UDim2.fromOffset(16, 16)
-                                button.Visible = true
-                                button.ZIndex = 35
-                                
-                                button.Parent = clickSensor
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = button
-                                end
-                                
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = theme.Stroke
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 1 
-                                    
-                                    stroke.Parent = button
-                                end
-                                
-                                local icon = Instance.new('ImageLabel') do 
-                                    icon.Active = false
-                                    icon.BackgroundTransparency = 1
-                                    icon.BorderSizePixel = 0
-                                    icon.Image = 'rbxassetid://9801455339'
-                                    icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                                    icon.Name = '#icon'
-                                    icon.Position = UDim2.fromOffset(0, 0)
-                                    icon.Rotation = 360
-                                    icon.Size = UDim2.fromScale(1, 1)
-                                    icon.Visible = true
-                                    icon.ZIndex = 35 
-                                    
-                                    icon.Parent = button
-                                    
-                                    local gradient = Instance.new('UIGradient') do 
-                                        gradient.Color = ColorSequence.new(
-                                            theme.ControlGradient1,
-                                            theme.ControlGradient2
-                                        )
-                                        gradient.Enabled = true
-                                        gradient.Name = '#gradient'
-                                        gradient.Rotation = 90
-                                        
-                                        gradient.Parent = icon
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    buttonSmall.instances = instances 
-                end
-                
-                buttonSmall.focused = false
-                buttonSmall.click = function(self) 
-                    self:fireEvent('onClick')
-                    
-                    local button = self.instances.button
-                    local icon = button['#icon']
-                    
-                    if (self.focused) then
-                        button.BackgroundColor3 = theme.Button4
-                        tween(button, {BackgroundColor3 = theme.Button2}, 1, 1)
-                    else
-                        button.BackgroundColor3 = theme.Button3
-                        tween(button, {BackgroundColor3 = theme.Button1}, 1, 1)
-                    end
-                    icon.ImageColor3 = theme.Primary
-                    tween(icon, {ImageColor3 = Color3.fromRGB(255, 255, 255)}, 1, 1)
-                    return self
-                end
-                buttonSmall.__hotkeyFunc = buttonSmall.click
-                
-                buttonSmall.signals = {
-                    clickSensor = {
-                        MouseEnter = function(inst, button) 
-                            button.focused = true
-                            button:showTooltip()
-
-                            local inst = button.instances.button
-                            tween(inst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                            tween(inst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                        end,
-                        MouseLeave = function(inst, button) 
-                            button.focused = false
-                            button:hideTooltip()
-                            
-                            local inst = button.instances.button
-                            tween(inst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                            tween(inst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                        end,
-                        MouseButton1Click = function(inst, button) 
-                            button:click()
-                        end
-                    }
-                }
-                
-                buttonSmall.new = function(self) 
-                    
-                    local new = setmetatable({}, self)
-                    new.binds = {}
-                    
-                    local instances = {}
-                    instances.controlFrame = self.instances.controlFrame:Clone()
-                    instances.clickSensor = instances.controlFrame['#click-sensor']
-                    instances.label = instances.clickSensor['#label']
-                    instances.button = instances.clickSensor['#button']
-                    
-                    for i, signals in pairs(self.signals) do 
-                        local inst = instances[i]
-                        for signal, func in pairs(signals) do
-                            local h = inst[signal]:Connect(function() 
-                                func(inst, new)
-                            end)
-                        end
-                    end
-                    
-                    new.instances = instances
-                    return new
-                end
-            end
-            -- add class
-            elemClasses.buttonSmall = buttonSmall
-        end
-        
-        -- LARGE BUTTON
-        do 
-            
-            local buttonLarge = {} do 
-                buttonLarge.__index = buttonLarge 
-                setmetatable(buttonLarge, elemClasses.baseElement)
-                
-                buttonLarge.class = 'buttonLarge'
-                
-                do
-                    local instances = {} do 
-                        local controlFrame = Instance.new('Frame')
-                        controlFrame.BackgroundTransparency = 1
-                        controlFrame.Name = '#control'
-                        controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                        controlFrame.Visible = true
-                        controlFrame.ZIndex = 34
-                        
-                        instances.controlFrame = controlFrame
-
-                        local clickSensor = Instance.new('TextButton') do 
-                            clickSensor.BackgroundTransparency = 1
-                            clickSensor.Name = '#click-sensor'
-                            clickSensor.Size = UDim2.fromScale(1, 1)
-                            clickSensor.Text = ''
-                            clickSensor.TextTransparency = 1
-                            clickSensor.ZIndex = 34
-                            
-                            clickSensor.Parent = controlFrame
-                            
-                        
-                            
-                            local button = Instance.new('Frame') do 
-                                button.Active = true
-                                button.AnchorPoint = Vector2.new(1, 0)
-                                button.BackgroundColor3 = theme.Button1
-                                button.Name = '#button'
-                                button.Position = UDim2.new(1, -3, 0, 2)
-                                button.Size = UDim2.new(1, -6, 0, 16)
-                                button.Visible = true
-                                button.ZIndex = 35
-                                
-                                button.Parent = clickSensor
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = button
-                                end
-                                
-                                local stroke = Instance.new('UIStroke') do 
-                                    stroke.ApplyStrokeMode = 'Border'
-                                    stroke.Color = theme.Stroke
-                                    stroke.LineJoinMode = 'Round'
-                                    stroke.Name = '#stroke'
-                                    stroke.Thickness = 1 
-                                    
-                                    stroke.Parent = button
-                                end
-                                
-                                local label = Instance.new('TextLabel') do 
-                                    label.BackgroundTransparency = 1
-                                    label.Font = 'SourceSans'
-                                    label.Name = '#label'
-                                    label.RichText = true
-                                    label.Size = UDim2.fromScale(1, 1)
-                                    label.Text = 'button'
-                                    label.TextColor3 = theme.TextPrimary
-                                    label.TextSize = 14
-                                    label.TextStrokeColor3 = theme.TextStroke
-                                    label.TextStrokeTransparency = 0.8
-                                    label.TextTransparency = 0
-                                    label.TextWrapped = false
-                                    label.TextXAlignment = 'Center'
-                                    label.TextYAlignment = 'Center'
-                                    label.Visible = true
-                                    label.ZIndex = 35
-                                    
-                                    label.Parent = button
-                                end
-                            end
-                        end
-                    end
-                    buttonLarge.instances = instances 
-                end
-                
-                buttonLarge.focused = false
-                
-                
-                buttonLarge.click = function(self) 
-                    self:fireEvent('onClick')
-                    
-                    local button = self.instances.button
-                    local label = button['#label']
-                    
-                    if (self.focused) then
-                        button.BackgroundColor3 = theme.Button4
-                        tween(button, {BackgroundColor3 = theme.Button2}, 1, 1)
-                    else
-                        button.BackgroundColor3 = theme.Button3
-                        tween(button, {BackgroundColor3 = theme.Button1}, 1, 1)
-                    end
-                    label.TextColor3 = theme.Primary
-                    tween(label, {TextColor3 = theme.TextPrimary}, 1, 1)
-                    
-                    return self
-                end
-                buttonLarge.__hotkeyFunc = buttonLarge.click
-                
-                buttonLarge.signals = {
-                    clickSensor = {
-                        MouseEnter = function(inst, button) 
-                            button.focused = true
-                            button:showTooltip()
-                            
-                            local inst = button.instances.button
-                            tween(inst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                            tween(inst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                        end,
-                        MouseLeave = function(inst, button) 
-                            button.focused = false
-                            button:hideTooltip()
-                            
-                            local inst = button.instances.button
-                            tween(inst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                            tween(inst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                        end,
-                        MouseButton1Click = function(inst, button) 
-                            button:click()
-                        end
-                    }
-                }
-                
-                buttonLarge.new = function(self) 
-                    
-                    local new = setmetatable({}, self)
-                    new.binds = {}
-                    
-                    local instances = {}
-                    instances.controlFrame = self.instances.controlFrame:Clone()
-                    instances.clickSensor = instances.controlFrame['#click-sensor']
-                    instances.button = instances.clickSensor['#button']
-                    instances.label = instances.button['#label']
-                    
-                    for i, signals in pairs(self.signals) do 
-                        local inst = instances[i]
-                        for signal, func in pairs(signals) do
-                            local h = inst[signal]:Connect(function() 
-                                func(inst, new)
-                            end)
-                        end
-                    end
-                    
-                    new.instances = instances
-                    return new
-                end
-                
-            end
-            -- add class
-            elemClasses.buttonLarge = buttonLarge
-        end
-        
-        -- button finalization
-        elemClasses.section.addButton = function(self, settings, callback) 
-            if (not typeof(settings) == 'table') then
-                return error('expected type table for settings', 2) 
-            end
-            
-            local s_title = settings.text or 'nil'
-            local s_style = settings.style or 'small'
-            if (typeof(s_style) == 'number') then
-                if (s_style == 2) then
-                    s_style = 'large'
-                else
-                    s_style = 'small'
-                end
-            elseif (typeof(s_style) ~= 'string') then
-                s_style = 'small'
-            end
-            
-            local new
-            if (s_style == 'large') then
-                new = elemClasses.buttonLarge:new()
-            else
-                new = elemClasses.buttonSmall:new()
-            end
-            new.section = self 
-            new.name = s_title
-            table.insert(self.controls, new)
-            
-            new.instances.label.Text = s_title
-            new.instances.controlFrame.Parent = self.instances.controlMenu
-            
-            if (typeof(callback) == 'function') then
-                new:bindToEvent('onClick', callback) 
-            end
-            return new
-        end
-    end
-    -- LABEL
-    do 
-        local label = {} do 
-            label.__index = label 
-            
-            local instances = {} do 
-                local controlFrame = Instance.new('Frame')
-                controlFrame.BackgroundTransparency = 1
-                controlFrame.Name = '#control'
-                controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                controlFrame.Visible = true
-                controlFrame.ZIndex = 34
-                
-                instances.controlFrame = controlFrame
-
-                local label = Instance.new('TextLabel') do 
-                    label.BackgroundTransparency = 1
-                    label.Font = 'SourceSans'
-                    label.Name = '#label'
-                    label.RichText = true
-                    label.Size = UDim2.fromScale(1, 1)
-                    label.Text = 'label'
-                    label.TextColor3 = theme.TextPrimary
-                    label.TextSize = 14
-                    label.TextStrokeColor3 = theme.TextStroke
-                    label.TextStrokeTransparency = 0.8
-                    label.TextTransparency = 0
-                    label.TextWrapped = false
-                    label.TextXAlignment = 'Left'
-                    label.TextYAlignment = 'Center'
-                    label.Visible = true
-                    label.ZIndex = 35
-                    
-                    label.Parent = controlFrame
-                    
-                    local padding = Instance.new('UIPadding') do 
-                        padding.Name = '#padding'
-                        padding.PaddingLeft = UDim.new(0, 6)
-                        
-                        padding.Parent = label
-                    end
-                end
-            end
-            label.instances = instances 
-            
-            label.new = function(self) 
-                local new = setmetatable({}, self)
-                new.controls = {}
-                
-                local instances = {}
-                instances.controlFrame = self.instances.controlFrame:Clone()
-                instances.label = instances.controlFrame['#label']
-                
-                new.instances = instances
-                return new
-            end
-            
-            label.setText = function(self, newText) 
-                self.instances.label.Text = tostring(newText)
-                return self
-            end
-            
-            label.getText = function(self) 
-                return self.instances.label.Text
-            end
-            
-            elemClasses.section.addLabel = function(self, settings) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
-                
-                local s_title = settings.text or 'nil'
-                local s_center = settings.center or false
-                local s_dim = settings.dim or false 
-                
-                local label = label:new()
-                label.section = self 
-                table.insert(self.controls, label)
-                
-                
-                local labelInstance = label.instances.label
-                
-                labelInstance.Text = s_title
-                if (s_dim) then
-                    labelInstance.TextColor3 = theme.TextDim 
-                end
-                if (s_center) then
-                    labelInstance.TextXAlignment = 'Center'
-                    labelInstance['#padding'].PaddingLeft = UDim.new(0, 0)
-                end
-                label.instances.controlFrame.Parent = self.instances.controlMenu
-                return label
-            end
-        end
-        -- add class
-        label.section = section
-    end
-    
-    -- Unfinished
-    -- DROPDOWN OPTION
-    --[[
-    do 
-        local dropdownOption = {} do 
-            dropdownOption.__index = dropdownOption 
-            setmetatable(dropdownOption, elemClasses.baseElement)
-            
-            dropdownOption.class = 'dropdownOption'
-            
-            do
-                local instances = {} do 
-                    local controlFrame = Instance.new('Frame')
-                    controlFrame.BackgroundTransparency = 0.8
-                    controlFrame.BackgroundColor3 = Color3.new(1, 0, 0)
-                    controlFrame.Name = '#control'
-                    controlFrame.Size = UDim2.new(1, 0, 0, 24)
-                    controlFrame.Visible = true
-                    controlFrame.ZIndex = 34
-                    
-                    instances.controlFrame = controlFrame
-                    
-                    local clickSensor = Instance.new('TextButton') do 
-                        clickSensor.BackgroundTransparency = 1
-                        clickSensor.Name = '#click-sensor'
-                        clickSensor.Size = UDim2.fromScale(1, 1)
-                        clickSensor.Text = ''
-                        clickSensor.TextTransparency = 1
-                        clickSensor.ZIndex = 34
-                        
-                        clickSensor.Parent = controlFrame
-                        
-                        local button = Instance.new('Frame') do 
-                            button.Active = true
-                            button.AnchorPoint = Vector2.new(1, 0)
-                            button.BackgroundColor3 = theme.Button1
-                            button.Name = '#button'
-                            button.Position = UDim2.new(1, -3, 0, 4)
-                            button.Size = UDim2.new(1, -6, 0, 16)
-                            button.Visible = true
-                            button.ZIndex = 35
-                            
-                            button.Parent = clickSensor
-                            
-                            local round = Instance.new('UICorner') do 
-                                round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                round.Name = '#round'
-                                
-                                round.Parent = button
-                            end
-                            
-                            local stroke = Instance.new('UIStroke') do 
-                                stroke.ApplyStrokeMode = 'Border'
-                                stroke.Color = theme.Stroke
-                                stroke.LineJoinMode = 'Round'
-                                stroke.Name = '#stroke'
-                                stroke.Thickness = 1 
-                                
-                                stroke.Parent = button
-                            end
-                            
-                            local label = Instance.new('TextLabel') do 
-                                label.BackgroundTransparency = 1
-                                label.Font = 'SourceSans'
-                                label.Name = '#label'
-                                label.RichText = true
-                                label.Size = UDim2.fromScale(1, 1)
-                                label.Text = 'button'
-                                label.TextColor3 = theme.TextPrimary
-                                label.TextSize = 14
-                                label.TextStrokeColor3 = theme.TextStroke
-                                label.TextStrokeTransparency = 0.8
-                                label.TextTransparency = 0
-                                label.TextWrapped = false
-                                label.TextXAlignment = 'Center'
-                                label.TextYAlignment = 'Center'
-                                label.Visible = true
-                                label.ZIndex = 35
-                                
-                                label.Parent = button
-                            end
-                            
-                            local icon = Instance.new('ImageLabel') do 
-                                icon.AnchorPoint = Vector2.new(1, 0)
-                                icon.BackgroundTransparency = 1
-                                icon.Image = 'rbxassetid://9801473013'
-                                icon.ImageColor3 = theme.Secondary
-                                icon.Name = '#icon'
-                                icon.Position = UDim2.fromScale(1, 0)
-                                icon.Rotation = 0
-                                icon.Size = UDim2.fromOffset(16, 16)
-                                icon.Visible = true
-                                icon.ZIndex = 35
-                                
-                                icon.Parent = button
-                                
-                                local gradient = Instance.new('UIGradient') do 
-                                    gradient.Color = ColorSequence.new(
-                                        theme.ControlGradient1,
-                                        theme.ControlGradient2
-                                    )
-                                    gradient.Rotation = 90
-                                    gradient.Enabled = true
-                                    gradient.Name = '#gradient'
-                                    
-                                    gradient.Parent = icon
-                                end
-                            end
-                        end
-                        
-                        
-                        local menu = Instance.new('ScrollingFrame') do 
-                            menu.BackgroundColor3 = theme.Window3
-                            menu.BorderSizePixel = 0
-                            menu.BottomImage = 'rbxassetid://9416839567'
-                            menu.ClipsDescendants = true
-                            menu.CanvasSize = UDim2.fromOffset(0, 0)
-                            menu.MidImage = 'rbxassetid://9416839567'
-                            menu.Name = '#menu'
-                            menu.Position = UDim2.fromOffset(3, 20)
-                            menu.ScrollBarImageTransparency = 0.9
-                            menu.ScrollBarThickness = 1
-                            menu.ScrollingDirection = 'Y'
-                            menu.ScrollingEnabled = true
-                            menu.Size = UDim2.new(1, -6, 0, 0)
-                            menu.TopImage = 'rbxassetid://9416839567'
-                            menu.ZIndex = 34
-                            
-                            menu.Parent = controlFrame
-                            
-                            local layout = Instance.new('UIListLayout') do 
-                                layout.Padding = UDim.new(0, 4)
-                                layout.Name = '#layout'
-                                layout.FillDirection = 'Vertical'
-                                layout.HorizontalAlignment = 'Center'
-                                layout.VerticalAlignment = 'Top'
-                                layout.SortOrder = 'LayoutOrder'
-                                
-                                layout.Parent = menu
-                            end
-                            
-                            local padding = Instance.new('UIPadding') do 
-                                padding.PaddingTop = UDim.new(0, 4)
-                                padding.Name = '#padding'
-                                padding.Parent = menu
-                            end
-                            
-                            local stroke = Instance.new('UIStroke') do 
-                                stroke.ApplyStrokeMode = 'Border'
-                                stroke.Color = theme.Stroke
-                                stroke.LineJoinMode = 'Round'
-                                stroke.Name = '#stroke'
-                                stroke.Thickness = 1 
-                                
-                                stroke.Parent = menu
-                            end
-                        end
-                    end
-                end
-                dropdownOption.instances = instances 
-            end
-            
-            dropdownOption.focused = false
-            dropdownOption.selected = false
-            
-            dropdownOption.select = function(self) 
-                self.openState = not self.openState
-                if (self.openState) then
-                    self:open()
-                else
-                    self:close()
-                end
-                
-                return self
-            end
-            dropdownOption.__hotkeyFunc = dropdownOption.select
-            
-            dropdownOption.signals = {
-                clickSensor = {
-                    MouseEnter = function(inst, self) 
-                        self.focused = true
-                        self:showTooltip()
-                        
-                        
-                        local frame = self.instances.button
-                        if (self.openState) then
-                            tween(frame, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(frame, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        end
-                        tween(frame['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, self) 
-                        self.focused = false
-                        self:hideTooltip()
-                        
-                        local frame = self.instances.button
-                        if (self.openState) then
-                            tween(frame, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(frame, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(frame['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(inst, self) 
-                        self:click()
-                    end
-                }
-            }
-            
-            dropdownOption.new = function(self) 
-                
-                local new = setmetatable({}, self)
-                new.binds = {}
-                new.options = {}
-                
-                local instances = {}
-                instances.controlFrame = self.instances.controlFrame:Clone()
-                instances.clickSensor = instances.controlFrame['#click-sensor']
-                instances.button = instances.clickSensor['#button']
-                instances.label = instances.button['#label']
-                instances.icon = instances.button['#icon']
-                instances.menu = instances.controlFrame['#menu']
-                
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                new.instances = instances
-                return new
-            end
-            
-            
-            elemClasses.dropdown.addDropdown = function(self, settings) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
-                
-                local s_title = settings.text or 'nil'
-                local s_options = settings.options or {}
-                
-                local new = dropdown:new()
-                new.section = self 
-                new.name = s_title
-                table.insert(self.controls, new)
-                
-                new.instances.label.Text = s_title
-                new.instances.controlFrame.Parent = self.instances.controlMenu
-                return new
-            end
-        end
-        -- add class
-        elemClasses.dropdownOption = dropdownOption
-    end]]
-
-    -- Unfinished
-    -- DROPDOWN
-    --[[
-    do 
-        local dropdown = {} do 
-            dropdown.__index = dropdown 
-            setmetatable(dropdown, elemClasses.baseElement)
-            
-            dropdown.class = 'dropdown'
-            
-            do
-                local instances = {} do 
-                    local controlFrame = Instance.new('Frame')
-                    controlFrame.BackgroundTransparency = 1
-                    controlFrame.BackgroundColor3 = Color3.new(0, 1, 1)
-                    controlFrame.Name = '#control'
-                    controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                    controlFrame.Visible = true
-                    controlFrame.ZIndex = 34
-                    
-                    instances.controlFrame = controlFrame
-                    
-                    local clickSensor = Instance.new('TextButton') do 
-                        clickSensor.BackgroundTransparency = 1
-                        clickSensor.Name = '#click-sensor'
-                        clickSensor.Size = UDim2.new(1, 0, 0, 20)
-                        clickSensor.Text = ''
-                        clickSensor.TextTransparency = 1
-                        clickSensor.ZIndex = 34
-                        
-                        clickSensor.Parent = controlFrame
-                        
-                        local button = Instance.new('Frame') do 
-                            button.Active = true
-                            button.AnchorPoint = Vector2.new(1, 0)
-                            button.BackgroundColor3 = theme.Button1
-                            button.Name = '#button'
-                            button.Position = UDim2.new(1, -3, 0, 2)
-                            button.Size = UDim2.new(1, -6, 0, 16)
-                            button.Visible = true
-                            button.ZIndex = 35
-                            
-                            button.Parent = clickSensor
-                            
-                            local round = Instance.new('UICorner') do 
-                                round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                round.Name = '#round'
-                                
-                                round.Parent = button
-                            end
-                            
-                            local stroke = Instance.new('UIStroke') do 
-                                stroke.ApplyStrokeMode = 'Border'
-                                stroke.Color = theme.Stroke
-                                stroke.LineJoinMode = 'Round'
-                                stroke.Name = '#stroke'
-                                stroke.Thickness = 1 
-                                
-                                stroke.Parent = button
-                            end
-                            
-                            local label = Instance.new('TextLabel') do 
-                                label.BackgroundTransparency = 1
-                                label.Font = 'SourceSans'
-                                label.Name = '#label'
-                                label.RichText = true
-                                label.Size = UDim2.fromScale(1, 1)
-                                label.Text = 'button'
-                                label.TextColor3 = theme.TextPrimary
-                                label.TextSize = 14
-                                label.TextStrokeColor3 = theme.TextStroke
-                                label.TextStrokeTransparency = 0.8
-                                label.TextTransparency = 0
-                                label.TextWrapped = false
-                                label.TextXAlignment = 'Center'
-                                label.TextYAlignment = 'Center'
-                                label.Visible = true
-                                label.ZIndex = 35
-                                
-                                label.Parent = button
-                            end
-                            
-                            local icon = Instance.new('ImageLabel') do 
-                                icon.AnchorPoint = Vector2.new(1, 0)
-                                icon.BackgroundTransparency = 1
-                                icon.Image = 'rbxassetid://9801473013'
-                                icon.ImageColor3 = theme.Secondary
-                                icon.Name = '#icon'
-                                icon.Position = UDim2.fromScale(1, 0)
-                                icon.Rotation = 0
-                                icon.Size = UDim2.fromOffset(16, 16)
-                                icon.Visible = true
-                                icon.ZIndex = 35
-                                
-                                icon.Parent = button
-                                
-                                local gradient = Instance.new('UIGradient') do 
-                                    gradient.Color = ColorSequence.new(
-                                        theme.ControlGradient1,
-                                        theme.ControlGradient2
-                                    )
-                                    gradient.Rotation = 90
-                                    gradient.Enabled = true
-                                    gradient.Name = '#gradient'
-                                    
-                                    gradient.Parent = icon
-                                end
-                            end
-                        end
-                        
-                        
-                        local menu = Instance.new('ScrollingFrame') do 
-                            menu.BackgroundColor3 = theme.Window3
-                            menu.BorderSizePixel = 0
-                            menu.BottomImage = 'rbxassetid://9416839567'
-                            menu.ClipsDescendants = true
-                            menu.CanvasSize = UDim2.fromOffset(0, 0)
-                            menu.MidImage = 'rbxassetid://9416839567'
-                            menu.Name = '#menu'
-                            menu.Position = UDim2.fromOffset(3, 18)
-                            menu.ScrollBarImageTransparency = 0.9
-                            menu.ScrollBarThickness = 1
-                            menu.ScrollingDirection = 'Y'
-                            menu.ScrollingEnabled = true
-                            menu.Size = UDim2.new(1, -6, 0, 0)
-                            menu.TopImage = 'rbxassetid://9416839567'
-                            menu.ZIndex = 34
-                            
-                            menu.Parent = controlFrame
-                            
-                            local layout = Instance.new('UIListLayout') do 
-                                layout.Padding = UDim.new(0, 4)
-                                layout.Name = '#layout'
-                                layout.FillDirection = 'Vertical'
-                                layout.HorizontalAlignment = 'Center'
-                                layout.VerticalAlignment = 'Top'
-                                layout.SortOrder = 'LayoutOrder'
-                                
-                                layout.Parent = menu
-                            end
-                            
-                            local padding = Instance.new('UIPadding') do 
-                                padding.PaddingTop = UDim.new(0, 4)
-                                padding.Name = '#padding'
-                                padding.Parent = menu
-                            end
-                            
-                            local stroke = Instance.new('UIStroke') do 
-                                stroke.ApplyStrokeMode = 'Border'
-                                stroke.Color = theme.Stroke
-                                stroke.LineJoinMode = 'Round'
-                                stroke.Name = '#stroke'
-                                stroke.Thickness = 1 
-                                
-                                stroke.Parent = menu
-                            end
-                        end
-                    end
-                end
-                dropdown.instances = instances 
-            end
-            
-            dropdown.focused = false
-            dropdown.openState = false
-            
-            
-            dropdown.open = function(self) 
-                self.openState = true 
-                self:fireEvent('onOpen')
-                
-                
-                local frame = self.instances.button
-                if (self.focused) then
-                    tween(frame, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                else
-                    tween(frame, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                end
-                tween(self.instances.icon, {
-                    Rotation = 180,
-                    ImageColor3 = theme.Primary
-                }, 0.3, 1)
-                
-                
-                tween(self.instances.menu, {
-                    Size = UDim2.new(1, -6, 0, 68)
-                }, 0.2, 1)
-                tween(self.instances.controlFrame, {
-                    Size = UDim2.new(1, 0, 0, 68+20)
-                }, 0.2, 1)
-            end
-            dropdown.close = function(self) 
-                self.openState = false
-                self:fireEvent('onClose')
-                
-                local frame = self.instances.button
-                if (self.focused) then
-                    tween(frame, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                else
-                    tween(frame, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                end
-                tween(self.instances.icon, {
-                    Rotation = 0,
-                    ImageColor3 = theme.Secondary
-                }, 0.3, 1)
-                tween(self.instances.menu, {
-                    Size = UDim2.new(1, -6, 0, 0)
-                }, 0.2, 1)
-                tween(self.instances.controlFrame, {
-                    Size = UDim2.new(1, 0, 0, 20)
-                }, 0.2, 1)
-            end
-            
-            dropdown.isOpen = function(self) 
-                return self.openState 
-            end
-            
-            dropdown.setOptions = function(self, newOptions) 
-                for i, opt in ipairs(self.options) do 
-                    self:removeOption(opt)
-                end
-                for i, opt in ipairs(newOptions) do 
-                    self:addOption(opt)
-                end
-            end
-            dropdown.refresh = dropdown.setOptions
-            
-            dropdown.addOption = function(self) 
-            
-            end
-            
-            dropdown.removeOption = function(self) 
-            
-            end
-            
-            
-            
-            dropdown.click = function(self) 
-                self.openState = not self.openState
-                if (self.openState) then
-                    self:open()
-                else
-                    self:close()
-                end
-                
-                return self
-            end
-            dropdown.__hotkeyFunc = dropdown.click
-            
-            dropdown.signals = {
-                clickSensor = {
-                    MouseEnter = function(inst, self) 
-                        self.focused = true
-                        self:showTooltip()
-                        
-                        
-                        local frame = self.instances.button
-                        if (self.openState) then
-                            tween(frame, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(frame, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        end
-                        tween(frame['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, self) 
-                        self.focused = false
-                        self:hideTooltip()
-                        
-                        local frame = self.instances.button
-                        if (self.openState) then
-                            tween(frame, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(frame, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(frame['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(inst, self) 
-                        self:click()
-                    end
-                }
-            }
-            
-            dropdown.new = function(self) 
-                
-                local new = setmetatable({}, self)
-                new.binds = {}
-                new.options = {}
-                
-                local instances = {}
-                instances.controlFrame = self.instances.controlFrame:Clone()
-                instances.clickSensor = instances.controlFrame['#click-sensor']
-                instances.button = instances.clickSensor['#button']
-                instances.label = instances.button['#label']
-                instances.icon = instances.button['#icon']
-                instances.menu = instances.controlFrame['#menu']
-                
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                new.instances = instances
-                return new
-            end
-            
-            
-            elemClasses.section.addDropdown = function(self, settings) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
-                
-                local s_title = settings.text or 'nil'
-                local s_options = settings.options or {}
-                
-                local new = dropdown:new()
-                new.section = self 
-                new.name = s_title
-                table.insert(self.controls, new)
-                
-                new.instances.label.Text = s_title
-                new.instances.controlFrame.Parent = self.instances.controlMenu
-                return new
-            end
-        end
-        -- add class
-        elemClasses.dropdown = dropdown
-    end    
-    ]]
-
-    -- SLIDER
-    do 
-        
-        local slider = {} do 
-            slider.__index = slider 
-            setmetatable(slider, elemClasses.baseElement)
-            
-            slider.class = 'slider'
-            
-            do
-                local instances = {} do 
-                    local controlFrame = Instance.new('Frame')
-                    controlFrame.BackgroundTransparency = 1
-                    controlFrame.Name = '#control'
-                    controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                    controlFrame.Visible = true
-                    controlFrame.ZIndex = 34
-                    
-                    instances.controlFrame = controlFrame
-                    
-                    local sliderContainer = Instance.new('Frame') do 
-                        sliderContainer.BackgroundColor3 = theme.Button1
-                        sliderContainer.Position = UDim2.fromOffset(3, 2)
-                        sliderContainer.Size = UDim2.new(1, -6, 0, 16)
-                        sliderContainer.Visible = true
-                        sliderContainer.ZIndex = 35
-                        sliderContainer.Name = '#slider-container'
-                        
-                        sliderContainer.Parent = controlFrame
-                        
-                        local round = Instance.new('UICorner') do 
-                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                            round.Name = '#round'
-                            
-                            round.Parent = sliderContainer
-                        end
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = sliderContainer
-                        end
-                        local sliderFill = Instance.new('Frame') do 
-                            sliderFill.Active = false
-                            sliderFill.BackgroundColor3 = theme.Primary
-                            sliderFill.BackgroundTransparency = 0.6
-                            sliderFill.BorderSizePixel = 0
-                            sliderFill.Name = '#slider-fill'
-                            sliderFill.Size = UDim2.fromScale(1, 1)
-                            sliderFill.Visible = true
-                            sliderFill.ZIndex = 36
-                            
-                            sliderFill.Parent = sliderContainer
-                            
-                            local round = Instance.new('UICorner') do 
-                                round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                round.Name = '#round'
-                                
-                                round.Parent = sliderFill
-                            end
-                            
-                            local gradient = Instance.new('UIGradient') do 
-                                gradient.Color = ColorSequence.new(
-                                    theme.ControlGradient1,
-                                    theme.ControlGradient2
-                                )
-                                gradient.Rotation = 90
-                                gradient.Enabled = true
-                                gradient.Name = '#gradient'
-                                
-                                gradient.Parent = sliderFill
-                            end
-                        end
-                        
-                        local inputBox = Instance.new('TextBox') do 
-                            inputBox.Active = true 
-                            inputBox.BackgroundColor3 = theme.Window1
-                            inputBox.BackgroundTransparency = 0.1
-                            inputBox.ClearTextOnFocus = true
-                            inputBox.ClipsDescendants = true
-                            inputBox.Font = 'SourceSans'
-                            inputBox.Name = '#input-box'
-                            inputBox.PlaceholderColor3 = theme.TextDim
-                            inputBox.PlaceholderText = 'enter value'
-                            inputBox.Size = UDim2.fromScale(1, 1)
-                            inputBox.Text = 'enter value'
-                            inputBox.TextColor3 = theme.TextPrimary
-                            inputBox.TextSize = 14
-                            inputBox.TextStrokeColor3 = theme.TextStroke
-                            inputBox.TextStrokeTransparency = 0.8
-                            inputBox.TextWrapped = true
-                            inputBox.TextXAlignment = 'Center'
-                            inputBox.TextYAlignment = 'Center'
-                            inputBox.Visible = false
-                            inputBox.ZIndex = 38
-                            
-                            inputBox.Parent = sliderContainer
-                            
-                            local round = Instance.new('UICorner') do 
-                                round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                                round.Name = '#round'
-                                
-                                round.Parent = inputBox
-                            end
-                            
-                            local stroke = Instance.new('UIStroke') do 
-                                stroke.ApplyStrokeMode = 'Border'
-                                stroke.Color = theme.Stroke
-                                stroke.LineJoinMode = 'Round'
-                                stroke.Name = '#stroke'
-                                stroke.Thickness = 1 
-                                
-                                stroke.Parent = inputBox
-                            end
-                        end
-                    end
-                    
-                    local title = Instance.new('TextLabel') do 
-                        title.BackgroundTransparency = 1
-                        title.Font = 'SourceSans'
-                        title.Name = '#label'
-                        title.Size = UDim2.fromScale(1, 1)
-                        title.Text = 'slider'
-                        title.TextColor3 = theme.TextPrimary
-                        title.TextSize = 14
-                        title.TextStrokeColor3 = theme.TextStroke
-                        title.TextStrokeTransparency = 0.8
-                        title.TextTransparency = 0
-                        title.TextWrapped = false
-                        title.TextXAlignment = 'Left'
-                        title.TextYAlignment = 'Center'
-                        title.Visible = true
-                        title.ZIndex = 37
-                        
-                        title.Parent = controlFrame
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.PaddingLeft = UDim.new(0, 6)
-                            
-                            padding.Parent = title
-                        end
-                    end
-                    
-                    local val = Instance.new('TextLabel') do 
-                        val.BackgroundTransparency = 1
-                        val.Font = 'SourceSans'
-                        val.Name = '#val'
-                        val.Size = UDim2.fromScale(1, 1)
-                        val.Text = '0'
-                        val.TextColor3 = theme.TextPrimary
-                        val.TextSize = 14
-                        val.TextStrokeColor3 = theme.TextStroke
-                        val.TextStrokeTransparency = 0.8
-                        val.TextTransparency = 0
-                        val.TextWrapped = false
-                        val.TextXAlignment = 'Right'
-                        val.TextYAlignment = 'Center'
-                        val.Visible = true
-                        val.ZIndex = 37
-                        
-                        val.Parent = controlFrame
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.PaddingRight = UDim.new(0, 6)
-                            
-                            padding.Parent = val
-                        end
-                    end
-                end
-                slider.instances = instances 
-            end
-            
-            slider.focused = false
-            slider.step = 0
-            slider.min = 0
-            slider.max = 100
-            slider.format = '%d'
-            
-            slider.signals = {
-                container = {
-                    MouseEnter = function(inst, win) 
-                        win:showTooltip()
-                        
-                        tween(inst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        tween(inst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, win) 
-                        win:hideTooltip()
-                        
-                        tween(inst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        tween(inst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end
-                }
-            }
-            
-            slider.new = function(self) 
-                local new = setmetatable({}, self)
-                new.binds = {}
-                
-                local instances = {}
-                instances.controlFrame = self.instances.controlFrame:Clone()
-                instances.label = instances.controlFrame['#label']
-                instances.value = instances.controlFrame['#val']
-                instances.container = instances.controlFrame['#slider-container']
-                instances.fill = instances.container['#slider-fill']
-                instances.input = instances.container['#input-box']
-                
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                -- slider logic
-                do 
-                    local slider = instances.container
-                    local fill = instances.fill
-                    local val = instances.value
-                    local inputbox = instances.input
-                    
-                    local dcon
-                    local acon
-                    
-                    local targetSize
-                    
-                    inputbox.FocusLost:Connect(function(enter, io) 
-                        local tx = inputbox.Text
-                        local n = tonumber(tx)
-                        if (n) then
-                            inputbox.Visible = false
-
-                            local rangeValue = math.clamp(n, new.min, new.max)
-                            local roundedValue = math.floor((rangeValue+new.step/2) / new.step) * new.step
-                            local fillValue = (roundedValue - new.min) / (new.max - new.min)
-                            tween(fill, {Size = UDim2.fromScale(fillValue, 1)}, 0.3, 1)
-                            
-                            val.Text = new.format:format(roundedValue)
-                            new.value = roundedValue
-                            new:fireEvent('onNewValue', roundedValue)
-                        elseif (tx == '') then
-                            inputbox.Visible = false
-                        else
-                            inputbox.Text = 'not a valid number'
-                            wait(1)
-                            inputbox:CaptureFocus()
-                        end
-                    end)
-                    
-                    slider.InputBegan:Connect(function(io) 
-                        local inputName = io.UserInputType.Name
-                        if (inputName == 'MouseButton1') then
-                            local sliderPos = slider.AbsolutePosition
-                            local sliderWidth = slider.AbsoluteSize.X
-                            local startInput do 
-                                local position = io.Position
-                                startInput = Vector2.new(position.X, position.Y)
-                            end
-                            
-                            local rangeValue = math.clamp(((startInput - sliderPos).X / sliderWidth), 0, 1)
-                            local scaledValue = rangeValue * (new.max - new.min) + new.min
-                            local roundedValue = math.floor((scaledValue+new.step/2) / new.step) * new.step
-                            local fillValue = (roundedValue - new.min) / (new.max - new.min)
-                            
-                            targetSize = UDim2.fromScale(fillValue, 1)
-                            val.Text = new.format:format(roundedValue)
-                            new.value = roundedValue
-                            new:fireEvent('onNewValue', roundedValue)
-                            
-                            acon = renderService.RenderStepped:Connect(function(dt) 
-                                fill.Size = fill.Size:lerp(targetSize, 1 - 1e-12^dt)
-                            end)
-                            
-                            dcon = inputService.InputChanged:Connect(function(io) 
-                                if (io.UserInputType.Name == 'MouseMovement') then
-                                    local curInput do 
-                                        local position = io.Position
-                                        curInput = Vector2.new(position.X, position.Y)
-                                    end
-                                    
-                                    local rangeValue = math.clamp(((curInput - sliderPos).X / sliderWidth), 0, 1)
-                                    local scaledValue = rangeValue * (new.max - new.min) + new.min
-                                    local roundedValue = math.floor((scaledValue+new.step/2) / new.step) * new.step
-                                    local fillValue = (roundedValue - new.min) / (new.max - new.min)
-                                    
-                                    targetSize = UDim2.fromScale(fillValue, 1)
-                                    val.Text = new.format:format(roundedValue)
-                                    new.value = roundedValue
-                                    new:fireEvent('onNewValue', roundedValue)
-                                end
-                            end)
-                        elseif (inputName == 'MouseButton2') then
-                            inputbox.Visible = true
-                            inputbox:CaptureFocus()
-                        end
-                    end)
-                    
-                    slider.InputEnded:Connect(function(io) 
-                        if (io.UserInputType.Name == 'MouseButton1') then
-                            dcon:Disconnect()
-                            acon:Disconnect()
-                            
-                            tween(fill, {Size = targetSize}, 0.2, 1)
-                        end
-                    end)
-                end
-                
-                new.instances = instances
-                return new
-            end
-            
-            slider.getValue = function(self) 
-                return self.value 
-            end
-            slider.setValue = function(self, value) 
-                self.value = value
-                self:fireEvent('onNewValue', value)
-                
-                local rangeValue = math.clamp(value, self.min, self.max)
-                local roundedValue = math.floor((rangeValue+self.step/2) / self.step) * self.step
-                local fillValue = (roundedValue - self.min) / (self.max - self.min)
-                
-                tween(self.instances.fill, {Size = UDim2.fromScale(fillValue, 1)}, 0.3, 1)
-                self.instances.value.Text = self.format:format(roundedValue)
-            end
-            
-            elemClasses.section.addSlider = function(self, settings, callback) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
-                
-                local s_title = settings.text or 'nil'
-                local s_min = settings.min or 0
-                local s_max = settings.max or 100
-                local s_step = settings.step or 1
-                local s_value = settings.value or s_min
-                
-                
-                if (typeof(s_min) ~= 'number') then
-                    return error('expected type \'number\' for setting \'min\'', 2)
-                end
-                if (typeof(s_max) ~= 'number') then
-                    return error('expected type \'number\' for setting \'max\'', 2)
-                end
-                if (typeof(s_step) ~= 'number') then
-                    return error('expected type \'number\' for setting \'step\'', 2)
-                end
-                if (typeof(s_value) ~= 'number') then
-                    return error('expected type \'number\' for setting \'value\'', 2)
-                end
-                
-                local slider = slider:new()
-                slider.section = self 
-                slider.name = s_title
-                slider.min = s_min
-                slider.max = s_max
-                slider.step = s_step
-                
-                do 
-                    if (s_step >= 1) then
-                        slider.format = '%d'
-                    elseif (s_step >= 0.1) then 
-                        slider.format = '%.1f'
-                    elseif (s_step >= 0.01) then 
-                        slider.format = '%.2f'
-                    elseif (s_step >= 0.001) then 
-                        slider.format = '%.3f'
-                    else 
-                        slider.format = '%.4f'
-                    end
-                end
-                
-                
-                table.insert(self.controls, slider)
-                
-                slider:setValue(s_value) 
-                slider.instances.label.Text = s_title
-                slider.instances.controlFrame.Parent = self.instances.controlMenu
-                
-                if (typeof(callback) == 'function') then
-                    slider:bindToEvent('onNewValue', callback)
-                end
-                return slider
-            end
-        end
-        
-        elemClasses.slider = slider
-    end
-    
-    -- COLOR PICKER
-    do 
-        
-        local picker = {} do 
-            picker.__index = picker 
-            setmetatable(picker, elemClasses.baseElement)
-            
-            picker.class = 'picker'
-            
-            do
-                local instances = {} do 
-                    local controlFrame = Instance.new('Frame') do
-                        controlFrame.BackgroundTransparency = 1
-                        controlFrame.Name = '#control'
-                        controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                        controlFrame.Visible = true
-                        controlFrame.ZIndex = 34
-                    end
-                    instances.controlFrame = controlFrame
-
-                    local clickRegion = Instance.new('TextButton') do 
-                        clickRegion.BackgroundTransparency = 1
-                        clickRegion.Name = '#click-region'
-                        clickRegion.Size = UDim2.fromScale(1, 1)
-                        clickRegion.Text = ''
-                        clickRegion.TextTransparency = 1
-                        clickRegion.ZIndex = 34
-                        
-                        clickRegion.Parent = controlFrame
-                        
-                        local label = Instance.new('TextLabel') do 
-                            label.BackgroundTransparency = 1
-                            label.Font = 'SourceSans'
-                            label.Name = '#label'
-                            label.RichText = true
-                            label.Size = UDim2.fromScale(1, 1)
-                            label.Text = 'picker'
-                            label.TextColor3 = theme.TextPrimary
-                            label.TextSize = 14
-                            label.TextStrokeColor3 = theme.TextStroke
-                            label.TextStrokeTransparency = 0.8
-                            label.TextTransparency = 0
-                            label.TextWrapped = false
-                            label.TextXAlignment = 'Left'
-                            label.TextYAlignment = 'Center'
-                            label.Visible = true
-                            label.ZIndex = 35
-                            
-                            label.Parent = clickRegion
-                            
-                            local padding = Instance.new('UIPadding') do 
-                                padding.Name = '#padding'
-                                padding.PaddingLeft = UDim.new(0, 6)
-                                
-                                padding.Parent = label
-                            end
-                        end
-                        
-                        local picker = Instance.new('Frame') do 
-                            picker.Active = true
-                            picker.AnchorPoint = Vector2.new(1, 0)
-                            picker.BackgroundColor3 = theme.Button1
-                            picker.Name = '#picker'
-                            picker.Position = UDim2.new(1, -3, 0, 2)
-                            picker.Size = UDim2.fromOffset(16, 16)
-                            picker.Visible = true
-                            picker.ZIndex = 35
-                            
-                            picker.Parent = clickRegion
-                            
-                            local round = Instance.new('UICorner') do 
-                                round.CornerRadius = UDim.new(1, 0)
-                                round.Name = '#round'
-                                
-                                round.Parent = picker
-                            end
-                            
-                            local stroke = Instance.new('UIStroke') do 
-                                stroke.ApplyStrokeMode = 'Border'
-                                stroke.Color = theme.Stroke
-                                stroke.LineJoinMode = 'Round'
-                                stroke.Name = '#stroke'
-                                stroke.Thickness = 1 
-                                
-                                stroke.Parent = picker
-                            end
-                            
-                            local display = Instance.new('Frame') do 
-                                display.Active = false
-                                display.BorderSizePixel = 0
-                                display.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                                display.Name = '#display'
-                                display.Position = UDim2.fromOffset(2, 2)
-                                display.Size = UDim2.fromOffset(12, 12)
-                                display.Visible = true
-                                display.ZIndex = 35 
-                                
-                                display.Parent = picker
-                                
-                                local gradient = Instance.new('UIGradient') do 
-                                    gradient.Color = ColorSequence.new(
-                                        theme.ControlGradient1,
-                                        theme.ControlGradient2
-                                    )
-                                    gradient.Rotation = 90
-                                    gradient.Enabled = true
-                                    gradient.Name = '#gradient'
-                                    
-                                    gradient.Parent = display
-                                end
-                                
-                                local round = Instance.new('UICorner') do 
-                                    round.CornerRadius = UDim.new(1, 0)
-                                    round.Name = '#round'
-                                    
-                                    round.Parent = display
-                                end
-                            end
-                        end
-                    end
-                end
-                picker.instances = instances 
-            end
-            
-            picker.color = Color3.fromRGB(255, 255, 255)
-            picker.hue = 0
-            picker.sat = 0 
-            picker.val = 1
-            
-            picker.chroma = false
-            picker.chromaSpeed = 0.1
-            
-            picker.focused = false
-            picker.pickerWindow = nil
-            
-            picker.openPrompt = function(self) 
-                local window = elemClasses.pickerWindow:new()
-                local mouseLoc = inputService:GetMouseLocation()
-                local screenSize = guiService:GetScreenResolution()
-                
-                local new = Vector2.new(
-                    math.clamp(mouseLoc.X, 50, screenSize.X - 350),
-                    math.clamp(mouseLoc.Y, 50, screenSize.Y - 350)
-                )
-                
-                window:setPosition(new)--inputService:GetMouseLocation())
-                window.hue = self.hue
-                window.sat = self.sat
-                window.val = self.val
-                
-                window.linkedPicker = self
-                window.instances.speedCursor.Position = UDim2.fromScale(0, 1 - self.chromaSpeed)
-                window:displayHSV(true)
-                window:setTitle(self.name)
-                window:bindToEvent('newColor', function(color, HSV) 
-                    self.color = color
-                    self.hue = HSV[1]
-                    self.sat = HSV[2]
-                    self.val = HSV[3]
-                    
-                    self:fireEvent('onNewColor', color)
-                    
-                    self.instances.display.BackgroundColor3 = color
-                end)
-                window:bindToEvent('close', function() 
-                    if (window.chromaCon) then 
-                        window.chromaCon:Disconnect()
-                    end
-                    self.pickerWindow = nil
-                    
-                    if (self.chroma) then
-                        if (self.chromaCon) then self.chromaCon:Disconnect() end 
-                        self.chromaCon = renderService.RenderStepped:Connect(function(dt) 
-                            dt *= self.chromaSpeed
-                            
-                            local hue = self.hue
-                            hue += dt
-                            hue = (hue > 1 and hue - 1) or hue
-                            self.hue = hue 
-                            self.color = Color3.fromHSV(hue, self.sat, self.val)
-                            self.instances.display.BackgroundColor3 = self.color
-                            self:fireEvent('onNewColor', self.color)
-                        end)
-                    end
-                end)
-                window:bindToEvent('chroma', function(t) 
-                    self.chroma = t 
-                    if (t) then
-                        if (window.chromaCon) then window.chromaCon:Disconnect() end 
-                        if (self.chromaCon) then self.chromaCon:Disconnect() end 
-                        window.chromaCon = renderService.RenderStepped:Connect(function(dt) 
-                            dt *= self.chromaSpeed
-                            if (window.pickerMoving) then 
-                                return 
-                            end 
-                            
-                            local hue = window.hue
-                            hue += dt
-                            hue = (hue > 1 and hue - 1) or hue
-                            window.hue = hue
-                            window:displayHSV(true)
-                        end)
-                    else 
-                        if (window.chromaCon) then window.chromaCon:Disconnect() end 
-                        if (self.chromaCon) then self.chromaCon:Disconnect() end 
-                    end
-                end)
-                if (self.chroma) then 
-                    window:toggleChroma()
-                end
-                
-                task.spawn(function()
-                    local instances = window.instances 
-                    
-                    local main = instances.main 
-                    
-                    local offsetIndex = 50 * math.random(1,20)
-                    main.ZIndex += offsetIndex
-                    for i,v in ipairs(main:GetDescendants()) do 
-                        if (v:IsA('GuiObject')) then 
-                            v.ZIndex += offsetIndex
-                        end
-                    end
-                    
-                    
-                    local titleBar = instances.titleBar
-                    
-                    main.Size = UDim2.fromOffset(300, 30)
-                    tween(main, {Size = UDim2.fromOffset(300, 300)}, 0.5, 1)
-                    
-                    -- control anims
-                    task.spawn(function() 
-                        local icon = titleBar['#icon']
-                        local bClose = titleBar['#button-close']
-                        local bMin = titleBar['#button-min']
-                        local title = titleBar['#title']
-                        
-                        local offset = UDim2.fromOffset(50, 0) 
-                        
-                        bClose.Position += offset
-                        bMin.Position += offset
-                        icon.Position -= offset
-                        title.Position -= offset
-                        tween(bClose, {Position = bClose.Position - offset}, 1, 1)
-                        tween(bMin, {Position = bMin.Position - offset}, 1, 1)
-                        tween(icon, {Position = icon.Position + offset}, 1, 1)
-                        tween(title, {Position = title.Position + offset}, 1, 1)
-                    end)
-                    
-                    -- titlebar fade
-                    local fade = titleBar['#fade']
-                    fade.BackgroundTransparency = 0
-                    fade.Visible = true
-                    tween(fade, {BackgroundTransparency = 1}, 2, 1).Completed:Wait()
-                end)
-                
-                return window
-            end
-            
-            picker.click = function(self) 
-                self:fireEvent('onClick')
-                
-                local picker = self.instances.picker
-                
-                if (self.focused) then
-                    picker.BackgroundColor3 = theme.Button4
-                    tween(picker, {BackgroundColor3 = theme.Button2}, 1, 1)
-                else
-                    picker.BackgroundColor3 = theme.Button3
-                    tween(picker, {BackgroundColor3 = theme.Button1}, 1, 1)
-                end
-                
-                local pickerWindow = self.pickerWindow
-                if (pickerWindow) then
-                    self.pickerWindow:destroy()
-                else
-                    self.pickerWindow = self:openPrompt()
-                end
-                
-                return picker
-            end
-            
-            picker.__hotkeyFunc = picker.click 
-            
-            picker.getColor = function(self) 
-                return self.color
-            end
-            
-            picker.setColor = function(self, color) 
-                if (typeof(color) ~= 'Color3') then
-                    return error('expected Color3, got ' .. typeof(color), 2)
-                end
-                
-                self.color = color
-                local h,s,v = color:ToHSV()
-                self.hue = h
-                self.sat = s
-                self.val = v 
-                
-                self.instances.display.BackgroundColor3 = self.color
-            end
-            
-            
-            picker.signals = {
-                clickRegion = {
-                    MouseEnter = function(inst, picker) 
-                        picker.focused = true
-                        picker:showTooltip()
-                        
-                        local inst = picker.instances.picker
-                        tween(inst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        tween(inst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, picker) 
-                        picker.focused = false
-                        picker:hideTooltip()
-                        
-                        local inst = picker.instances.picker
-                        tween(inst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        tween(inst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                    MouseButton1Click = function(inst, picker) 
-                        picker:click()
-                    end
-                }
-            }
-            
-            picker.new = function(self) 
-                
-                local new = setmetatable({}, self)
-                new.binds = {}
-                
-                local instances = {}
-                instances.controlFrame = self.instances.controlFrame:Clone()
-                instances.clickRegion = instances.controlFrame['#click-region']
-                instances.picker = instances.clickRegion['#picker']
-                instances.label = instances.clickRegion['#label']
-                instances.display = instances.picker['#display']
-                
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                new.instances = instances
-                return new
+                B.MouseButton1Click:Connect(function() exp=not exp Con:SetAttribute("H", Con.AbsoluteSize.Y) if exp then List.Visible=true end Tween(I,{Rotation=exp and 180 or 0}) Tween(Con,{Size=UDim2.new(1,0,0,exp and math.min(220,#items*32+80) or 40)}) if not exp then task.delay(0.2, function() if not exp then List.Visible=false end end) end end) Upd()
+                Library.Elements[f]={Set=function(v) sel=v S.Text=v Library.Flags[f]=v Upd() pcall(cb,v) end, Refresh=function(n) items=n Upd() end}
             end
 
-            elemClasses.section.addColorPicker = function(self, settings, callback) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
+            function Generators.MultiDropdown(parent, t,f,items,cb,desc)
+                local sel = {} Library.Flags[f] = sel local exp = false
+                local Con = CreateBase(parent, t, desc, 40) Con.ClipsDescendants = true
+                local B = Instance.new("TextButton") B.Size = UDim2.new(1, 0, 0, 40) B.BackgroundTransparency = 1 B.Text = "" B.Parent = Con
+                local S = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") S.Text = "None" S.Size = UDim2.new(0.5, -40, 0, 20) S.Position = UDim2.new(1, -30, 0, 10) S.AnchorPoint = Vector2.new(1, 0) S.BackgroundTransparency = 1 S.FontFace = FontMain S.TextSize = 14 S.TextXAlignment = Enum.TextXAlignment.Right S.Parent = B
+                local I = RegisterTheme(Instance.new("ImageLabel"), "ImageColor3", "TextDim") I.Size = UDim2.new(0, 16, 0, 16) I.Position = UDim2.new(1, -26, 0, 12) I.BackgroundTransparency = 1 I.Image = Icons["chevron"] I.Parent = B
+                local List = Instance.new("ScrollingFrame") List.Size = UDim2.new(1, -10, 1, -45) List.Position = UDim2.new(0, 5, 0, 45) List.BackgroundTransparency = 1 List.BorderSizePixel = 0 List.ScrollBarThickness = 2 List.AutomaticCanvasSize = Enum.AutomaticSize.Y List.CanvasSize = UDim2.new(0, 0, 0, 0) List.Parent = Con List.Visible=false Instance.new("UIListLayout", List).Padding = UDim.new(0, 2)
                 
-                local s_title = settings.text or 'nil'
-                local s_color = settings.color or Color3.fromRGB(255, 255, 255)
-                
-                local picker = picker:new()
-                picker.section = self 
-                picker.name = s_title
-                table.insert(self.controls, picker)
-                
-                picker.instances.label.Text = s_title
-                picker:setColor(s_color)
-                
-                picker.instances.controlFrame.Parent = self.instances.controlMenu
-                
-                
-                if (typeof(callback) == 'function') then
-                    picker:bindToEvent('onNewColor', callback) 
-                end
-                return picker
+                local function UpdateText() local count = 0 local txt = "" for k,v in pairs(sel) do if v then count=count+1 txt=txt..k..", " end end if count == 0 then S.Text = "None" elseif count > 2 then S.Text = count.." Selected" else S.Text = txt:sub(1, -3) end end
+                local function Upd() for _,v in pairs(List:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end for _,v in pairs(items) do local IB = RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Sidebar") IB.Size = UDim2.new(1, 0, 0, 30) IB.Text = "  "..v IB.TextColor3 = sel[v] and Theme.Accent2 or Theme.TextDim IB.FontFace = FontMain IB.TextSize = 14 IB.TextXAlignment = Enum.TextXAlignment.Left IB.Parent = List Instance.new("UICorner", IB).CornerRadius = UDim.new(0, 4) IB.MouseButton1Click:Connect(function() if sel[v] then sel[v] = nil else sel[v] = true end Library.Flags[f] = sel IB.TextColor3 = sel[v] and Theme.Accent2 or Theme.TextDim UpdateText() pcall(cb, sel) end) end end
+                B.MouseButton1Click:Connect(function() exp = not exp if exp then List.Visible=true end Tween(I, {Rotation = exp and 180 or 0}) Tween(Con, {Size = UDim2.new(1, 0, 0, exp and math.min(150, #items * 32 + 50) or 40)}) if not exp then task.delay(0.2, function() if not exp then List.Visible=false end end) end end) Upd()
+                Library.Elements[f] = {Set = function(v) sel = v or {} Library.Flags[f] = sel UpdateText() Upd() end}
             end
-        end
-        -- add class
-        elemClasses.picker = picker
-    end
-    
-    -- TEXTBOX
-    do 
-        
-        local textbox = {} do 
-            textbox.__index = textbox 
-            setmetatable(textbox, elemClasses.baseElement)
-            
-            textbox.class = 'textbox'
-            
-            do
-                local instances = {} do 
-                    local controlFrame = Instance.new('Frame')
-                    controlFrame.BackgroundTransparency = 1
-                    controlFrame.BackgroundColor3 = Color3.new(1, 0, 1)
-                    controlFrame.Name = '#control'
-                    controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                    controlFrame.Visible = true
-                    controlFrame.ZIndex = 34
-                    
-                    instances.controlFrame = controlFrame
-                    
-                    local inputBox = Instance.new('TextBox') do 
-                        inputBox.Active = true 
-                        inputBox.BackgroundColor3 = theme.Window1
-                        inputBox.BackgroundTransparency = 0
-                        inputBox.ClearTextOnFocus = true
-                        inputBox.ClipsDescendants = true
-                        inputBox.Font = 'SourceSans'
-                        inputBox.Name = '#textbox'
-                        inputBox.PlaceholderColor3 = theme.TextDim
-                        inputBox.PlaceholderText = '...'
-                        inputBox.Position = UDim2.fromOffset(3, 2)
-                        inputBox.Size = UDim2.new(1, -6, 0, 16)
-                        inputBox.Text = 'textbox'
-                        inputBox.TextColor3 = theme.TextPrimary
-                        inputBox.TextSize = 14
-                        inputBox.TextStrokeColor3 = theme.TextStroke
-                        inputBox.TextStrokeTransparency = 0.8
-                        inputBox.TextWrapped = false
-                        inputBox.TextXAlignment = 'Left'
-                        inputBox.TextYAlignment = 'Center'
-                        inputBox.Visible = true
-                        inputBox.ZIndex = 35
-                        
-                        inputBox.Parent = controlFrame
-                        
-                        local round = Instance.new('UICorner') do 
-                            round.CornerRadius = UDim.new(0, rounding and 2 or 0)
-                            round.Name = '#round'
-                            
-                            round.Parent = inputBox
-                        end
-                    
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Name = '#stroke'
-                            stroke.Thickness = 1 
-                            
-                            stroke.Parent = inputBox
-                        end
-                        
-                        local padding = Instance.new('UIPadding') do 
-                            padding.Name = '#padding'
-                            padding.PaddingLeft = UDim.new(0, 4)
-                            
-                            padding.Parent = inputBox
-                        end
-                        --[[ nope :money_mouth:
-                        
-                        local autoFill = Instance.new('TextLabel') do 
-                            autoFill.BackgroundTransparency = 1
-                            autoFill.Font = 'SourceSans'
-                            autoFill.Name = '#autofill'
-                            autoFill.Size = UDim2.fromScale(1, 1)
-                            autoFill.Text = 'autofill'
-                            autoFill.TextColor3 = theme.TextDim
-                            autoFill.TextSize = 14
-                            autoFill.TextTransparency = 0.3
-                            autoFill.TextStrokeColor3 = theme.TextStroke
-                            autoFill.TextStrokeTransparency = 0.8
-                            autoFill.TextWrapped = false
-                            autoFill.TextXAlignment = 'Left'
-                            autoFill.TextYAlignment = 'Center'
-                            autoFill.Visible = true
-                            autoFill.ZIndex = 35 
-                            
-                            autoFill.Parent = inputBox
-                        end]]
-                    end
-                end
-                textbox.instances = instances 
-            end
-            
-            textbox.hovering = false
-            textbox.focused = false
-            
-            textbox.signals = {
-                controlFrame = {
-                    MouseEnter = function(inst, obj) 
-                        obj.hovering = true
-                        obj:showTooltip()
-                        
-                        local boxInst = obj.instances.textBox
-                        if (obj.focused) then
-                            tween(boxInst, {BackgroundColor3 = theme.Button4}, 0.2, 1)
-                        else
-                            tween(boxInst, {BackgroundColor3 = theme.Button2}, 0.2, 1)
-                        end
-                        tween(boxInst['#stroke'], {Color = theme.StrokeHover}, 0.2, 1)
-                    end,
-                    MouseLeave = function(inst, obj) 
-                        obj.hovering = false
-                        obj:hideTooltip()
-                        
-                        
-                        local boxInst = obj.instances.textBox
-                        if (obj.focused) then
-                            tween(boxInst, {BackgroundColor3 = theme.Button3}, 0.2, 1)
-                        else
-                            tween(boxInst, {BackgroundColor3 = theme.Button1}, 0.2, 1)
-                        end
-                        tween(boxInst['#stroke'], {Color = theme.Stroke}, 0.2, 1)
-                    end,
-                },
-                textBox = {
-                    Focused = function(inst, obj) 
-                        obj.focused = true
-                        --obj:showHint()
-                        obj.textUpdCn = inst:GetPropertyChangedSignal('Text'):Connect(function() 
-                            obj:fireEvent('onTextChange', inst.Text)
-                            obj:fireEvent('__txtUpdInternal', inst.Text)
-                        end)
-                        
-                        if (obj.hovering) then
-                            tween(inst, {BackgroundColor3 = theme.Button4, TextColor3 = theme.Primary}, 0.2, 1)
-                        else
-                            tween(inst, {BackgroundColor3 = theme.Button3, TextColor3 = theme.Primary}, 0.2, 1)
-                        end
-                        
-                        obj:fireEvent('onFocus')
-                    end,
-                    FocusLost = function(inst, obj) 
-                        obj.focused = false
-                        --obj:hideHint()
-                        if (obj.textUpdCn) then 
-                            obj.textUpdCn:Disconnect()
-                        end
-                        
-                        if (obj.hovering) then
-                            tween(inst, {BackgroundColor3 = theme.Button2, TextColor3 = theme.TextPrimary}, 0.2, 1)
-                        else
-                            tween(inst, {BackgroundColor3 = theme.Button1, TextColor3 = theme.TextPrimary}, 0.2, 1)
-                        end
-                        
-                        
-                        local inputText = inst.Text
-                        inst.Text = obj.name
-                        
-                        obj:fireEvent('onFocusLost', inputText)
-                    end,
-                    
-                }
-            }
-            
-            textbox.getText = function(self) 
-                return self.instances.textBox.Text
-            end
-            textbox.setText = function(self, newText) 
-                self.instances.textBox.Text = tostring(newText)
-                obj:fireEvent('onTextChange', newText)
-            end
-            
-            
-            -- hints temporarily disabled
-            --[[
-            textbox.setHints = function(self, hintArray) 
-                local hintTable = hint.hints
-                local hintTemplate = hint.instances.hintTemplate
-                
-                for _, hint in ipairs(hintTable) do 
-                    hint[2]:Destroy()
-                end
-                table.clear(hint.hints)
 
-                for _, suggestion in ipairs(hintArray) do 
-                    suggestion = tostring(suggestion)
-                    local thisHint = hintTemplate:Clone()
-                    
-                    thisHint.Name = suggestion:lower()
-                    thisHint.Text = suggestion
-                    thisHint.Visible = true
-                    thisHint.Parent = hintTemplate.Parent
-                    
-                    table.insert(hintTable, {
-                        suggestion,
-                        thisHint
-                    })
-                end
-                
-                table.sort(hintTable, function(hint1, hint2) 
-                    return hint1[1]:lower() < hint2[1]:lower()
-                end)
-                
-                hint.hintCount = #hintTable
-                
-                hint.selection = math.min(hint.selection, hint.hintCount)
-                tween(hint.instances.optionHighlight, {Position = UDim2.fromOffset(0, ((hint.selection - 1) % 6) * 16)}, 0.2, 1)
-                                
-                hint.instances.main.Size = UDim2.fromOffset(self.instances.textBox.AbsoluteSize.X, math.min((hint.hintCount * 16) + 4, (16*6)+4))
-                return self
+            function Generators.Paragraph(parent, title, text)
+                local P = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Element") 
+                P.Size = UDim2.new(1, 0, 0, 0) P.Parent = parent P.AutomaticSize = Enum.AutomaticSize.Y 
+                Instance.new("UICorner", P).CornerRadius = UDim.new(0, 6)
+                local T = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "Text") 
+                T.Text = title T.Size = UDim2.new(1, -20, 0, 20) T.Position = UDim2.new(0, 10, 0, 8) 
+                T.BackgroundTransparency = 1 T.FontFace = FontBold T.TextSize = 14 T.TextXAlignment = Enum.TextXAlignment.Left T.Parent = P
+                local C = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "TextDim") 
+                C.Text = text C.Size = UDim2.new(1, -20, 0, 0) C.Position = UDim2.new(0, 10, 0, 32) 
+                C.BackgroundTransparency = 1 C.FontFace = FontMain C.TextSize = 13 C.TextXAlignment = Enum.TextXAlignment.Left C.TextWrapped = true 
+                C.AutomaticSize = Enum.AutomaticSize.Y C.Parent = P
+                local Pad = Instance.new("UIPadding") Pad.PaddingBottom = UDim.new(0, 12) Pad.Parent = P
             end
-            textbox.showHint = function(self) 
-                if (hint.handle == nil) then 
-                    hint.showing = true
-                    hint.handle = self
-                    
-                    -- localize some instances that are used a ton
-                    local textBox = self.instances.textBox
-                    local hintRoot = hint.instances.main
-                    local hintHighlight = hint.instances.optionHighlight
-                    local hintMenu = hintRoot['#menu']['#container']
-                    
-                    -- position and display hint
-                    do 
-                        local controlFrame = self.instances.controlFrame
-                        
-                        hintRoot.Size = UDim2.fromOffset(textBox.AbsoluteSize.X, math.min((hint.hintCount * 16) + 4, (16*60)+4))
 
-                        local newPos = controlFrame.AbsolutePosition + Vector2.new(4, 26)
-                        hintRoot.Position = UDim2.fromOffset(newPos.X, newPos.Y)
+            function Generators.ColorPicker(parent, t, f, def, alpha, cb, desc)
+                local curColor = def or Color3.fromRGB(255, 255, 255)
+                local curAlpha = alpha or 1
+                local h, s_hsv, v = curColor:ToHSV()
+                local expanded = false
+                local rainbowMode = false
+                Library.Flags[f] = {Color = curColor, Transparency = curAlpha}
+                
+                local Main = CreateBase(parent, t, desc, 40) Main.ClipsDescendants = true
+                
+                local Trigger = RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Background") 
+                Trigger.Size = UDim2.new(0, 40, 0, 20) Trigger.Position = UDim2.new(1, -70, 0, 10) Trigger.Text = "" Trigger.Parent = Main
+                Instance.new("UICorner", Trigger).CornerRadius = UDim.new(0, 4)
+                
+                local TChecker = Instance.new("ImageLabel") TChecker.Size = UDim2.new(1, 0, 1, 0) TChecker.Image = "rbxassetid://15655263661" TChecker.ScaleType = Enum.ScaleType.Tile TChecker.TileSize = UDim2.new(0, 10, 0, 10) TChecker.Parent = Trigger
+                Instance.new("UICorner", TChecker).CornerRadius = UDim.new(0, 4)
+                local TColor = Instance.new("Frame") TColor.Size = UDim2.new(1, 0, 1, 0) TColor.BackgroundColor3 = curColor TColor.BackgroundTransparency = 1 - curAlpha TColor.Parent = Trigger
+                Instance.new("UICorner", TColor).CornerRadius = UDim.new(0, 4)
 
-                        hintRoot.Visible = true
-                    end
-                    
-                    -- function to update suggestions
-                    local function update(tx) 
-                        local match = '^' .. tx
-                        local i = 0 
-                        
-                        -- go through hints
-                        -- if it doesnt start with the text then hide it
-                        -- otherwise show it and increase visible hint counter
-                        for _, hint in ipairs(hint.hints) do 
-                            local inst = hint[2]
-                            if (inst.Text:match(match)) then 
-                                inst.Visible = true
-                                i += 1
-                            else
-                                inst.Visible = false
-                            end
-                        end
-                        
-                        
-                        if (i == 0) then
-                            -- no possible selections
-                            hintRoot.Visible = false -- hide the hint frame
-                            hint.selection = 1 -- reset selection to top
-                        else
-                            -- there are a few selections
-                            hintRoot.Visible = true
-                            hint.selection = math.clamp(hint.selection, 1, i)
-                        end
-                        
-                        -- move highlight to selection
-                        do
-                            local fixedPos = hint.selection - 1 -- start selection at 0 instead of 1 like arrays
-                            tween(hintHighlight, {Position = UDim2.fromOffset(0, fixedPos * 16)}, 0.2, 1)
-                        end
-                        -- set size
-                        do
-                            local maxHeight = (6 * 16) + 4 -- normally (5*16)+4
-                            local thisHeight = (i * 16) + 4 -- ( i (amount of hints) * 16 (hint size) ) + 4 (padding)
-                            hintRoot.Size = UDim2.fromOffset(textBox.AbsoluteSize.X, math.min(thisHeight, maxHeight)) -- limit size to max height
-                        end
-                        
-                        hint.hintCount = i
-                    end
-                    
-                    
-                    -- first update
-                    update(textBox.Text)
-                    
-                    
-                    -- fix issues with typing and filtering while showing stuff, then work on adding paginations (or just not doing it at all lol)
-                    
-                    
-                    -- do suggestion updates on text update
-                    self:bindToEvent('__txtUpdInternal', update)
-                    
-                    -- handle menu inputs
-                    hint.inputCn = inputService.InputBegan:Connect(function(io) 
-                        local kc = io.KeyCode
-                        if (kc.Name == 'Tab') then
-                            -- this is a lil scuffed but i dont want to have to rewrite even more shit
-                            -- just so this is a tiny bit better
-                            local i = 0 
-                            local finalHint
-                            
-                            -- go through all hints
-                            -- if one is valid increase index count
-                            -- if selection is index then set it
-                            
-                            for idx, h in ipairs(hint.hints) do 
-                                if (h[2].Visible) then
-                                    i = i + 1
-                                    if (i == hint.selection) then
-                                        finalHint = h[1]
-                                    end
-                                end
-                            end
-                            
-                            if (finalHint) then 
-                                -- set text, release textbox finishing everything
-                                textBox.Text = finalHint
-                                textBox:ReleaseFocus()
-                            end
-                            
-                        elseif (kc.Name == 'Up') then
-                            -- if up then move cursor up
-                            
-                            -- remove 1 from selection, and clamp that to 0
-                            hint.selection = math.min(hint.selection - 1, 0)
-                            
-                            -- take fixed selection to get the cursor index, and mod so it can paginate
-                            local cursorIndex = ((hint.selection - 1) % 6)
-                            -- multiply cursorIndex by 16 to get the real Y position
-                            tween(hintHighlight, {Position = UDim2.fromOffset(0, cursorIndex * 16)}, 0.2, 1)
-                            
-                            ui.notify({
-                                message = hint.selection .. ', ' .. cursorIndex
-                            })
-                            if (cursorIndex == 5 and hint.selection > 1) then
-                                local canvasPos = hintMenu.CanvasPosition
-                                tween(hintMenu, {CanvasPosition = canvasPos - Vector2.new(0, 16 * 6)}, 0.2, 1) -- add 1 menu size
-                                
-                                -- work on pagination
-                                -- make sure that the menu scrolls as the tab goes
-                            end
-                        elseif (kc.Name == 'Down') then
-                            -- if down then move cursor down
-                            
-                            -- add 1 to selection, and clamp that to the hint count
-                            hint.selection = math.min(hint.selection + 1, hint.hintCount)
-                            
-                            -- take fixed selection to get the cursor index, and mod so it can paginate
-                            local cursorIndex = ((hint.selection - 1) % 6)
-                            -- multiply cursorIndex by 16 to get the real Y position
-                            tween(hintHighlight, {Position = UDim2.fromOffset(0, cursorIndex * 16)}, 0.2, 1)
-                            
-                            
-                            
-                            if (cursorIndex == 0) then
-                                local canvasPos = hintMenu.CanvasPosition
-                                tween(hintMenu, {CanvasPosition = canvasPos + Vector2.new(0, 16 * 6)}, 0.2, 1) -- add 1 menu size
-                                
-                                -- work on pagination
-                                -- make sure that the menu scrolls as the tab goes
-                            end
-                            
-                            
-                            --hint.selection = math.min(hint.selection + 1, math.min(hint.hintCount, 5))
-                            --tween(hintHighlight, {Position = UDim2.fromOffset(0, (hint.selection-1) * 16)}, 0.2, 1)
-                        end
-                    end)
-                    
-                    -- set selection to 1 :money:
-                    hint.selection = 1 
-                end
-                return self
-            end
-            textbox.hideHint = function(self) 
-                if (hint.handle == self) then 
-                    hint.showing = false
-                    hint.handle = nil
-                    
-                    hint.inputCn:Disconnect()
-                    self:bindToEvent('__txtUpdInternal', nil)
-                    
-                    hint.instances.main.Visible = false
-                end
-                return self
-            end]]
-            
-            textbox.new = function(self) 
+                local Picker = Instance.new("Frame") Picker.Size = UDim2.new(1, -20, 0, 260) Picker.Position = UDim2.new(0, 10, 0, 45) Picker.BackgroundTransparency = 1 Picker.Visible=false Picker.Parent = Main
                 
-                local new = setmetatable({}, self)
-                new.binds = {}
+                local SV = Instance.new("TextButton") SV.Size = UDim2.new(1, -30, 0, 150) SV.BackgroundColor3 = Color3.fromHSV(h, 1, 1) SV.Text = "" SV.AutoButtonColor = false SV.Parent = Picker
+                Instance.new("UICorner", SV).CornerRadius = UDim.new(0, 4)
+                local SatLayer = Instance.new("Frame") SatLayer.Size = UDim2.new(1, 0, 1, 0) SatLayer.BackgroundColor3 = Color3.new(1, 1, 1) SatLayer.Parent = SV
+                Instance.new("UICorner", SatLayer).CornerRadius = UDim.new(0, 4)
+                local SatGrad = Instance.new("UIGradient") SatGrad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))} SatGrad.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1)} SatGrad.Parent = SatLayer
+                local ValLayer = Instance.new("Frame") ValLayer.Size = UDim2.new(1, 0, 1, 0) ValLayer.BackgroundColor3 = Color3.new(0, 0, 0) ValLayer.Parent = SV
+                Instance.new("UICorner", ValLayer).CornerRadius = UDim.new(0, 4)
+                local ValGrad = Instance.new("UIGradient") ValGrad.Rotation = -90 ValGrad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)), ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0))} ValGrad.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1)} ValGrad.Parent = ValLayer
+                local SVPoint = Instance.new("Frame") SVPoint.Size = UDim2.new(0, 10, 0, 10) SVPoint.BackgroundColor3 = Color3.new(1, 1, 1) SVPoint.Position = UDim2.new(s_hsv, -5, 1 - v, -5) SVPoint.Parent = SV
+                Instance.new("UICorner", SVPoint).CornerRadius = UDim.new(1, 0) Instance.new("UIStroke", SVPoint).Thickness = 2
                 
-                local instances = {}
-                instances.controlFrame = self.instances.controlFrame:Clone()
-                instances.textBox = instances.controlFrame['#textbox']
+                local HueF = Instance.new("TextButton") HueF.Size = UDim2.new(0, 20, 0, 150) HueF.Position = UDim2.new(1, -20, 0, 0) HueF.BackgroundColor3 = Color3.new(1, 1, 1) HueF.Text = "" HueF.AutoButtonColor = false HueF.Parent = Picker
+                Instance.new("UICorner", HueF).CornerRadius = UDim.new(0, 4)
+                local HG = Instance.new("UIGradient") HG.Rotation = 90 HG.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)), ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 255, 0)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)), ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)), ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))} HG.Parent = HueF
+                local HuePoint = Instance.new("Frame") HuePoint.Size = UDim2.new(1, 4, 0, 6) HuePoint.Position = UDim2.new(0, -2, h, -3) HuePoint.BackgroundColor3 = Color3.new(1, 1, 1) HuePoint.Parent = HueF Instance.new("UICorner", HuePoint).CornerRadius = UDim.new(0, 2)
                 
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function(...) 
-                            func(inst, new, ...)
-                        end)
-                    end
-                end
+                local AlphaF = Instance.new("TextButton") AlphaF.Size = UDim2.new(1, 0, 0, 15) AlphaF.Position = UDim2.new(0, 0, 0, 160) AlphaF.BackgroundColor3 = Color3.new(1, 1, 1) AlphaF.Text = "" AlphaF.AutoButtonColor = false AlphaF.Parent = Picker
+                Instance.new("UICorner", AlphaF).CornerRadius = UDim.new(0, 4)
+                local Checker = Instance.new("ImageLabel") Checker.Size = UDim2.new(1, 0, 1, 0) Checker.Image = "rbxassetid://15655263661" Checker.ScaleType = Enum.ScaleType.Tile Checker.TileSize = UDim2.new(0, 10, 0, 10) Checker.Parent = AlphaF Instance.new("UICorner", Checker).CornerRadius = UDim.new(0, 4)
+                local AlphaGrad = Instance.new("Frame") AlphaGrad.Size = UDim2.new(1, 0, 1, 0) AlphaGrad.BackgroundColor3 = Color3.new(1, 1, 1) AlphaGrad.Parent = AlphaF Instance.new("UICorner", AlphaGrad).CornerRadius = UDim.new(0, 4)
+                local AG = Instance.new("UIGradient") AG.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, curColor), ColorSequenceKeypoint.new(1, curColor)} AG.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0)} AG.Parent = AlphaGrad
+                local AlphaPoint = Instance.new("Frame") AlphaPoint.Size = UDim2.new(0, 6, 1, 4) AlphaPoint.Position = UDim2.new(curAlpha, -3, 0, -2) AlphaPoint.BackgroundColor3 = Color3.new(1, 1, 1) AlphaPoint.Parent = AlphaF Instance.new("UICorner", AlphaPoint).CornerRadius = UDim.new(0, 2)
                 
-                new.instances = instances
-                return new
-            end
-            
-            
-            elemClasses.section.addTextbox = function(self, settings, callback) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
+                local Controls = Instance.new("Frame") Controls.Size = UDim2.new(1, 0, 0, 30) Controls.Position = UDim2.new(0, 0, 0, 185) Controls.BackgroundTransparency = 1 Controls.Parent = Picker
+                local function CreateBox(ph, size, pos) local Box = RegisterTheme(Instance.new("TextBox"), "BackgroundColor3", "Background") Box.Size = size Box.Position = pos RegisterTheme(Box, "TextColor3", "Text") Box.FontFace = FontMain Box.TextSize = 12 Box.PlaceholderText = ph Box.Parent = Controls Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 4) return Box end
+                local HexBox = CreateBox("Hex", UDim2.new(0, 60, 1, 0), UDim2.new(0, 0, 0, 0))
+                local RBox = CreateBox("R", UDim2.new(0, 30, 1, 0), UDim2.new(0, 65, 0, 0))
+                local GBox = CreateBox("G", UDim2.new(0, 30, 1, 0), UDim2.new(0, 100, 0, 0))
+                local BBox = CreateBox("B", UDim2.new(0, 30, 1, 0), UDim2.new(0, 135, 0, 0))
+                local RainbowBtn = RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Background") RainbowBtn.Size = UDim2.new(0, 60, 1, 0) RainbowBtn.Position = UDim2.new(1, -60, 0, 0) RainbowBtn.Text = "Rainbow" RegisterTheme(RainbowBtn, "TextColor3", "TextDim") RainbowBtn.FontFace = FontMain RainbowBtn.TextSize = 11 RainbowBtn.Parent = Controls Instance.new("UICorner", RainbowBtn).CornerRadius = UDim.new(0, 4)
                 
-                local s_title = settings.text or 'nil'
-                
-                local new = textbox:new()
+                local Actions = Instance.new("Frame") Actions.Size = UDim2.new(1, 0, 0, 20) Actions.Position = UDim2.new(0, 0, 0, 225) Actions.BackgroundTransparency = 1 Actions.Parent = Picker
+                local CopyBtn = RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Background") CopyBtn.Size = UDim2.new(0.48, 0, 1, 0) CopyBtn.Text = "Copy RGB" RegisterTheme(CopyBtn, "TextColor3", "Text") CopyBtn.FontFace = FontMain CopyBtn.TextSize = 12 CopyBtn.Parent = Actions Instance.new("UICorner", CopyBtn).CornerRadius = UDim.new(0, 4)
+                local PasteBtn = RegisterTheme(Instance.new("TextButton"), "BackgroundColor3", "Background") PasteBtn.Size = UDim2.new(0.48, 0, 1, 0) PasteBtn.Position = UDim2.new(0.52, 0, 0, 0) PasteBtn.Text = "Paste RGB" RegisterTheme(PasteBtn, "TextColor3", "Text") PasteBtn.FontFace = FontMain PasteBtn.TextSize = 12 PasteBtn.Parent = Actions Instance.new("UICorner", PasteBtn).CornerRadius = UDim.new(0, 4)
 
-                new.section = self 
-                new.name = s_title
-                table.insert(self.controls, new)
-                
-                new.instances.textBox.Text = s_title
-                new.instances.controlFrame.Parent = self.instances.controlMenu
-                
-                if (typeof(callback) == 'function') then
-                    new:bindToEvent('onTextChange', callback)
+                local function Update()
+                    curColor = Color3.fromHSV(h, s_hsv, v)
+                    Library.Flags[f] = {Color = curColor, Transparency = curAlpha}
+                    TColor.BackgroundColor3 = curColor TColor.BackgroundTransparency = 1 - curAlpha SV.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
+                    AG.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, curColor), ColorSequenceKeypoint.new(1, curColor)}
+                    if not HexBox:IsFocused() then HexBox.Text = RGBtoHex(curColor) end
+                    if not RBox:IsFocused() then RBox.Text = math.floor(curColor.R * 255) end
+                    if not GBox:IsFocused() then GBox.Text = math.floor(curColor.G * 255) end
+                    if not BBox:IsFocused() then BBox.Text = math.floor(curColor.B * 255) end
+                    pcall(cb, curColor, curAlpha)
                 end
-                return new
-            end
-        end
-        -- add class
-        elemClasses.textbox = textbox
-    end    
-    
-    -- NOTIF
-    do 
-        local notif = {} do 
-            notif.__index = notif
-            setmetatable(notif, elemClasses.baseElement) 
-            
-            notif.class = 'notif'
-            
-            do 
-                local instances = {} do                     
-                    local main = Instance.new('Frame') do 
-                        main.AnchorPoint = Vector2.new(1, 1)
-                        main.BackgroundColor3 = theme.Window2
-                        main.BackgroundTransparency = 0
-                        main.BorderSizePixel = 0
-                        main.LayoutOrder = 50
-                        main.Name = '#notif-frame'
-                        main.Size = UDim2.fromOffset(175, 100)
-                        main.Visible = true
-                        main.ZIndex = 3000
-                    end
-                    
-                    local scale = Instance.new('UIScale') do 
-                        scale.Scale = 1 
-                        scale.Name = '#scale'
-                        scale.Parent = main
-                    end
-                    
-                    local backgroundFrame = Instance.new('Frame') do 
-                        backgroundFrame.BackgroundTransparency = 0 
-                        backgroundFrame.BackgroundColor3 = theme.Window2
-                        backgroundFrame.BorderSizePixel = 0 
-                        backgroundFrame.Name = '#background'
-                        backgroundFrame.Size = UDim2.fromScale(1, 1)
-                        backgroundFrame.Visible = true 
-                        backgroundFrame.ZIndex = 2999
-                        
-                        backgroundFrame.Parent = trim
-                    end
-                    local stroke = Instance.new('UIStroke') do 
-                        stroke.ApplyStrokeMode = 'Border'
-                        stroke.Color = theme.Stroke
-                        stroke.LineJoinMode = 'Round'
-                        stroke.Thickness = 1 
-                        stroke.Name = '#stroke'
-                        
-                        stroke.Parent = main
-                    end
-                    local shadow = Instance.new('ImageLabel') do 
-                        shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-                        shadow.BackgroundTransparency = 1
-                        shadow.BorderSizePixel = 0 
-                        shadow.Image = 'rbxassetid://7331400934'
-                        shadow.ImageColor3 = Color3.fromRGB(0, 0, 5)
-                        shadow.Name = '#shadow'
-                        shadow.Position = UDim2.fromScale(0.5, 0.5)
-                        shadow.ScaleType = 'Slice'
-                        shadow.Size = UDim2.new(1, 50, 1, 50)
-                        shadow.SliceCenter = Rect.new(40, 40, 260, 260)
-                        shadow.SliceScale = 1
-                        shadow.ZIndex = 2999
-                        
-                        shadow.Parent = main
-                    end
-    
-                    local trim = Instance.new('Frame') do 
-                        trim.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                        trim.BackgroundTransparency = 0
-                        trim.BorderSizePixel = 0 
-                        trim.Name = '#trim'
-                        trim.Position = UDim2.fromOffset(0, -1)
-                        trim.Size = UDim2.new(1, 0, 0, 1)
-                        trim.ZIndex = 3005
-                        
-                        trim.Parent = main
-                        
-                        local gradient = Instance.new('UIGradient') do 
-                            gradient.Color = ColorSequence.new(
-                                theme.Primary, 
-                                theme.Secondary
-                            )
-                            gradient.Enabled = true
-                            gradient.Name = '#gradient'
-                            gradient.Rotation = 0
-                            
-                            gradient.Parent = trim
-                        end
-                    end
-    
-                    local titleBar = Instance.new('Frame') do 
-                        titleBar.BackgroundColor3 = theme.Window1
-                        titleBar.BackgroundTransparency = 0
-                        titleBar.BorderColor3 = theme.Inset1
-                        titleBar.BorderMode = 'Inset'
-                        titleBar.BorderSizePixel = 1
-                        titleBar.ClipsDescendants = true
-                        titleBar.Name = '#title-bar'
-                        titleBar.Size = UDim2.new(1, 0, 0, 26)
-                        titleBar.ZIndex = 3001
-                        
-                        titleBar.Parent = main 
-                        
-                        local stroke = Instance.new('UIStroke') do 
-                            stroke.ApplyStrokeMode = 'Border'
-                            stroke.Color = theme.Stroke
-                            stroke.LineJoinMode = 'Round'
-                            stroke.Thickness = 1 
-                            stroke.Name = '#stroke'
-                            
-                            stroke.Parent = titleBar
-                        end
-                        
-                        local fade = Instance.new('Frame') do 
-                            fade.BackgroundColor3 = theme.Window1
-                            fade.BackgroundTransparency = 1
-                            fade.BorderColor3 = theme.Inset1
-                            fade.BorderMode = 'Inset'
-                            fade.BorderSizePixel = 1
-                            fade.Name = '#fade'
-                            fade.Size = UDim2.new(1, 4, 1, 4)
-                            fade.Position = UDim2.fromOffset(-2, -2)
-                            fade.Visible = false
-                            fade.ZIndex = 3009
-                            
-                            fade.Parent = titleBar
-                        end
-                        
-                        
-                        local icon = Instance.new('ImageLabel') do 
-                            icon.BackgroundTransparency = 1
-                            icon.BorderSizePixel = 0
-                            icon.Image = 'rbxassetid://9865915364'
-                            icon.ImageColor3 = theme.Primary
-                            icon.ImageTransparency = 0
-                            icon.Name = '#icon'
-                            icon.Position = UDim2.fromOffset(2, 2)
-                            icon.Size = UDim2.fromOffset(22, 22)
-                            icon.Visible = true
-                            icon.ZIndex = 3002
-                            
-                            icon.Parent = titleBar
-                        end
-                        
-                        local title = Instance.new('TextLabel') do 
-                            title.BackgroundTransparency = 1
-                            title.BorderSizePixel = 0
-                            title.Font = 'SourceSans'
-                            title.Name = '#title'
-                            title.Position = UDim2.fromOffset(24, 0)
-                            title.RichText = true
-                            title.Size = UDim2.new(1, -22, 1, 0)
-                            title.Text = 'notification'
-                            title.TextColor3 = theme.TextPrimary
-                            title.TextScaled = false
-                            title.TextSize = 17
-                            title.TextStrokeColor3 = theme.TextStroke
-                            title.TextStrokeTransparency = 0.8 -- tstroke 
-                            title.TextTransparency = 0
-                            title.TextXAlignment = 'Left'
-                            title.TextYAlignment = 'Center'
-                            title.Visible = true
-                            title.ZIndex = 3002 
-                            
-                            title.Parent = titleBar
-                            
-                            local padding = Instance.new('UIPadding') do 
-                                padding.PaddingLeft = UDim.new(0, 4)
-                                padding.Name = '#padding'
-                                
-                                padding.Parent = title
-                            end
-                        end
-                    end
-    
-                    local region = Instance.new('Frame') do 
-                        region.BackgroundColor3 = theme.Window2
-                        region.BackgroundTransparency = 0
-                        region.BorderColor3 = theme.Inset2
-                        region.BorderMode = 'Inset'
-                        region.BorderSizePixel = 1
-                        region.ClipsDescendants = true 
-                        region.Name = '#region'
-                        region.Position = UDim2.fromOffset(0, 27)
-                        region.Size = UDim2.new(1, 0, 1, -27)
-                        region.Visible = true
-                        region.ZIndex = 3001
-                        
-                        region.Parent = main
-                        
-                        local desc = Instance.new('TextLabel') do 
-                            desc.BackgroundTransparency = 1
-                            desc.BorderSizePixel = 0
-                            desc.Font = 'SourceSans'
-                            desc.Name = '#desc'
-                            desc.RichText = true
-                            desc.Size = UDim2.fromScale(1, 1)
-                            desc.Text = 'notification'
-                            desc.TextColor3 = theme.TextPrimary
-                            desc.TextScaled = false
-                            desc.TextSize = 14
-                            desc.TextStrokeColor3 = theme.TextStroke
-                            desc.TextStrokeTransparency = 0.8 -- tstroke 
-                            desc.TextTransparency = 0
-                            desc.TextWrapped = true
-                            desc.TextXAlignment = 'Left'
-                            desc.TextYAlignment = 'Top'
-                            desc.Visible = true
-                            desc.ZIndex = 3002 
-                            
-                            desc.Parent = region
-                            
-                            local padding = Instance.new('UIPadding') do 
-                                padding.PaddingLeft = UDim.new(0, 6)
-                                padding.PaddingTop = UDim.new(0, 6)
-                                padding.Name = '#padding'
-                                
-                                padding.Parent = desc
-                            end
-                        end
-                    end
-                    instances.main = main
-                end
-                notif.instances = instances 
-            end
-            
-            notif.destroy = function(self)                 
-                local main = self.instances.main
-                task.spawn(function()
-                    local animCon
-                    
-                    task.spawn(function() 
-                        local backgroundTransparency = {}
-                        local imageTransparency = {}
-                        local transparency = {}
-                        local textTransparency = {}
-                        
-                        local s = {
-                            Frame = {backgroundTransparency}, 
-                            ImageButton = {backgroundTransparency, imageTransparency},
-                            ImageLabel = {backgroundTransparency, imageTransparency},
-                            TextButton = {backgroundTransparency, textTransparency},
-                            TextLabel = {backgroundTransparency, textTransparency},
-                            UIStroke = {transparency},
-                        }
-                        local d = main:GetDescendants()
-                        table.insert(d, main)
-                        
-                        for i, v in ipairs(d) do 
-                            local a = s[v.ClassName]
-                            if (a) then
-                                for i = 1, #a do 
-                                    table.insert(a[i], v)
-                                end
-                            end
-                        end
-                        
-                        for i,v in ipairs(transparency) do
-                            v.Transparency = 1
-                            v:Destroy()
-                        end
-                        
-                        transparency = nil
-                        scrollBarImageTransparency = nil
-                        animCon = renderService.RenderStepped:Connect(function(dt) 
-                            dt *= 8
-                            for i= 1, #backgroundTransparency do 
-                                backgroundTransparency[i].BackgroundTransparency += dt
-                            end
-                            for i= 1, #imageTransparency do 
-                                imageTransparency[i].ImageTransparency += dt
-                            end
-                            for i= 1, #textTransparency do 
-                                textTransparency[i].TextTransparency += dt
-                            end
-                        end)
-                    end)
-                    tween(main, {Size = UDim2.fromOffset(main.AbsoluteSize.X, 0)}, 0.5, 1).Completed:Wait()
-                    animCon:Disconnect()
-                    main:Destroy()
+                
+                HexBox.FocusLost:Connect(function() local nc = HexToRGB(HexBox.Text) if nc then h, s_hsv, v = nc:ToHSV() SVPoint.Position = UDim2.new(s_hsv, -5, 1 - v, -5) HuePoint.Position = UDim2.new(0, -2, h, -3) Update() else HexBox.Text = RGBtoHex(curColor) end end)
+                local function UpdateRGB() local r,g,b = tonumber(RBox.Text) or 0, tonumber(GBox.Text) or 0, tonumber(BBox.Text) or 0 local nc = Color3.fromRGB(math.clamp(r,0,255), math.clamp(g,0,255), math.clamp(b,0,255)) h, s_hsv, v = nc:ToHSV() SVPoint.Position = UDim2.new(s_hsv, -5, 1 - v, -5) HuePoint.Position = UDim2.new(0, -2, h, -3) Update() end
+                RBox.FocusLost:Connect(UpdateRGB) GBox.FocusLost:Connect(UpdateRGB) BBox.FocusLost:Connect(UpdateRGB)
+                
+                RunService.Heartbeat:Connect(function() if rainbowMode and expanded then h = (tick() % 5) / 5 HuePoint.Position = UDim2.new(0, -2, h, -3) SV.BackgroundColor3 = Color3.fromHSV(h, 1, 1) Update() end end)
+                RainbowBtn.MouseButton1Click:Connect(function() rainbowMode = not rainbowMode RainbowBtn.TextColor3 = rainbowMode and Theme.Accent2 or Theme.TextDim end)
+                
+                CopyBtn.MouseButton1Click:Connect(function() if setclipboard then setclipboard(math.floor(curColor.R*255)..","..math.floor(curColor.G*255)..","..math.floor(curColor.B*255)) Library:Notification("Copied", "RGB copied to clipboard", 2) end end)
+                PasteBtn.MouseButton1Click:Connect(function() 
+                    if not getclipboard then return end local str = getclipboard() local r,g,b = str:match("(%d+)%D+(%d+)%D+(%d+)")
+                    if r and g and b then RBox.Text=r GBox.Text=g BBox.Text=b UpdateRGB() Library:Notification("Pasted", "Color applied", 2) else Library:Notification("Error", "Invalid RGB format", 2) end 
                 end)
 
-                return self 
+                local dSV, dHue, dAlpha = false, false, false
+                SV.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dSV = true local m = i.Position local rX = math.clamp((m.X - SV.AbsolutePosition.X) / SV.AbsoluteSize.X, 0, 1) local rY = math.clamp((m.Y - SV.AbsolutePosition.Y) / SV.AbsoluteSize.Y, 0, 1) s_hsv = rX v = 1 - rY SVPoint.Position = UDim2.new(s_hsv, -5, 1 - v, -5) Update() end end)
+                HueF.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dHue = true rainbowMode = false RainbowBtn.TextColor3 = Theme.TextDim local m = i.Position local rY = math.clamp((m.Y - HueF.AbsolutePosition.Y) / HueF.AbsoluteSize.Y, 0, 1) h = rY HuePoint.Position = UDim2.new(0, -2, h, -3) Update() end end)
+                AlphaF.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dAlpha = true local m = i.Position local rX = math.clamp((m.X - AlphaF.AbsolutePosition.X) / AlphaF.AbsoluteSize.X, 0, 1) curAlpha = rX AlphaPoint.Position = UDim2.new(curAlpha, -3, 0, -2) Update() end end)
+                
+                UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dSV = false dHue = false dAlpha = false end end)
+                UserInputService.InputChanged:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then 
+                    if dSV then local m = i.Position local rX = math.clamp((m.X - SV.AbsolutePosition.X) / SV.AbsoluteSize.X, 0, 1) local rY = math.clamp((m.Y - SV.AbsolutePosition.Y) / SV.AbsoluteSize.Y, 0, 1) s_hsv = rX v = 1 - rY SVPoint.Position = UDim2.new(s_hsv, -5, 1 - v, -5) Update() end 
+                    if dHue then rainbowMode = false RainbowBtn.TextColor3 = Theme.TextDim local m = i.Position local rY = math.clamp((m.Y - HueF.AbsolutePosition.Y) / HueF.AbsoluteSize.Y, 0, 1) h = rY HuePoint.Position = UDim2.new(0, -2, h, -3) Update() end 
+                    if dAlpha then local m = i.Position local rX = math.clamp((m.X - AlphaF.AbsolutePosition.X) / AlphaF.AbsoluteSize.X, 0, 1) curAlpha = rX AlphaPoint.Position = UDim2.new(curAlpha, -3, 0, -2) Update() end 
+                end end)
+                
+                Trigger.MouseButton1Click:Connect(function() expanded = not expanded if expanded then Picker.Visible=true end Tween(Main, {Size = UDim2.new(1, 0, 0, expanded and 290 or 40)}) if not expanded then task.delay(0.2, function() if not expanded then Picker.Visible=false end end) end end)
+                Library.Elements[f] = {Set = function(t) if type(t) == "table" then local nc = t.Color or curColor local na = t.Transparency or curAlpha h, s_hsv, v = nc:ToHSV() curAlpha = na SVPoint.Position = UDim2.new(s_hsv, -5, 1 - v, -5) HuePoint.Position = UDim2.new(0, -2, h, -3) AlphaPoint.Position = UDim2.new(curAlpha, -3, 0, -2) Update() end end}
+                Update()
             end
-            notif.setTitle = function(self, title) 
-                self.instances.title.Text = tostring(title)
-                return self 
-            end
-            notif.setDesc = function(self, text) 
-                local desc = self.instances.desc
-                local main = self.instances.main
-                
-                desc.Text = tostring(text)
-                
-                local c = 0
-                while (true) do 
-                    c += 1 
-                    if (c > 31) then
-                        break
-                    end
-                    local _ = desc.TextFits -- same shitty strat as tooltips
-                    if (desc.TextFits == true) then break end 
-                    main.Size += UDim2.fromOffset(0, 20)
-                end
-                
-                return self 
-            end
-            notif.new = function(self) 
-                
-                local new = setmetatable({}, self)
-                new.binds = {}
-                
-                local instances = {}
-                instances.main = self.instances.main:Clone()
-                instances.title = instances.main['#title-bar']['#title']
-                instances.desc = instances.main['#region']['#desc']
 
-                -- finalize stuff
-                instances.main.Parent = uiScreen['#notif-container']
-                new.instances = instances
-                return new
-            end
-        end
-        elemClasses.notif = notif
-    end
-        
-    -- HOTKEY
-    do 
-        local hotkey = {} do 
-            hotkey.__index = hotkey
-            setmetatable(hotkey, elemClasses.baseElement)
-            
-            hotkey.class = 'hotkey'
-            
-            do
-                local instances = {} do 
-                    local controlFrame = Instance.new('Frame')
-                    controlFrame.BackgroundTransparency = 1
-                    controlFrame.Name = '#control'
-                    controlFrame.Size = UDim2.new(1, 0, 0, 20)
-                    controlFrame.Visible = true
-                    controlFrame.ZIndex = 34
-                    
-                    instances.controlFrame = controlFrame
+            -- // ELEMENT FUNCTIONS
+            local Elems = {}
 
-                    local back = Instance.new('TextButton') do 
-                        back.BackgroundTransparency = 1
-                        back.Name = '#back'
-                        back.Size = UDim2.fromScale(1, 1)
-                        back.Text = ''
-                        back.TextTransparency = 1
-                        back.ZIndex = 34
-                        
-                        back.Parent = controlFrame
-                        
-                        local label = Instance.new('TextLabel') do 
-                            label.BackgroundTransparency = 1
-                            label.Font = 'SourceSans'
-                            label.Name = '#label'
-                            label.RichText = true
-                            label.Size = UDim2.fromScale(1, 1)
-                            label.Text = 'button'
-                            label.TextColor3 = theme.TextPrimary
-                            label.TextSize = 14
-                            label.TextStrokeColor3 = theme.TextStroke
-                            label.TextStrokeTransparency = 0.8
-                            label.TextTransparency = 0
-                            label.TextWrapped = false
-                            label.TextXAlignment = 'Left'
-                            label.TextYAlignment = 'Center'
-                            label.Visible = true
-                            label.ZIndex = 35
-                            
-                            label.Parent = back
-                            
-                            local padding = Instance.new('UIPadding') do 
-                                padding.Name = '#padding'
-                                padding.PaddingLeft = UDim.new(0, 6)
-                                
-                                padding.Parent = label
-                            end
-                        end
-                        
-                        local hotkey = Instance.new('TextLabel') do 
-                            hotkey.Active = false
-                            hotkey.AnchorPoint = Vector2.new(1, 0)
-                            hotkey.BackgroundTransparency = 1 
-                            hotkey.Font = 'SourceSans'
-                            hotkey.Name = '#hotkey'
-                            hotkey.Position = UDim2.new(1, -3, 0, 2)
-                            hotkey.Size = UDim2.fromOffset(16, 16)
-                            hotkey.Text = '[None]'
-                            hotkey.TextColor3 = theme.TextDim
-                            hotkey.TextScaled = false
-                            hotkey.TextSize = 14
-                            hotkey.TextStrokeColor3 = theme.TextStroke
-                            hotkey.TextStrokeTransparency = 0.8
-                            hotkey.TextWrapped = false 
-                            hotkey.TextXAlignment = 'Right'
-                            hotkey.TextYAlignment = 'Center'
-                            hotkey.Visible = true
-                            hotkey.ZIndex = 35
-                            
-                            hotkey.Parent = back
-                        end
-                    end
-                end
-                hotkey.instances = instances 
-            end
-            
-            hotkey.set = nil
-            hotkey.hotkey = nil 
-            hotkey.focused = false
-            hotkey.inputCon = nil 
-            hotkey.click = function(self) 
-                if (self.inputCon) then return end 
+            -- // COLLAPSIBLE SECTION //
+            function Elems:Section(text, side)
+                local parent = col(side)
                 
-                local display = self.instances.hotkey 
+                local SectionFrame = RegisterTheme(Instance.new("Frame"), "BackgroundColor3", "Element")
+                SectionFrame.Size = UDim2.new(1, 0, 0, 36)
+                SectionFrame.ClipsDescendants = true
+                SectionFrame.Parent = parent
+                Instance.new("UICorner", SectionFrame).CornerRadius = UDim.new(0, 6)
+
+                local HeaderBtn = Instance.new("TextButton")
+                HeaderBtn.Size = UDim2.new(1, 0, 0, 36)
+                HeaderBtn.BackgroundTransparency = 1
+                HeaderBtn.Text = ""
+                HeaderBtn.Parent = SectionFrame
+
+                local HeaderText = RegisterTheme(Instance.new("TextLabel"), "TextColor3", "Text")
+                HeaderText.Text = text
+                HeaderText.Size = UDim2.new(1, -30, 0, 36)
+                HeaderText.Position = UDim2.new(0, 10, 0, 0)
+                HeaderText.BackgroundTransparency = 1
+                HeaderText.FontFace = FontBold
+                HeaderText.TextSize = 13
+                HeaderText.TextXAlignment = Enum.TextXAlignment.Left
+                HeaderText.Parent = HeaderBtn
+
+                local Chevron = RegisterTheme(Instance.new("ImageLabel"), "ImageColor3", "TextDim")
+                Chevron.Size = UDim2.new(0, 16, 0, 16)
+                Chevron.Position = UDim2.new(1, -26, 0.5, -8)
+                Chevron.BackgroundTransparency = 1
+                Chevron.Image = Icons["chevron"]
+                Chevron.Parent = HeaderBtn
+
+                local ContentFrame = Instance.new("Frame")
+                ContentFrame.Size = UDim2.new(1, 0, 0, 0)
+                ContentFrame.Position = UDim2.new(0, 0, 0, 36)
+                ContentFrame.BackgroundTransparency = 1
+                ContentFrame.AutomaticSize = Enum.AutomaticSize.Y
+                ContentFrame.Parent = SectionFrame
                 
-                tween(display, {TextColor3 = theme.Primary}, 0.3, 1)
-                self.inputCon = inputService.InputBegan:Connect(function(io, gpe) 
-                    local kc = io.KeyCode.Name
-                    if (kc == 'Unknown' or kc == 'Escape') then 
-                        self.hotkey = nil
-                        display.Text = '[None]'
-                        self.inputCon:Disconnect()
-                        self.inputCon = nil 
-                        
-                        if (self.focused) then 
-                            tween(display, {TextColor3 = theme.TextPrimary}, 0.3, 1)
-                        else
-                            tween(display, {TextColor3 = theme.TextDim}, 0.3, 1)
-                        end
-                    else 
-                        self.hotkey = io.KeyCode
-                        self.set = time()
-                        display.Text = ('[%s]'):format(kc)
-                        self.inputCon:Disconnect()
-                        self.inputCon = nil 
-                        
-                        if (self.focused) then 
-                            tween(display, {TextColor3 = theme.TextPrimary}, 0.3, 1)
-                        else
-                            tween(display, {TextColor3 = theme.TextDim}, 0.3, 1)
-                        end
-                    end
+                local Pad = Instance.new("UIPadding")
+                Pad.PaddingTop = UDim.new(0, 5)
+                Pad.PaddingBottom = UDim.new(0, 10)
+                Pad.PaddingLeft = UDim.new(0, 5)
+                Pad.PaddingRight = UDim.new(0, 5)
+                Pad.Parent = ContentFrame
+                
+                local List = Instance.new("UIListLayout")
+                List.Padding = UDim.new(0, 5)
+                List.Parent = ContentFrame
+
+                local expanded = false
+                
+                HeaderBtn.MouseButton1Click:Connect(function()
+                    expanded = not expanded
+                    Tween(Chevron, {Rotation = expanded and 180 or 0})
+                    if expanded then SectionFrame.AutomaticSize = Enum.AutomaticSize.Y else SectionFrame.AutomaticSize = Enum.AutomaticSize.None Tween(SectionFrame, {Size = UDim2.new(1, 0, 0, 36)}) end
                 end)
-                
-                return self
-            end
-            hotkey.__hotkeyFunc = hotkey.click
-            
-            hotkey.signals = {
-                back = {
-                    MouseEnter = function(inst, self) 
-                        self.focused = true
-                        self:showTooltip()
 
-                        if (self.inputCon) then 
-                            tween(self.instances.hotkey, {TextColor3 = theme.Primary}, 0.2, 1)
-                        else 
-                            tween(self.instances.hotkey, {TextColor3 = theme.TextPrimary}, 0.2, 1)
-                        end
-                    end,
-                    MouseLeave = function(inst, self) 
-                        self.focused = false
-                        self:hideTooltip()
-                        
-                        if (self.inputCon) then 
-                            tween(self.instances.hotkey, {TextColor3 = theme.Primary}, 0.2, 1)
-                        else
-                            tween(self.instances.hotkey, {TextColor3 = theme.TextDim}, 0.2, 1)
-                        end
-                    end,
-                    MouseButton1Click = function(inst, self) 
-                        self:click()
-                    end
-                }
-            }
-            
-            hotkey.new = function(self) 
+                local SectionElems = {}
+                function SectionElems:Label(t) Generators.Label(ContentFrame, t) end
+                function SectionElems:Button(t, d, cb) Generators.Button(ContentFrame, t, d, cb) end
+                function SectionElems:Keybind(t, f, def, cb, d) Generators.Keybind(ContentFrame, t, f, def, cb, d) end
+                function SectionElems:Checkbox(t, f, d, tip, cb) Generators.Checkbox(ContentFrame, t, f, d, tip, cb) end
+                function SectionElems:Toggle(t, f, d, tip, cb) Generators.Toggle(ContentFrame, t, f, d, tip, cb) end
+                function SectionElems:Slider(t, f, min, max, def, cb, d) Generators.Slider(ContentFrame, t, f, min, max, def, cb, d) end
+                function SectionElems:TextBox(t, f, def, cb, d) Generators.TextBox(ContentFrame, t, f, def, cb, d) end
+                function SectionElems:Dropdown(t, f, items, cb, d) Generators.Dropdown(ContentFrame, t, f, items, cb, d) end
+                function SectionElems:MultiDropdown(t, f, items, cb, d) Generators.MultiDropdown(ContentFrame, t, f, items, cb, d) end
+                function SectionElems:Paragraph(title, text) Generators.Paragraph(ContentFrame, title, text) end
+                function SectionElems:ColorPicker(t, f, def, alpha, cb, tip) Generators.ColorPicker(ContentFrame, t, f, def, alpha, cb, tip) end
                 
-                local new = setmetatable({}, self)
-                new.binds = {}
-                
-                local instances = {}
-                instances.controlFrame = self.instances.controlFrame:Clone()
-                instances.back = instances.controlFrame['#back']
-                instances.label = instances.back['#label']
-                instances.hotkey = instances.back['#hotkey']
-                
-                for i, signals in pairs(self.signals) do 
-                    local inst = instances[i]
-                    for signal, func in pairs(signals) do
-                        local h = inst[signal]:Connect(function() 
-                            func(inst, new)
-                        end)
-                    end
-                end
-                
-                table.insert(ui.hotkeys, new)
-                
-                
-                new.instances = instances
-                return new
+                return SectionElems
             end
-            
-            --[[
-            hotkey.fireHotkey = function(self, ...) 
-                return self:__hotkeyFunc()
-            end]]
-            
-            hotkey.linkToControl = function(self, control) 
-                if (control and control.__hotkeyFunc == nil) then
-                    return error('couldn\'t find control function', 2)
-                elseif (not control) then 
-                    control = nil 
-                end
-                
-                self.linkedControl = control 
-                return self
-            end
-            
-            hotkey.setHotkey = function(self, hotkey) 
-                if (hotkey) then 
-                    if (typeof(hotkey) == 'EnumItem') then
-                        if (hotkey.EnumType ~= Enum.KeyCode) then
-                            return error('expected EnumItem of EnumType KeyCode for hotkey', 2) 
-                        end
-                    else
-                        if (Enum.KeyCode[hotkey]) then
-                            hotkey = Enum.KeyCode[hotkey]
-                        else
-                            return error('expected valid Enum.KeyCode Name, or Enum.KeyCode EnumItem', 2)  
-                        end
-                    end
-                    
-                    self.hotkey = hotkey 
-                    self.instances.hotkey.Text = ('[%s]'):format(hotkey.Name)
-                else
-                    self.hotkey = nil
-                    self.instances.hotkey.Text = '[None]'
-                end
-            end
-            hotkey.getHotkey = function(self) return self.hotkey end 
-            
-            elemClasses.section.addHotkey = function(self, settings) 
-                if (not typeof(settings) == 'table') then
-                    return error('expected type table for settings', 2) 
-                end
-                
-                local s_title = settings.text or 'nil'
-                local s_bind = settings.bind or nil
-                
-                if (s_bind) then 
-                    if (typeof(s_bind) == 'EnumItem') then
-                        if (s_bind.EnumType ~= Enum.KeyCode) then
-                            return error('expected EnumItem of EnumType KeyCode for settings.bind', 2) 
-                        end
-                    else
-                        if (Enum.KeyCode[s_bind]) then
-                            s_bind = Enum.KeyCode[s_bind]
-                        else
-                            return error('expected valid Enum.KeyCode Name, or Enum.KeyCode EnumItem', 2)  
-                        end
-                    end
-                end
-                
-                local hotkey = hotkey:new()
-                hotkey.section = self 
-                hotkey.name = s_title
-                table.insert(self.controls, hotkey)
-                
-                hotkey.instances.label.Text = s_title
-                if (s_bind) then 
-                    hotkey:setBind(s_bind)
-                end
-                hotkey.instances.controlFrame.Parent = self.instances.controlMenu
-                return hotkey
-            end
+            -- // END SECTION //
+
+            function Elems:Label(t,s) Generators.Label(col(s), t) end
+            function Elems:Button(t,desc,s,cb) Generators.Button(col(s), t, desc, cb) end
+            function Elems:Keybind(t, f, def, s, cb, desc) Generators.Keybind(col(s), t, f, def, cb, desc) end
+            function Elems:Checkbox(t,f,d,desc,s,cb) Generators.Checkbox(col(s), t, f, d, desc, cb) end
+            function Elems:Toggle(t, f, d, desc, s, cb) Generators.Toggle(col(s), t, f, d, desc, cb) end
+            function Elems:Slider(t,f,min,max,def,s,cb,desc) Generators.Slider(col(s), t, f, min, max, def, cb, desc) end
+            function Elems:TextBox(t,f,def,s,cb,desc) Generators.TextBox(col(s), t, f, def, cb, desc) end
+            function Elems:Dropdown(t,f,items,s,cb,desc) Generators.Dropdown(col(s), t, f, items, cb, desc) end
+            function Elems:MultiDropdown(t,f,items,s,cb,desc) Generators.MultiDropdown(col(s), t, f, items, cb, desc) end
+            function Elems:Paragraph(title, text, s) Generators.Paragraph(col(s), title, text) end
+            function Elems:ColorPicker(t, f, def, alpha, s, cb, desc) Generators.ColorPicker(col(s), t, f, def, alpha, cb, desc) end
+
+            return Elems
         end
-        elemClasses.hotkey = hotkey
-    end    
+        return TabObj
+    end
+    return WinObj
 end
 
-do
-    ui.__index = ui 
-    setmetatable(ui, elemClasses.baseElement)
-    ui.class = 'ui'
+function Library:ConfigSystem(Window)
+    local S = Window:Tab("Settings", "settings")
+    local Cfg = S:Page("Configs", "folder")
+    local ThemePage = S:Page("Themes", "paint-bucket")
     
-    ui.binds = {}
-    ui.windows = {}
-    ui.pickerWindows = {}
-    ui.notifs = {}
-    ui.hotkeys = {}
-    ui.scriptCns = {}
+    local selConfig = ""
+    local configDropdown = nil
     
-    ui.autoDisableToggles = true
-    
-    local windows = ui.windows
-    local pickerWindows = ui.pickerWindows
-    local notifs = ui.notifs
-    
-    ui.newWindow = function(settings) 
-        if (typeof(settings) ~= 'table') then
-            return error('expected type table for settings', 2)
+    local function RefreshConfigs()
+        local configs = Library:GetConfigs()
+        if configDropdown and Library.Elements["ConfigList"] then
+            Library.Elements["ConfigList"].Refresh(configs)
         end
-        
-        
-        local s_title = settings.text or 'nil'
-        local s_resize = settings.resize or false
-        local s_position = settings.position
-        if (not s_position) then
-            s_position = defaultWinPos
-            defaultWinPos += UDim2.fromScale(0.02, 0.02)
-        end
-        
-        
-        local window = elemClasses.window:new(s_resize)
-        
-        local s_winSize = settings.size or window.size
-        if (typeof(s_winSize) == 'Vector2') then
-            s_winSize = UDim2.fromOffset(s_winSize.X, s_winSize.Y) 
-        end
-        local s_icon = settings.icon
+    end
 
-        if (s_icon) then
-            window:setIcon(s_icon) 
-        end
-        window:setPosition(s_position)
-        window:setTitle(s_title)
-        
-        window.size = s_winSize
-        
-        -- extra animations :money_mouth:
-        task.spawn(function()
-            local instances = window.instances 
-            
-            local mainFrame = instances.mainFrame 
-            local titleBar = instances.titleBar
-            
-            mainFrame.Size = UDim2.fromOffset(s_winSize.X.Offset, 30)
-            tween(mainFrame, {Size = s_winSize}, 0.5, 1)
-            
-            -- control anims
-            task.spawn(function() 
-                local icon = titleBar['#icon']
-                local bClose = titleBar['#button-close']
-                local bMin = titleBar['#button-min']
-                local title = titleBar['#title']
-                
-                local offset = UDim2.fromOffset(50, 0) 
-                
-                bClose.Position += offset
-                bMin.Position += offset
-                icon.Position -= offset
-                title.Position -= offset
-                tween(bClose, {Position = bClose.Position - offset}, 1, 1)
-                tween(bMin, {Position = bMin.Position - offset}, 1, 1)
-                tween(icon, {Position = icon.Position + offset}, 1, 1)
-                tween(title, {Position = title.Position + offset}, 1, 1)
-            end)
-            
-            -- titlebar fade
-            task.spawn(function()
-                local fade = titleBar['#fade']
-                fade.BackgroundTransparency = 0
-                fade.Visible = true
-                tween(fade, {BackgroundTransparency = 1}, 2, 1).Completed:Wait()
-                fade.Visible = false 
-            end)
-        end)
-        
-        --window.instances.title.Text = s_winTitle
-        --window.instances.rootFrame.Size = s_winSize
-        --if (not s_resize) then
-        --    window.connections.resize:Disconnect() 
-        --end
-        return window
-    end
-    ui.destroy = function(noWindows)
-        ui:fireEvent('onPreDestroy')
-        
-        delay(0.4, function() 
-            uiScreen:Destroy()
-            uiScreen = nil
-        end)
-        
-        if (noWindows ~= true) then  
-            for _, win in ipairs(windows) do 
-                win:destroy()
-            end
-        end
+    Cfg:Dropdown("Available Configs", "ConfigList", Library:GetConfigs(), "Left", function(v) selConfig = v end)
+    Cfg:TextBox("New Config Name", "ConfigName", "", "Left", function(v) selConfig = v end)
+    
+    Cfg:Button("Save Config", "Saves settings", "Left", function() Library:SaveConfig(selConfig) RefreshConfigs() end)
+    Cfg:Button("Load Config", "Loads settings", "Left", function() Library:LoadConfig(selConfig) end)
+    Cfg:Button("Delete Config", "Deletes settings", "Right", function() Library:DeleteConfig(selConfig) RefreshConfigs() end)
+    Cfg:Button("Refresh List", "Reloads file list", "Right", function() RefreshConfigs() end)
 
-        
-        for i,v in pairs(elemClasses) do 
-            if not (v.instances) then continue end 
-            for i,v in pairs(v.instances) do 
-                v:Destroy() 
-            end
-        end
-        
-        ui.hkCon:Disconnect()
-        for _, hotkey in ipairs(ui.hotkeys) do 
-            if (hotkey.inputCon) then
-                hotkey.inputCon:Disconnect()
-            end
-        end
-        
-        elemClasses = nil 
-        tooltip.instances.main:Destroy()
-        hint.instances.main:Destroy()
-        
-        
-        ui:fireEvent('onDestroy')
-        
-        for _, v in pairs(ui.scriptCns) do v:Disconnect() end
-    end
+    local presets = {}
+    for k, v in pairs(ThemePresets) do table.insert(presets, k) end
+    table.sort(presets)
     
-    
-    -- unfinished
-    ui.setTheme = function(newTheme) 
-        if (typeof(theme) ~= 'table') then
-            return error('expected type table for theme', 2)
-        end
-        
-        theme = newTheme 
-        
-    end
-    
-    
-    do 
-        
-        ui.notify = function(settings, s2)
-            if (settings == ui) then
-                return error('ui.notify is not a namecall function', 2) 
-            end
-            
-            -- handle settings
-            local s_title = settings.title or 'nil'
-            local s_desc = settings.message or 'nil'
-            local s_duration = settings.duration or 2
-            
-            if (typeof(s_duration) ~= 'number') then
-                return error('expected type \'number\' for setting \'duration\'',2) 
-            end
-            
-            -- do some notifs shit
-            local startingOffset = 0 do 
-                for i, notif in ipairs(notifs) do 
-                    startingOffset += notif.size.Y.Offset + 20
-                end
-            end
-            
-            local notif = elemClasses.notif:new()
-            
-            local main = notif.instances.main
-            main.Position = UDim2.new(4, 0, 1, -startingOffset)
-            main.Parent = uiScreen['#notif-container']
-            
-            
-            notif:setTitle(s_title)
-            notif:setDesc(s_desc)
-            
-            notif.size = main.Size
-            table.insert(notifs, notif)
-        
-            tween(main, {Position = UDim2.new(1, 0, 1, -startingOffset)}, 0.3, 1)
-            task.delay(s_duration, function()
-                notif:destroy()
-                table.remove(notifs, table.find(notifs, notif))
-                
-                local mainPos = main.AbsolutePosition.Y
-                
-                for i, n in ipairs(notifs) do 
-                    local nmain = n.instances.main
-                    if (nmain.AbsolutePosition.Y > mainPos) then continue end
-                    local p = UDim2.new(1, 0, 1, nmain.Position.Y.Offset + 20 + notif.size.Y.Offset)
-                    tween(nmain, {Position = p}, 0.3, 1)
-                end
-            end)
-        end
-    end
-    
-    -- hotkey handler
-    do 
-        local hotkeys = ui.hotkeys
-        ui.hkCon = inputService.InputBegan:Connect(function(io, gpe) 
-            if ((not gpe) and (io.UserInputType.Name == 'Keyboard')) then
-                local kc = io.KeyCode
-                
-                for i = 1, #hotkeys do 
-                    local hotkey = hotkeys[i]
-                    if (hotkey.hotkey == kc and hotkey.set ~= time()) then
-                        local linkedControl = hotkey.linkedControl
-                        if (linkedControl) then 
-                            task.spawn(linkedControl.__hotkeyFunc, linkedControl)
-                        end
-                    end
-                end 
-            end
-        end)
-    end
+    ThemePage:Dropdown("Theme Presets", "ThemePreset", presets, "Left", function(v) UpdateTheme(v) end)
 end
 
-
-return ui 
+return Library 
