@@ -83,10 +83,11 @@ local Library do
 
         Connections = { },
         Threads = { },
-       Folders = {
-    Directory = "GrossHub",
-    Configs = "GrossHub/Configs",
-    Assets = "GrossHub/Assets",
+      Folders = {
+            Directory = "GrossHub",
+            Configs = "GrossHub/Configs",
+            Assets = "GrossHub/Assets",
+        },
         ThemeMap = { },
         ThemeItems = { },
 
